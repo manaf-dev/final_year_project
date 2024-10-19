@@ -171,7 +171,11 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
 }
 
-REST_USE_JWT = True
+
+REST_AUTH = {
+    "SESSION_LOGIN": False,
+    "USE_JWT": True,
+}
 
 SITE_ID = 1
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -181,6 +185,3 @@ SITE_ID = 1
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_EMAIL_VERIFICATION = "none"
-
-
-# REST_AUTH_TOKEN_CREATOR = "dj_rest_auth.utils.default_create_token"
