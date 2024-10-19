@@ -20,5 +20,6 @@ class PortfolioFile(models.Model):
     submission = models.ForeignKey(
         Submission, related_name="files", on_delete=models.CASCADE
     )
-    file = models.FileField(upload_to="documents/", choices=FILE_TYPES)
+    file_type = models.CharField(max_length=50, choices=FILE_TYPES, default="file")
+    file = models.FileField(upload_to="documents/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
