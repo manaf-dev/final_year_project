@@ -1,7 +1,19 @@
 from django.urls import path
 
-from accounts.views import departments
+from accounts.views.departments import (
+    DepartmentListCreateAPIView,
+    DepartmentRetrieveUpdateDestroyAPIView,
+)
 
 DEPARTMENTS_URLS = [
-    path("departments/", departments.departments, name=""),
+    path(
+        "departments/",
+        DepartmentListCreateAPIView.as_view(),
+        name="department-list-create",
+    ),
+    path(
+        "department/<int:pk>/",
+        DepartmentRetrieveUpdateDestroyAPIView.as_view(),
+        name="department-retrieve",
+    ),
 ]

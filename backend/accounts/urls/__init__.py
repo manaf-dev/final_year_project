@@ -1,10 +1,10 @@
-from . import departments, intern_schools, portfolios, users
+from . import departments, faculties, intern_schools, users
 
 
 URL_COMPONENTS = (
     departments.DEPARTMENTS_URLS
+    + faculties.FACULTIES_URLS
     + intern_schools.INTERN_SCHOOLS_URLS
-    + portfolios.PORTFOLIOS_URLS
     + users.USERS_URLS
 )
 
