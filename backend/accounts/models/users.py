@@ -23,9 +23,7 @@ class CustomUser(AbstractUser):
         null=True,
         blank=True,
     )
-    school_mentor = models.ForeignKey(
-        Mentor, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    mentor = models.ForeignKey(Mentor, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.username

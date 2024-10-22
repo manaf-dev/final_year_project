@@ -20,5 +20,5 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "department",
             "supervisor",
             "intern_school",
-            "school_mentor",
+            "mentor",
         )
