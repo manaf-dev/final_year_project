@@ -15,6 +15,7 @@ class PortfolioFile(models.Model):
     FILE_TYPES = [
         ("teaching_philosophy", "Teaching Philosophy"),
         ("reflective_writing", "Reflective writing"),
+        ("cv", "Curriculum Vitae (CV)"),
     ]
 
     submission = models.ForeignKey(
