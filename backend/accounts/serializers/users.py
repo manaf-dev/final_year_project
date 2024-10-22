@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from ._base_imports import *
 
 from accounts.models.users import CustomUser
 from accounts.serializers.intern_schools import InternSchoolSerializer

@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from ._base_imports import *
 
 from accounts.models.mentors import Mentor
 from accounts.serializers.mentors import MentorSerializer

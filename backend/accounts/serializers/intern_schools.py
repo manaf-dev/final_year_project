@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from ._base_imports import *
 
 from accounts.models.intern_schools import InternSchool
 

@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from ._base_imports import *
 
 from accounts.serializers.faculties import FacultySerializer
 from accounts.models.faculties import Faculty

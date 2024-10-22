@@ -1,5 +1,4 @@
-from rest_framework import serializers
-from rest_framework.response import Response
+from ._base_imports import *
 
 from accounts.models.departments import Department
 from accounts.models.faculties import Faculty

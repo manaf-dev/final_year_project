@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from ._base_imports import *
 
 from accounts.serializers.intern_schools import InternSchoolSerializer
 from accounts.models.intern_schools import InternSchool

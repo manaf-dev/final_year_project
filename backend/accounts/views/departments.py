@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from ._base_imports import *
 
 from accounts.serializers.departments import DepartmentSerializer
 from accounts.models.departments import Department
