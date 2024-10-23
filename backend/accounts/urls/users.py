@@ -21,4 +21,9 @@ USERS_URLS = [
         CustomUserViewSet.as_view({"delete": "destroy"}),
         name="delete-user",
     ),
+    path(
+        "supervisor/<int:supervisor_id>/interns/",
+        CustomUserViewSet.as_view({"get": "get_supervisor_interns"}),
+        name="supervisor-interns",
+    ),
 ]

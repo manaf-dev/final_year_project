@@ -2,8 +2,6 @@ from rest_framework import serializers
 
 from submissions.models.submissions import Submission, Comment
 
-from accounts.serializers.users import CustomUserSerializer
-
 
 class SubmissionSerializer(serializers.ModelSerializer):
 

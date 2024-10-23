@@ -4,6 +4,7 @@ from accounts.utils.setters import *
 from accounts.models.users import CustomUser
 from accounts.serializers.users import CustomUserSerializer
 
+from accounts.selectors.users import get_interns_by_supervisor
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -40,3 +41,15 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         set_mentor(user_data)
 
         return user_data
+
+
+    def get_supervisor_interns(self, request, supervisor_id):
+        queryset = get_interns_by_supervisor(supervisor_id)
+
+        serializer = self.get_serializer(queryset, many=True)
+        interns = serializer.data
+
+        for intern in interns:
+            self.set_fk_fields(intern)
+
+        return Response(interns)

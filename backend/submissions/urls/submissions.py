@@ -12,8 +12,16 @@ SUBMISSION_URLS = [
         ),
     ),
     path(
-        "submission/comments/",
-        CommentViewSet.as_view({"get": "list", "post": "create"}),
+        "submission/intern/<str:username>/",
+        SubmissionViewSet.as_view({"get": "intern_month_submissions"}),
+    ),
+    path(
+        "submission/<int:submission_id>/comments/",
+        CommentViewSet.as_view({"get": "list"}),
+    ),
+    path(
+        "submission/comment/post/",
+        CommentViewSet.as_view({"post": "create"}),
     ),
     path(
         "submission/comment/<int:pk>/",
