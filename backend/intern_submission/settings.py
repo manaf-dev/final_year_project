@@ -155,6 +155,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
+
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -163,6 +167,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
@@ -175,6 +180,8 @@ SIMPLE_JWT = {
 REST_AUTH = {
     "SESSION_LOGIN": False,
     "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": True,
+    "REGISTER_SERIALIZER": "accounts.serializers.users.CustomRegisterSerializer",
 }
 
 SITE_ID = 1

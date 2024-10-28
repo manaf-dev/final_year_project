@@ -1,10 +1,11 @@
 from django.urls import path, include
 
-from accounts.views.users import CustomUserViewSet
+from accounts.views.users import CustomUserViewSet, CustomRegisterView, CustomLoginView
 
 USERS_URLS = [
-    path("auth/", include("dj_rest_auth.urls")),
-    path("auth/registration/", include("dj_rest_auth.registration.urls")),
+    path("auth/login/", CustomLoginView.as_view()),
+    # path("auth/", include("dj_rest_auth.urls")),
+    path("auth/registration/", CustomRegisterView.as_view()),
     path("users/", CustomUserViewSet.as_view({"get": "list"}), name="list-users"),
     path(
         "user/<int:pk>/",

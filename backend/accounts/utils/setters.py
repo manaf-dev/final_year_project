@@ -39,3 +39,11 @@ def set_mentor(data: dict):
         data["mentor"] = MentorSerializer(mentor).data
         return data
     return None
+
+def user_info(user, request):
+    data = CustomUserSerializer(user).data
+    data = set_department(data)
+    data = set_intern_school(data)
+    data = set_supervisor(data)
+    data = set_mentor(data)
+    return data

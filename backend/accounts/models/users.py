@@ -8,6 +8,7 @@ from .intern_schools import InternSchool
 
 class CustomUser(AbstractUser):
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
     department = models.ForeignKey(
         Department, related_name="users", on_delete=models.SET_NULL, null=True
     )

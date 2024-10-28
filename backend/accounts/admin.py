@@ -26,13 +26,14 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "fields": (
-                    "department",
                     "avatar",
+                    "phone",
+                    "department",
                     "supervisor_account",
                     "intern_account",
                     "supervisor",
                     "intern_school",
-                    "school_mentor",
+                    "mentor",
                 ),
             },
         ),
