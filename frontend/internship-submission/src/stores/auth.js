@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
 
                 toast.success(response.data.detail);
             } catch (error) {
-                toast.error(response.data.detail);
+                toast.error(error.response?.data?.detail || 'Registration failed');
             }
         },
         async login(credentials) {
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', {
                 toast.success(response.data.detail);
             } catch (error) {
                 // console.log('DATA', error.response.data.detail)
-                toast.error(error.response.data.detail);
+                toast.error(error.response?.data?.detail || 'Login failed');
             }
         },
         logout() {
