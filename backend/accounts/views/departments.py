@@ -7,6 +7,7 @@ from accounts.models.departments import Department
 class DepartmentListCreateAPIView(ListCreateAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class DepartmentRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
