@@ -2,8 +2,6 @@
     import { ref, reactive, computed, onMounted } from "vue";
     import { useToast } from "vue-toastification";
     import { useAuthStore } from "@/stores/auth";
-    import InputField from "@/components/InputField.vue";
-    import SubmitButton from "@/components/SubmitButton.vue";
     import ScaleLoader from "vue-spinner/src/ScaleLoader.vue";
     import apiClient from "@/services/api";
     import router from "@/router";
@@ -60,6 +58,7 @@
             formErrors.value.push("Passwords do not match");
 
         if (formErrors.value.length > 0) {
+            toast.error(formErrors.value[0]);
             formErrors.value = [];
         } else {
             signup();
@@ -76,11 +75,10 @@
                 phone: form.phone,
                 email: form.email,
                 department: form.department,
-                intern_account: true,
+                account_type: "intern",
                 password1: form.password1,
                 password2: form.password2,
             };
-            console.log("NEW USER:", newUser);
             await authStore.register(newUser);
         } catch (error) {
             console.log(error);
@@ -102,70 +100,6 @@
 </script>
 
 <template>
-    <!-- <div class="max-w-md mx-auto mt-10">
-        <h2 class="text-2xl font-bold mb-6">Signup</h2>
-        <InputField
-            id="student_id"
-            label="Student ID"
-            v-model="form.student_id"
-            type="text"
-        />
-        <InputField
-            id="first_name"
-            label="First Name"
-            v-model="form.first_name"
-            type="text"
-        />
-        <InputField
-            id="last_name"
-            label="Last Name"
-            v-model="form.last_name"
-            type="text"
-        />
-        <InputField
-            id="phone"
-            label="Phone Number"
-            v-model="form.phone"
-            type="phone"
-        />
-        <InputField
-            id="email"
-            label="Email"
-            v-model="form.email"
-            type="email"
-        />
-        <InputField
-            id="department"
-            label="Department"
-            v-model="form.department"
-            type="text"
-        />
-        <InputField
-            id="password"
-            label="Password"
-            v-model="form.password1"
-            type="password"
-        />
-        <InputField
-            id="confirm-password"
-            label="Confirm Password"
-            v-model="form.password2"
-            type="password"
-        />
-        <SubmitButton label="Signup" @click="handleFormSubmit" />
-        <div
-            v-if="isLoading"
-            class="mx-auto bg-black-500 h-fit w-fit absolute flex justify-center"
-        >
-            <ScaleLoader />
-        </div>
-
-        <p class="text-2xl">
-            Already registered? Login
-            <RouterLink to="/login">here</RouterLink>
-        </p>
-    </div> -->
-
     <div
         class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
     >

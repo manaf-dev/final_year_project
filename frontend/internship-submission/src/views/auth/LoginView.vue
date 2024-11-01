@@ -3,8 +3,8 @@
     import { useToast } from "vue-toastification";
     import { useAuthStore } from "@/stores/auth";
     import { LockClosedIcon } from "@heroicons/vue/24/solid";
-    import InputField from "@/components/InputField.vue";
-    import SubmitButton from "@/components/SubmitButton.vue";
+    import InputField from "@/components/auth/InputField.vue";
+    import SubmitButton from "@/components/auth/SubmitButton.vue";
     import router from "@/router";
 
     const toast = useToast();
@@ -28,6 +28,7 @@
     const login = async (credentials) => {
         loading.value = true;
         await authStore.login(credentials);
+        router.push("/dashboard");
         loading.value = false;
     };
 </script>

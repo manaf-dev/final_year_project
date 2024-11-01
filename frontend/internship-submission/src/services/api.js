@@ -13,16 +13,21 @@ const apiClient = axios.create({
 export default apiClient;
 
 
-// apiClient.interceptors.response.use(
-//     response => response,
-//     async (error) => {
-//         const authStore = useAuthStore()
-//         const originalRequest = error.config
-
-//         if (error.response.status === 401 && !originalRequest._retry) {
-//             await authStore.refreshAccessToken()
-//             originalRequest.headers['Authorization'] = `Bearer ${authStore.accessToken}`
-//             return apiClient(originalRequest)
-//         }
-//     }
-// )
+apiClient.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const authStore = useAuthStore()
+        const originalRequest = error.config
+        if (error.response.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true
+            try {
+                await authStore.refreshAccessToken()
+                return apiClient(originalRequest)
+            } catch (refreshError) {
+                // authStore.logout()
+                throw refreshError
+            }
+        }
+        return Promise.reject(error)
+    }
+)

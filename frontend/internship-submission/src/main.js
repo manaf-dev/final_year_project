@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from "primevue/config";
 import Toast from "vue-toastification";
+import 'primeicons/primeicons.css'
 import "vue-toastification/dist/index.css";
 
 
