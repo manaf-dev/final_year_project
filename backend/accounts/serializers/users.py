@@ -6,6 +6,7 @@ from accounts.serializers.intern_schools import InternSchoolSerializer
 from accounts.models.departments import Department
 from accounts.selectors.departments import get_departments_by_id
 
+
 class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -17,8 +18,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "avatar",
-            "supervisor_account",
-            "intern_account",
+            "account_type",
             "department",
             "supervisor",
             "intern_school",
@@ -29,7 +29,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    intern_account = serializers.BooleanField(required=True)
+    account_type = serializers.CharField(required=True)
     phone = serializers.CharField(required=True)
     department = serializers.CharField(required=True)
 
@@ -38,23 +38,21 @@ class CustomRegisterSerializer(RegisterSerializer):
         print(self.validated_data)
         data["first_name"] = self.validated_data.get("first_name", "")
         data["last_name"] = self.validated_data.get("last_name", "")
-        data["intern_account"] = self.validated_data.get("intern_account", "")
+        data["account_type"] = self.validated_data.get("account_type", "")
         data["phone"] = self.validated_data.get("phone", "")
         data["department"] = self.validated_data.get("department", "")
         print(data)
         return data
-    
-
 
     def save(self, request):
         user = super().save(request)
-        user.intern_account = self.cleaned_data["intern_account"]
+        user.account_type = self.cleaned_data["account_type"]
         user.phone = self.cleaned_data["phone"]
 
         department = get_departments_by_id(int(self.cleaned_data["department"]))
         if not department:
-            raise serializers.ValidationError('Department not found') 
-        
+            raise serializers.ValidationError("Department not found")
+
         user.department = department
         user.save()
         return user

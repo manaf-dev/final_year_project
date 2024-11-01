@@ -36,7 +36,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     def set_fk_fields(self, user_data: dict):
         set_department(user_data)
 
-        if user_data["supervisor_account"]:
+        if user_data["account_type"] == "supervisor":
             return user_data
 
         set_supervisor(user_data)
