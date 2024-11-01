@@ -12,8 +12,12 @@ class CustomUser(AbstractUser):
     department = models.ForeignKey(
         Department, related_name="users", on_delete=models.SET_NULL, null=True
     )
-    supervisor_account = models.BooleanField(default=False)
-    intern_account = models.BooleanField(default=False)
+    account_type = models.CharField(
+        max_length=50,
+        choices=[("intern", "Intern"), ("supervisor", "Supervisor")],
+        null=True,
+    )
+
     supervisor = models.ForeignKey(
         "self", related_name="interns", on_delete=models.SET_NULL, null=True, blank=True
     )

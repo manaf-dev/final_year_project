@@ -1,19 +1,23 @@
 from django.urls import path
 
-from accounts.views.intern_schools import (
-    InternSchoolListCreateAPIView,
-    InternSchoolRetrieveUpdateDestroyAPIView,
-)
+from accounts.views.intern_schools import InternSchoolViewSet
+
 
 INTERN_SCHOOLS_URLS = [
     path(
-        "intern-schools/",
-        InternSchoolListCreateAPIView.as_view(),
-        name="intern-school-list-create",
+        "intern-schools/all/",
+        InternSchoolViewSet.as_view({"get": "list"}),
     ),
     path(
-        "intern-school/<int:pk>/",
-        InternSchoolRetrieveUpdateDestroyAPIView.as_view(),
-        name="intern-school-retrieve",
+        "intern-school/<int:id>/",
+        InternSchoolViewSet.as_view({"get": "retrieve"}),
+    ),
+    path(
+        "intern-school/new/",
+        InternSchoolViewSet.as_view({"post": "new_intern_school"}),
+    ),
+    path(
+        "intern-school/update/<int:id>/",
+        InternSchoolViewSet.as_view({"put": "update"}),
     ),
 ]
