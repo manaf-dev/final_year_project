@@ -1,16 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import RegisterView from '@/views/auth/RegisterView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import SchoolDetailView from '@/views/auth/SchoolDetailView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
 import DashboardView from '@/views/DasboardView.vue'
 import InternDashboardView from '@/views/intern/InternDashboardView.vue'
-import SupervisorDashboard from '@/views/SupervisorDashboard.vue'
-import { useAuthStore } from '@/stores/auth'
-import InternSubmissionsView from '@/views/intern/InternSubmissionsView.vue'
+import FirstSubmissionView from '@/views/intern/FirstSubmissionView.vue'
 import PortfolioView from '@/views/intern/PortfolioView.vue'
 import SupervisorView from '@/views/intern/SupervisorView.vue'
 import SchoolView from '@/views/intern/SchoolView.vue'
 import MentorView from '@/views/intern/MentorView.vue'
+import SupervisorDashboard from '@/views/SupervisorDashboard.vue'
+import SecondSubmissionView from '@/views/intern/SecondSubmissionView.vue'
+import ThirdSubmissionView from '@/views/intern/ThirdSubmissionView.vue'
+import FourthSubmissionView from '@/views/intern/FourthSubmissionView.vue'
 
 
 
@@ -37,9 +40,27 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresInternDetails: true }
     },
     {
-      path: '/in/submissions',
-      name: 'intern-submissions',
-      component: InternSubmissionsView,
+      path: '/in/submission/1',
+      name: 'first-submission',
+      component: FirstSubmissionView,
+      meta: { requiresAuth: true, requiresInternDetails: true }
+    },
+    {
+      path: '/in/submission/2',
+      name: 'second-submission',
+      component: SecondSubmissionView,
+      meta: { requiresAuth: true, requiresInternDetails: true }
+    },
+    {
+      path: '/in/submission/3',
+      name: 'third-submission',
+      component: ThirdSubmissionView,
+      meta: { requiresAuth: true, requiresInternDetails: true }
+    },
+    {
+      path: '/in/submission/4',
+      name: 'fourth-submission',
+      component: FourthSubmissionView,
       meta: { requiresAuth: true, requiresInternDetails: true }
     },
     {
