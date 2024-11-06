@@ -14,6 +14,7 @@ class Submission(models.Model):
     intern = models.ForeignKey(
         CustomUser, related_name="week_submissions", on_delete=models.CASCADE
     )
+    graded = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.intern.username} - {self.month} submission"
@@ -29,3 +30,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment to {self.submission.intern.username}'s submission"
+
+
+class Grade(models.Model):
+    mark = models.PositiveIntegerField(default=0)
+    submission = models.ForeignKey(
+        Submission, related_name="grades", on_delete=models.CASCADE
+    )
+    graded_at = models.DateTimeField(auto_now=True)

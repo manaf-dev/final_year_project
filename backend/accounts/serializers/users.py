@@ -2,13 +2,22 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from ._base_imports import *
 
 from accounts.models.users import CustomUser
-from accounts.serializers.intern_schools import InternSchoolSerializer
-from accounts.models.departments import Department
 from accounts.selectors.departments import get_departments_by_id
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class SupervisorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "first_name",
+            "last_name",
+            "phone",
+            "email",
+            "department",
+        )
 
+
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = (
@@ -16,6 +25,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "phone",
             "email",
             "avatar",
             "account_type",
@@ -49,7 +59,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.account_type = self.cleaned_data["account_type"]
         user.phone = self.cleaned_data["phone"]
 
-        department = get_departments_by_id(int(self.cleaned_data["department"]))
+        department = get_departments_by_id(self.cleaned_data["department"])
         if not department:
             raise serializers.ValidationError("Department not found")
 

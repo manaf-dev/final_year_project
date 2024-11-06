@@ -13,48 +13,33 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+    def get_interns(self, request):
+        supervisor = request.user
+        if not supervisor.account_type == "supervisor":
+            return Response(
+                {"detail": "You are not a supervisor"}, status=status.HTTP_403_FORBIDDEN
+            )
 
+        queryset = get_interns_by_supervisor(supervisor.id)
         serializer = self.get_serializer(queryset, many=True)
-        users = serializer.data
+        interns = serializer.data
 
-        for user in users:
-            self.set_fk_fields(user)
+        for intern in interns:
+            set_department(intern)
+            set_supervisor(intern)
+            set_intern_school(intern)
+            set_mentor(intern)
 
-        return Response(users)
+        return Response(interns, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         user = serializer.data
 
-        self.set_fk_fields(user)
+        user_info(user)
 
         return Response(user)
-
-    def set_fk_fields(self, user_data: dict):
-        set_department(user_data)
-
-        if user_data["account_type"] == "supervisor":
-            return user_data
-
-        set_supervisor(user_data)
-        set_intern_school(user_data)
-        set_mentor(user_data)
-
-        return user_data
-
-    def get_supervisor_interns(self, request, supervisor_id):
-        queryset = get_interns_by_supervisor(supervisor_id)
-
-        serializer = self.get_serializer(queryset, many=True)
-        interns = serializer.data
-
-        for intern in interns:
-            self.set_fk_fields(intern)
-
-        return Response(interns)
 
 
 class CustomRegisterView(RegisterView):
@@ -86,7 +71,7 @@ class CustomLoginView(APIView):
         if user.check_password(password) and user.is_active:
             # generate token for user
             token = RefreshToken.for_user(user)
-            user_data = user_info(user, request)
+            user_data = user_info(user)
             context = {
                 "detail": "Login successful",
                 "user": user_data,

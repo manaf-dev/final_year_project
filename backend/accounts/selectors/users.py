@@ -1,5 +1,5 @@
 from accounts.models.users import CustomUser
-from accounts.serializers.users import CustomUserSerializer
+from accounts.serializers.users import CustomUserSerializer, SupervisorSerializer
 
 from accounts.selectors.departments import get_departments_by_id
 from accounts.selectors.intern_schools import get_intern_school_by_id
@@ -44,7 +44,7 @@ def get_interns_by_supervisor(supervisor_id: int):
 def set_supervisor(data: dict):
     if data["supervisor"]:
         supervisor = get_user_by_id(data["supervisor"])
-        data["supervisor"] = CustomUserSerializer(supervisor).data
+        data["supervisor"] = SupervisorSerializer(supervisor).data
         return data
     return data
 
@@ -73,10 +73,10 @@ def set_mentor(data: dict):
     return data
 
 
-def user_info(user, request):
+def user_info(user):
     data = CustomUserSerializer(user).data
     data = set_department(data)
-    data = set_intern_school(data)
     data = set_supervisor(data)
+    data = set_intern_school(data)
     data = set_mentor(data)
     return data
