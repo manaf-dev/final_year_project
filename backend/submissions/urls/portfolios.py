@@ -5,6 +5,10 @@ from submissions.views.portfolios import *
 
 PORTFOLIO_URLS = [
     path(
+        "portfolio/imgs/<int:month>/",
+        PortfolioImageViewSet.as_view({"get": "get_month_imgs"}),
+    ),
+    path(
         "portfolio-imgs/",
         PortfolioImageViewSet.as_view({"get": "list", "post": "create"}),
     ),

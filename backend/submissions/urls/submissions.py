@@ -4,7 +4,8 @@ from submissions.views.submissions import *
 
 
 SUBMISSION_URLS = [
-    path("submissions/", SubmissionViewSet.as_view({"get": "list", "post": "create"})),
+    path("submissions/", SubmissionViewSet.as_view({"get": "list"})),
+    path("submissions/upload/", SubmissionViewSet.as_view({"post": "upload_img"})),
     path(
         "submission/<int:pk>/",
         SubmissionViewSet.as_view(

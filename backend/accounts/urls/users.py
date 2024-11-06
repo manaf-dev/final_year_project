@@ -4,7 +4,7 @@ from accounts.views.users import CustomUserViewSet, CustomRegisterView, CustomLo
 
 USERS_URLS = [
     path("auth/login/", CustomLoginView.as_view()),
-    # path("auth/", include("dj_rest_auth.urls")),
+    path("auth/", include("dj_rest_auth.urls")),
     path("auth/registration/", CustomRegisterView.as_view()),
     path("users/", CustomUserViewSet.as_view({"get": "list"}), name="list-users"),
     path(
