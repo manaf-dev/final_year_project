@@ -16,7 +16,7 @@ class Submission(models.Model):
     )
 
     def __str__(self):
-        return f"{self.intern.username} submission"
+        return f"{self.intern.username} - {self.month} submission"
 
 
 class Comment(models.Model):
