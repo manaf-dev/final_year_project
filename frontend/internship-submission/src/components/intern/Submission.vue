@@ -1,22 +1,33 @@
 <script setup>
     import apiClient from "@/services/api";
-    import { onMounted, ref } from "vue";
+    import { onMounted, ref, watch } from "vue";
     import { useToast } from "vue-toastification";
     const props = defineProps({ month: Number });
 
     const files = ref([]);
     const toast = useToast();
     const activeTab = ref("view");
-
     const submissions = ref([]);
     const submission = ref({ status: "approved" });
 
-    onMounted(async () => {
+    const get_submissions = async () => {
         try {
             const response = await apiClient(`portfolio/imgs/${props.month}/`);
             console.log(response.data);
             submissions.value = response.data;
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    onMounted(async () => {
+        await get_submissions();
+    });
+
+    watch(activeTab, async (currentTab) => {
+        if (currentTab === "view") {
+            await get_submissions();
+        }
     });
 
     const handleSubmit = async () => {
@@ -72,7 +83,7 @@
         <!-- View Submissions -->
         <div v-if="activeTab === 'view'" class="mt-6 space-y-4">
             <div
-                v-if="submissions.length > 1"
+                v-if="submissions.length >= 1"
                 class="bg-white rounded-lg shadow"
             >
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -165,6 +176,11 @@
                                 <input
                                     type="file"
                                     @change="handleFileChange"
+                                    :accept="
+                                        month === 4
+                                            ? 'image/*, application/pdf'
+                                            : 'image/*'
+                                    "
                                     :multiple="true"
                                     class="py-3 px-3 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 outline outline-1 rounded hover:file:bg-blue-100"
                                 />

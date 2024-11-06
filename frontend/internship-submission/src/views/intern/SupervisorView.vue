@@ -5,12 +5,7 @@
 
     const authStore = useAuthStore();
 
-    const supervisor = ref({
-        name: "Dr. Emily Rodriguez",
-        department: "Computer Science & Artificial Intelligence",
-        email: "emily.rodriguez@university.edu",
-        phone: "+1 (555) 123-4567",
-    });
+    const supervisor = authStore.user.supervisor;
 </script>
 
 <template>
@@ -42,7 +37,9 @@
                                         >Full Name</label
                                     >
                                     <p class="mt-1 text-gray-900">
-                                        {{ supervisor.name }}
+                                        {{ supervisor.title }}.
+                                        {{ supervisor.last_name }}
+                                        {{ supervisor.first_name }}
                                     </p>
                                 </div>
                                 <div>

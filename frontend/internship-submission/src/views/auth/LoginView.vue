@@ -26,10 +26,19 @@
     };
 
     const login = async (credentials) => {
-        loading.value = true;
-        await authStore.login(credentials);
-        router.push("/dashboard");
-        loading.value = false;
+        try {
+            loading.value = true;
+            await authStore.login(credentials);
+            if (authStore.isIntern) {
+                router.push("/in/dashboard");
+            } else {
+                router.push("/sp/dashboard");
+            }
+        } catch (error) {
+            console.log("Login Error:", error);
+        } finally {
+            loading.value = false;
+        }
     };
 </script>
 

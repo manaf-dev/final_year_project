@@ -10,9 +10,19 @@ const apiClient = axios.create({
     xsrfHeaderName: 'X-CSRFToken',
 });
 
-export default apiClient;
 
 
+apiClient.interceptors.request.use(request => {
+    const accessToken = localStorage.getItem('accessToken')
+    if (accessToken) {
+        request.headers['Authorization'] = `Bearer ${accessToken}`
+    }
+    return request
+}, error => {
+    return Promise.reject(error)
+})
+
+// refresh token inceptor
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -24,10 +34,13 @@ apiClient.interceptors.response.use(
                 await authStore.refreshAccessToken()
                 return apiClient(originalRequest)
             } catch (refreshError) {
-                // authStore.logout()
-                throw refreshError
+                authStore.logout()
+
             }
         }
         return Promise.reject(error)
     }
 )
+
+
+export default apiClient;
