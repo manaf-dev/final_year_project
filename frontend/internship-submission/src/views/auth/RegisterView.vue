@@ -14,6 +14,7 @@
 
     const form = reactive({
         student_id: "",
+        title: "",
         first_name: "",
         last_name: "",
         phone: "",
@@ -26,6 +27,7 @@
     const isFieldEmpty = computed(() => {
         return (
             form.student_id &&
+            form.title &&
             form.first_name &&
             form.last_name &&
             form.phone &&
@@ -70,6 +72,7 @@
             loading.value = true;
             const newUser = {
                 username: form.student_id,
+                title: form.title,
                 first_name: form.first_name,
                 last_name: form.last_name,
                 phone: form.phone,
@@ -125,6 +128,22 @@
                             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                             placeholder="Student ID"
                         />
+                    </div>
+                    <div>
+                        <label for="title" class="sr-only">title</label>
+                        <select
+                            id="title"
+                            v-model="form.title"
+                            required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                        >
+                            <option value="">Select Title</option>
+                            <option value="mr">Mr.</option>
+                            <option value="mrs">Mrs.</option>
+                            <option value="miss">Miss</option>
+                            <option value="dr">Dr.</option>
+                            <option value="prof">Prof.</option>
+                        </select>
                     </div>
                     <div>
                         <label for="first-name" class="sr-only"

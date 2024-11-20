@@ -36,7 +36,7 @@
                                         class="block text-sm font-medium text-gray-700"
                                         >Full Name</label
                                     >
-                                    <p class="mt-1 text-gray-900">
+                                    <p class="mt-1 text-gray-900 capitalize">
                                         {{ supervisor.title }}.
                                         {{ supervisor.last_name }}
                                         {{ supervisor.first_name }}
@@ -48,7 +48,7 @@
                                         >Department</label
                                     >
                                     <p class="mt-1 text-gray-900">
-                                        {{ supervisor.department }}
+                                        {{ supervisor.department.name }}
                                     </p>
                                 </div>
                                 <div>

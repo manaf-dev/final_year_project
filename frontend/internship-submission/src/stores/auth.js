@@ -59,7 +59,8 @@ export const useAuthStore = defineStore('auth', {
             localStorage.removeItem('user')
             localStorage.removeItem('accessToken')
             localStorage.removeItem('refreshToken')
-            delete axios.defaults.headers.common['Authorization']
+            delete apiClient.defaults.headers.common['Authorization']
+            router.push('/login')
         },
 
         async refreshAccessToken() {

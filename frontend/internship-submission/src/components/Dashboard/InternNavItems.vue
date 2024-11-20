@@ -171,7 +171,7 @@
             <span><i class="pi pi-building" style="font-size: 1rem"></i></span>
             <span class="mx-3">School</span>
         </RouterLink>
-        <RouterLink
+        <!-- <RouterLink
             :class="[
                 'flex',
                 'items-center',
@@ -186,6 +186,6 @@
         >
             <span><i class="pi pi-users" style="font-size: 1rem"></i></span>
             <span class="mx-3">Mentor</span>
-        </RouterLink>
+        </RouterLink> -->
     </nav>
 </template>

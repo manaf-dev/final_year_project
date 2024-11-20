@@ -3,6 +3,7 @@
     import DashboardLayout from "@/components/Dashboard/DashboardLayout.vue";
 
     const authStore = useAuthStore();
+    const supervisor = authStore.user.supervisor;
 </script>
 
 <template>
@@ -50,9 +51,11 @@
                                 <h4
                                     class="text-2xl font-semibold text-gray-700"
                                 >
-                                    0
+                                    30%
                                 </h4>
-                                <div class="text-gray-500">Due Submissions</div>
+                                <div class="text-gray-500">
+                                    Completed Portfolio
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -69,10 +72,21 @@
                                 <h4
                                     class="text-2xl font-semibold text-gray-700"
                                 >
-                                    10%
+                                    Supervisor
                                 </h4>
+                                <div class="text-gray-500 capitalize">
+                                    {{ supervisor.title }}.
+                                    {{ supervisor.last_name }}
+                                    {{ supervisor.first_name }}
+                                </div>
                                 <div class="text-gray-500">
-                                    Completed Portfolio
+                                    {{ supervisor.phone }}
+                                </div>
+                                <div class="text-gray-500">
+                                    {{ supervisor.email }}
+                                </div>
+                                <div class="text-gray-500">
+                                    {{ supervisor.department.name }}
                                 </div>
                             </div>
                         </div>
