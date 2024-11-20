@@ -5,8 +5,19 @@ from .departments import Department
 from .mentors import Mentor
 from .intern_schools import InternSchool
 
+# from submissions.models.tracking import InternshipPeriod
+
 
 class CustomUser(AbstractUser):
+    TITLES = [
+        ("mr", "Mr."),
+        ("mrs", "Mrs."),
+        ("miss", "Miss"),
+        ("dr", "Dr."),
+        ("prof", "Prof."),
+    ]
+
+    title = models.CharField(max_length=20, choices=TITLES, null=True)
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     department = models.ForeignKey(
@@ -29,6 +40,12 @@ class CustomUser(AbstractUser):
         blank=True,
     )
     mentor = models.ForeignKey(Mentor, on_delete=models.SET_NULL, null=True, blank=True)
+    # year = models.ForeignKey(
+    #     InternshipPeriod,
+    #     related_name="year_interns",
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    # )
 
     def __str__(self):
         return self.username

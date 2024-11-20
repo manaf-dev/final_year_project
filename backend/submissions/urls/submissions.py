@@ -5,7 +5,15 @@ from submissions.views.submissions import *
 
 SUBMISSION_URLS = [
     path("submissions/", SubmissionViewSet.as_view({"get": "list"})),
-    path("submissions/upload/", SubmissionViewSet.as_view({"post": "upload_img"})),
+    path("submissions/upload/img/", SubmissionViewSet.as_view({"post": "upload_img"})),
+    path(
+        "submissions/upload/philosophy/",
+        SubmissionViewSet.as_view({"post": "upload_philosophy"}),
+    ),
+    path(
+        "submissions/upload/cv/",
+        SubmissionViewSet.as_view({"post": "upload_cv"}),
+    ),
     path(
         "submission/<int:pk>/",
         SubmissionViewSet.as_view(

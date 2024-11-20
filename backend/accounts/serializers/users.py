@@ -3,12 +3,16 @@ from ._base_imports import *
 
 from accounts.models.users import CustomUser
 from accounts.selectors.departments import get_departments_by_id
+from accounts.serializers.departments import DepartmentSerializer
 
 
 class SupervisorSerializer(serializers.ModelSerializer):
+    department = DepartmentSerializer(read_only=True)
+
     class Meta:
         model = CustomUser
         fields = (
+            "title",
             "first_name",
             "last_name",
             "phone",
@@ -23,6 +27,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "username",
+            "title",
             "first_name",
             "last_name",
             "phone",
@@ -37,6 +42,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class CustomRegisterSerializer(RegisterSerializer):
+    title = serializers.CharField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     account_type = serializers.CharField(required=True)
@@ -46,6 +52,7 @@ class CustomRegisterSerializer(RegisterSerializer):
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
         print(self.validated_data)
+        data["title"] = self.validated_data.get("title", "")
         data["first_name"] = self.validated_data.get("first_name", "")
         data["last_name"] = self.validated_data.get("last_name", "")
         data["account_type"] = self.validated_data.get("account_type", "")
@@ -56,6 +63,7 @@ class CustomRegisterSerializer(RegisterSerializer):
 
     def save(self, request):
         user = super().save(request)
+        user.title = self.cleaned_data["title"]
         user.account_type = self.cleaned_data["account_type"]
         user.phone = self.cleaned_data["phone"]
 

@@ -26,6 +26,7 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "fields": (
+                    "title",
                     "avatar",
                     "phone",
                     "department",

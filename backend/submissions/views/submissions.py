@@ -20,7 +20,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     serializer_class = SubmissionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def upload_img(self, request):
+    def get_upload_submission(self, request):
         intern = request.user
         print(request.data)
         submission = get_submission_by_intern(
@@ -36,8 +36,14 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             submission = serializer.save()
             print("New submission created:", submission)
 
+        return submission
+
+    def upload_img(self, request):
+
+        submission = self.get_upload_submission(request)
+
         # Access multiple files for 'portfolio_imgs'
-        portfolio_imgs = request.FILES.getlist("portfolio_imgs[]")
+        portfolio_imgs = request.FILES.getlist("files")
         portfolio_images_data = [
             {"image": img, "submission": submission.id} for img in portfolio_imgs
         ]
@@ -59,6 +65,46 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         return Response(
             {"detail": "Portfolio images upload successful"},
+            status=status.HTTP_201_CREATED,
+        )
+
+    def upload_philosophy(self, request):
+        submission = self.get_upload_submission(request)
+
+        philosophy_file = request.data.get("files")
+        print("Philosophy:", philosophy_file)
+        philosophy = {
+            "submission": submission.id,
+            "file_type": "teaching_philosophy",
+            "file": philosophy_file,
+        }
+
+        philosophy_serializer = PortfolioFileSerializer(data=philosophy)
+        philosophy_serializer.is_valid(raise_exception=True)
+        philosophy_serializer.save()
+
+        return Response(
+            {"detail": "Teaching Philosophy upload successful"},
+            status=status.HTTP_201_CREATED,
+        )
+
+    def upload_cv(self, request):
+        submission = self.get_upload_submission(request)
+
+        cv_file = request.data.get("files")
+        print("CV:", cv_file)
+        philosophy = {
+            "submission": submission.id,
+            "file_type": "cv",
+            "file": cv_file,
+        }
+
+        philosophy_serializer = PortfolioFileSerializer(data=philosophy)
+        philosophy_serializer.is_valid(raise_exception=True)
+        philosophy_serializer.save()
+
+        return Response(
+            {"detail": "CV upload successful"},
             status=status.HTTP_201_CREATED,
         )
 

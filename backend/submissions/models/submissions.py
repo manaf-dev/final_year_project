@@ -10,9 +10,9 @@ class Submission(models.Model):
         ("3", "Third Month"),
         ("4", "Fourth Month"),
     ]
-    month = models.CharField(max_length=50, choices=MONTHS)
+    month = models.CharField(max_length=10, choices=MONTHS)
     intern = models.ForeignKey(
-        CustomUser, related_name="week_submissions", on_delete=models.CASCADE
+        CustomUser, related_name="submissions", on_delete=models.CASCADE
     )
     graded = models.BooleanField(default=False)
 
