@@ -7,17 +7,14 @@ from submissions.serializers.portfolios import (
     PortfolioImageSerializer,
 )
 
-from submissions.selectors.submissions import get_submission_by_intern
+from submissions.selectors.submissions import (
+    get_submission_by_intern,
+    filter_submissions_by_intern,
+)
 from submissions.selectors.portfolios import (
     get_portfolio_images_by_submission,
     get_portfolio_files_by_submission,
 )
-
-
-class PortfolioFileViewSet(viewsets.ModelViewSet):
-    queryset = PortfolioFile.objects.all()
-    serializer_class = PortfolioFileSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class PortfolioViewset(viewsets.ModelViewSet):
@@ -56,3 +53,51 @@ class PortfolioViewset(viewsets.ModelViewSet):
         return Response(
             {"detail": "Portfolio not found"}, status=status.HTTP_404_NOT_FOUND
         )
+
+
+class PortfolioList(viewsets.ViewSet):
+
+    def recent_portfolio(self, request):
+        intern = request.user
+        submissions = filter_submissions_by_intern(intern.id)
+        image = PortfolioImage.objects.filter(submission__in=submissions).order_by(
+            "-uploaded_at"
+        )[:2]
+        print("IMAGES", image)
+        file = (
+            PortfolioFile.objects.filter(submission__in=submissions)
+            .order_by("-uploaded_at")
+            .first()
+        )
+
+        if not image and not file:
+            return Response(
+                {"detail": "No portfolio image or file found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        image_data = PortfolioImageSerializer(image, many=True).data
+        file_data = PortfolioFileSerializer(file).data
+
+        context = {"image": image_data, "file": file_data}
+        return Response(context, status=status.HTTP_200_OK)
+
+    def all_portfolio(self, request):
+        intern = request.user
+        submissions = filter_submissions_by_intern(intern.id)
+        images = PortfolioImage.objects.filter(submission__in=submissions).order_by(
+            "-uploaded_at"
+        )
+        files = PortfolioFile.objects.filter(submission__in=submissions).order_by(
+            "-uploaded_at"
+        )
+
+        if not images and not files:
+            return Response(
+                {"detail": "No portfolio images or files found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        images_data = PortfolioImageSerializer(images, many=True).data
+        files_data = PortfolioFileSerializer(files, many=True).data
+
+        context = {"images": images_data, "files": files_data}
+        return Response(context, status=status.HTTP_200_OK)

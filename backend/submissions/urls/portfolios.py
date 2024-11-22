@@ -8,24 +8,6 @@ PORTFOLIO_URLS = [
         "portfolio/<int:month>/",
         PortfolioViewset.as_view({"get": "get_month_portfolio"}),
     ),
-    path(
-        "portfolio-imgs/",
-        PortfolioViewset.as_view({"get": "list", "post": "create"}),
-    ),
-    path(
-        "portfolio-img/<int:pk>/",
-        PortfolioViewset.as_view(
-            {"get": "retrieve", "put": "update", "delete": "destroy"}
-        ),
-    ),
-    path(
-        "portfolio-files/",
-        PortfolioFileViewSet.as_view({"get": "list", "post": "create"}),
-    ),
-    path(
-        "portfolio-file/<int:pk>/",
-        PortfolioFileViewSet.as_view(
-            {"get": "retrieve", "put": "update", "delete": "destroy"}
-        ),
-    ),
+    path("portfolio/recents/", PortfolioList.as_view({"get": "recent_portfolio"})),
+    path("portfolio/all/", PortfolioList.as_view({"get": "all_portfolio"})),
 ]

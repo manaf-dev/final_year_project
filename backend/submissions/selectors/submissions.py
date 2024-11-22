@@ -15,3 +15,7 @@ def get_submission_by_intern(intern_id: int, month):
 
 def get_submission_by_id(submission_id: int):
     return Submission.objects.get(id=submission_id)
+
+
+def filter_submissions_by_intern(intern_id):
+    return Submission.objects.filter(intern=intern_id)
