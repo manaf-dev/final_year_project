@@ -14,6 +14,7 @@ class Submission(models.Model):
     intern = models.ForeignKey(
         CustomUser, related_name="submissions", on_delete=models.CASCADE
     )
+    grade = models.PositiveIntegerField(default=0, null=True, blank=True)
     graded = models.BooleanField(default=False)
 
     def __str__(self):
