@@ -1,5 +1,6 @@
 from ._base_imports import *
-
+from itertools import chain
+from django.db.models import Q
 
 from submissions.models.portfolios import PortfolioFile, PortfolioImage
 from submissions.serializers.portfolios import (
@@ -14,6 +15,8 @@ from submissions.selectors.submissions import (
 from submissions.selectors.portfolios import (
     get_portfolio_images_by_submission,
     get_portfolio_files_by_submission,
+    get_portfolio_images_by_id,
+    get_portfolio_file_by_id,
 )
 
 
@@ -54,32 +57,75 @@ class PortfolioViewset(viewsets.ModelViewSet):
             {"detail": "Portfolio not found"}, status=status.HTTP_404_NOT_FOUND
         )
 
+    def delete_portfolio_img(self, request, portfolio_id):
+        portfolio_img = get_portfolio_images_by_id(portfolio_id)
 
-class PortfolioList(viewsets.ViewSet):
+        if portfolio_img:
+            portfolio_img.delete()
+            return Response(
+                {"detail": "Portfolio deleted successfully"},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        else:
+            return Response(
+                {"detail": "Portfolio image found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    def delete_portfolio_file(self, request, portfolio_id):
+        print("id", portfolio_id)
+        portfolio_file = get_portfolio_file_by_id(portfolio_id)
+
+        if portfolio_file:
+            portfolio_file.delete()
+            return Response(
+                {"detail": "Document deleted successfully"},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        else:
+            return Response(
+                {"detail": "Portfolio file found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class PortfolioList(viewsets.ModelViewSet):
+    serializer_class = PortfolioImageSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def recent_portfolio(self, request):
         intern = request.user
         submissions = filter_submissions_by_intern(intern.id)
-        image = PortfolioImage.objects.filter(submission__in=submissions).order_by(
+
+        images = PortfolioImage.objects.filter(submission__in=submissions).order_by(
             "-uploaded_at"
         )[:2]
-        print("IMAGES", image)
-        file = (
-            PortfolioFile.objects.filter(submission__in=submissions)
-            .order_by("-uploaded_at")
-            .first()
-        )
 
-        if not image and not file:
+        files = PortfolioFile.objects.filter(submission__in=submissions).order_by(
+            "-uploaded_at"
+        )[:2]
+
+        combined_items = sorted(
+            chain(images, files), key=lambda x: x.uploaded_at, reverse=True
+        )[:2]
+
+        if not combined_items:
             return Response(
-                {"detail": "No portfolio image or file found."},
+                {"detail": "No portfolio items found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        image_data = PortfolioImageSerializer(image, many=True).data
-        file_data = PortfolioFileSerializer(file).data
 
-        context = {"image": image_data, "file": file_data}
-        return Response(context, status=status.HTTP_200_OK)
+        # Serialize items based on their type
+        serialized_items = []
+        for item in combined_items:
+            if isinstance(item, PortfolioImage):
+                serializer = PortfolioImageSerializer(
+                    item, context={"request": request}
+                )
+            else:
+                serializer = PortfolioFileSerializer(item, context={"request": request})
+
+            serialized_items.append(serializer.data)
+
+        return Response(serialized_items, status=status.HTTP_200_OK)
 
     def all_portfolio(self, request):
         intern = request.user
@@ -96,7 +142,7 @@ class PortfolioList(viewsets.ViewSet):
                 {"detail": "No portfolio images or files found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        images_data = PortfolioImageSerializer(images, many=True).data
+        images_data = self.get_serializer(images, many=True).data
         files_data = PortfolioFileSerializer(files, many=True).data
 
         context = {"images": images_data, "files": files_data}

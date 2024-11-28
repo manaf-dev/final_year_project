@@ -10,4 +10,12 @@ PORTFOLIO_URLS = [
     ),
     path("portfolio/recents/", PortfolioList.as_view({"get": "recent_portfolio"})),
     path("portfolio/all/", PortfolioList.as_view({"get": "all_portfolio"})),
+    path(
+        "portfolio/img/delete/<int:portfolio_id>/",
+        PortfolioViewset.as_view({"delete": "delete_portfolio_img"}),
+    ),
+    path(
+        "portfolio/file/delete/<int:portfolio_id>/",
+        PortfolioViewset.as_view({"delete": "delete_portfolio_file"}),
+    ),
 ]
