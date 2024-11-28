@@ -49,6 +49,7 @@ class PortfolioViewset(viewsets.ModelViewSet):
             context = {
                 "images": portfolio_imgs_data,
                 "files": portfolio_files_data,
+                "grade": submission.grade,
                 "graded": submission.graded,
             }
             return Response(context, status=status.HTTP_200_OK)
