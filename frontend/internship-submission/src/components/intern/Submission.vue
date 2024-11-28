@@ -13,8 +13,10 @@
 
     const getSubmissions = async () => {
         loadingSubmissions.value = true;
+        console.log("headers", apiClient.defaults.headers);
+
         try {
-            const response = await apiClient(`portfolio/${props.month}/`);
+            const response = await apiClient.get(`portfolio/${props.month}/`);
             submissions.value = response.data;
         } catch (error) {
             console.error(error);

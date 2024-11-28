@@ -1,6 +1,8 @@
 <script setup>
     import { ref } from "vue";
     import BeatLoader from "vue-spinner/src/BeatLoader.vue";
+    import DocumentsDisplay from "../DocumentsDisplay.vue";
+    import ImageDisplay from "../ImageDisplay.vue";
 
     const props = defineProps({
         submissions: {
@@ -88,15 +90,10 @@
                 <h3 class="text-sm font-medium text-gray-900">
                     Portfolio Images
                 </h3>
-                <div class="flex flex-col space-y-4 text-sm text-gray-500">
-                    <figure class="flex flex-row items-center flex-wrap gap-5">
-                        <img
-                            v-for="submission in submissions.images"
-                            :key="submission.id"
-                            :src="submission.image"
-                            class="mr-1 h-32"
-                        />
-                    </figure>
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                >
+                    <ImageDisplay :images="submissions.images" />
                 </div>
             </div>
 
@@ -123,69 +120,11 @@
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
                 >
-                    <template v-if="submissions.files">
-                        <div
-                            v-for="file in submissions.files"
-                            :key="file.id"
-                            class="flex flex-col items-center bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                        >
-                            <div
-                                class="w-48 h-36 bg-gray-50 rounded-md flex items-center justify-center mb-2"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="48"
-                                    height="48"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="text-gray-400"
-                                >
-                                    <path
-                                        d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
-                                    />
-                                    <polyline points="14 2 14 8 20 8" />
-                                </svg>
-                            </div>
+                    <DocumentsDisplay
+                        v-if="submissions.files"
+                        :submission-files="submissions?.files"
+                    />
 
-                            <div class="w-full space-y-2">
-                                <p
-                                    class="text-sm text-gray-600 text-center truncate px-2"
-                                    title="Teaching Philosophy"
-                                >
-                                    Teaching Philosophy.pdf
-                                </p>
-                                <a
-                                    :href="`http://localhost:8000/${file.file}`"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="w-full flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path
-                                            d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                                        />
-                                        <polyline points="15 3 21 3 21 9" />
-                                        <line x1="10" x2="21" y1="14" y2="3" />
-                                    </svg>
-                                    View File
-                                </a>
-                            </div>
-                        </div>
-                    </template>
                     <div v-else class="col-span-full">
                         <p class="text-gray-500 text-center">
                             No documents submitted yet

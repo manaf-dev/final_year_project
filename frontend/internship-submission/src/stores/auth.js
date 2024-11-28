@@ -39,7 +39,7 @@ export const useAuthStore = defineStore('auth', {
                 this.accessToken = response.data?.token?.access;
                 this.refreshToken = response.data?.token?.refresh;
 
-                apiClient.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`
+                apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
 
                 localStorage.setItem('accessToken', this.accessToken)
                 localStorage.setItem('refreshToken', this.refreshToken)
@@ -69,7 +69,7 @@ export const useAuthStore = defineStore('auth', {
                     refresh: this.refreshToken
                 })
                 this.accessToken = response.data.access
-                apiClient.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`
+                apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
                 localStorage.setItem('accessToken', this.accessToken)
             } catch (error) {
                 this.logout()

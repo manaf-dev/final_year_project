@@ -1,3 +1,129 @@
+<script setup>
+    import apiClient from "@/services/api";
+    import { useAuthStore } from "@/stores/auth";
+    import { ref, computed, onMounted } from "vue";
+
+    const authStore = useAuthStore();
+
+    const supervisor = authStore.user.supervisor;
+
+    const lastUpdated = ref(new Date());
+    const isRefreshing = ref(false);
+    const submissions = ref([]);
+    const completedSubmissions = ref(0);
+    const totalPortfolio = ref(0);
+
+    const getSubmissions = async () => {
+        try {
+            const response = await apiClient.get("submissions/intern/");
+            submissions.value = response.data;
+            console.log("getting submissions...");
+            submissions.value.forEach((submission) => {
+                if (submission.graded) {
+                    completedSubmissions.value += 1;
+                }
+            });
+        } catch (error) {
+            console.log("submissions error:", error);
+        }
+    };
+
+    const getPortfolio = async () => {
+        try {
+            const response = await apiClient.get("portfolio/all/");
+            if (response.data.images) {
+                totalPortfolio.value += response.data.images.length;
+            }
+            if (response.data.files) {
+                totalPortfolio.value += response.data.files.length;
+            }
+        } catch (error) {
+            console.log("portfolio error:", error);
+        }
+    };
+
+    const stats = ref([
+        { label: "Total Submissions", value: 48, unit: "files", trend: 12 },
+        { label: "Completed Submissions", value: "1/4", unit: "GB", trend: -5 },
+    ]);
+
+    const recentSubmissions = ref([]);
+
+    const getRecents = async () => {
+        try {
+            const response = await apiClient.get("portfolio/recents/");
+            recentSubmissions.value = response.data;
+
+            console.log("RECENTS,", recentSubmissions.value);
+        } catch (error) {
+            console.error("Recents error:", error);
+        }
+    };
+
+    onMounted(async () => {
+        await getSubmissions();
+        await getPortfolio();
+        await getRecents();
+    });
+    const quickActions = ref([
+        {
+            label: "Upload Files",
+            icon: "UploadIcon",
+            handler: () => {
+                /* Handle upload */
+            },
+        },
+        {
+            label: "View Notifications",
+            icon: "FolderPlusIcon",
+            handler: () => {
+                /* notifications project */
+            },
+        },
+    ]);
+
+    const upcomingDeadlines = ref([
+        {
+            id: 2,
+            title: "Month Submission",
+            daysLeft: 5,
+        },
+    ]);
+
+    // Computed
+    const getGreeting = computed(() => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good morning";
+        if (hour < 18) return "Good afternoon";
+        return "Good evening";
+    });
+
+    // Methods
+    const refreshData = async () => {
+        isRefreshing.value = true;
+        try {
+            // Implement your refresh logic here
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            lastUpdated.value = new Date();
+        } finally {
+            isRefreshing.value = false;
+        }
+    };
+
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+        });
+    };
+
+    const viewSubmission = (submission) => {
+        // Implement view logic
+    };
+</script>
+
 <template>
     <div class="min-h-screen bg-gray-50">
         <!-- Top Stats Overview -->
@@ -15,55 +141,46 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-500"
-                            >Last updated: {{ formatDate(lastUpdated) }}</span
+                        <span
+                            v-if="recentSubmissions.length"
+                            class="text-sm text-gray-500"
+                            >Last updated:
+                            {{
+                                formatDate(recentSubmissions[0].uploaded_at)
+                            }}</span
                         >
-                        <button
-                            @click="refreshData"
-                            class="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            :class="{ 'animate-spin': isRefreshing }"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <path d="M21 2v6h-6"></path>
-                                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-                                <path d="M3 22v-6h6"></path>
-                                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-                            </svg>
-                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div
-                    v-for="stat in stats"
-                    :key="stat.label"
-                    class="bg-white p-6 rounded-xl shadow-sm"
-                >
+                <div class="bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-500">{{
-                            stat.label
-                        }}</span>
-                        <span> {{ Math.abs(stat.trend) }}% </span>
+                        <span class="text-sm font-medium text-gray-500">
+                            Total submissions
+                        </span>
+                        <span> {{ submissions.length }} month(s) </span>
                     </div>
                     <div class="mt-2 flex items-baseline">
-                        <span class="text-2xl font-semibold text-gray-900">{{
-                            stat.value
-                        }}</span>
-                        <span class="ml-2 text-sm text-gray-500">{{
-                            stat.unit
-                        }}</span>
+                        <span class="text-2xl font-semibold text-gray-900">
+                            {{ totalPortfolio }}
+                        </span>
+                        <span class="ml-2 text-sm text-gray-500"> files </span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-500">
+                            Completed submissions
+                        </span>
+                        <span> {{ (completedSubmissions / 4) * 100 }}% </span>
+                    </div>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-2xl font-semibold text-gray-900">
+                            {{ completedSubmissions + "/4" }}
+                        </span>
+                        <span class="ml-2 text-sm text-gray-500"> graded </span>
                     </div>
                 </div>
             </div>
@@ -115,7 +232,7 @@
                                 class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center"
                             >
                                 <svg
-                                    v-if="submission.type === 'image'"
+                                    v-if="submission.image"
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
                                     height="24"
@@ -141,7 +258,7 @@
                                     />
                                 </svg>
                                 <svg
-                                    v-else
+                                    v-if="submission.file"
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
                                     height="24"
@@ -164,16 +281,26 @@
                                 <h3
                                     class="text-sm font-medium text-gray-900 truncate"
                                 >
-                                    {{ submission.name }}
+                                    {{
+                                        submission.image
+                                            ? "Portfolio image"
+                                            : "Portfolio file"
+                                    }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
-                                    {{ formatDate(submission.date) }}
+                                    {{ formatDate(submission.uploaded_at) }}
                                 </p>
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <button
-                                    @click="viewSubmission(submission)"
+                                <a
+                                    :href="
+                                        submission.image
+                                            ? submission.image
+                                            : submission.file
+                                    "
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                                 >
                                     <svg
@@ -193,7 +320,7 @@
                                         <polyline points="15 3 21 3 21 9" />
                                         <line x1="10" x2="21" y1="14" y2="3" />
                                     </svg>
-                                </button>
+                                </a>
                             </div>
                         </div>
 
@@ -281,92 +408,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-    import { useAuthStore } from "@/stores/auth";
-    import { ref, computed } from "vue";
-
-    const authStore = useAuthStore();
-
-    const supervisor = authStore.user.supervisor;
-
-    const lastUpdated = ref(new Date());
-    const isRefreshing = ref(false);
-
-    const stats = ref([
-        { label: "Total Submissions", value: 48, unit: "files", trend: 12 },
-        { label: "Completed Submissions", value: "1/4", unit: "GB", trend: -5 },
-    ]);
-
-    const recentSubmissions = ref([
-        {
-            id: 1,
-            name: "Project Presentation.pdf",
-            type: "document",
-            date: new Date("2024-11-20"),
-        },
-        {
-            id: 2,
-            name: "Portfolio Image 1.jpg",
-            type: "image",
-            date: new Date("2024-11-19"),
-        },
-    ]);
-
-    const quickActions = ref([
-        {
-            label: "Upload Files",
-            icon: "UploadIcon",
-            handler: () => {
-                /* Handle upload */
-            },
-        },
-        {
-            label: "View Notifications",
-            icon: "FolderPlusIcon",
-            handler: () => {
-                /* notifications project */
-            },
-        },
-    ]);
-
-    const upcomingDeadlines = ref([
-        {
-            id: 2,
-            title: "Month Submission",
-            daysLeft: 5,
-        },
-    ]);
-
-    // Computed
-    const getGreeting = computed(() => {
-        const hour = new Date().getHours();
-        if (hour < 12) return "Good morning";
-        if (hour < 18) return "Good afternoon";
-        return "Good evening";
-    });
-
-    // Methods
-    const refreshData = async () => {
-        isRefreshing.value = true;
-        try {
-            // Implement your refresh logic here
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            lastUpdated.value = new Date();
-        } finally {
-            isRefreshing.value = false;
-        }
-    };
-
-    const formatDate = (date) => {
-        return new Intl.DateTimeFormat("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        }).format(new Date(date));
-    };
-
-    const viewSubmission = (submission) => {
-        // Implement view logic
-    };
-</script>
