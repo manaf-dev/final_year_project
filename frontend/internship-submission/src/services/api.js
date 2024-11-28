@@ -14,16 +14,16 @@ const apiClient = axios.create({
 
 
 
-apiClient.interceptors.request.use(request => {
-    const accessToken = localStorage.getItem('accessToken')
-    console.log('URL', request.url)
-    if (accessToken && request.url !== 'accounts/auth/token/refresh/') {
-        request.headers['Authorization'] = `Bearer ${accessToken}`
-    }
-    return request
-}, error => {
-    return Promise.reject(error)
-})
+// apiClient.interceptors.request.use(request => {
+//     const accessToken = localStorage.getItem('accessToken')
+//     console.log('URL', request.url)
+//     if (request.url !== 'accounts/auth/token/refresh/') {
+//         request.headers['Authorization'] = `Bearer ${accessToken}`
+//     }
+//     return requests
+// }, error => {
+//     return Promise.reject(error)
+// })
 
 // refresh token inceptor
 apiClient.interceptors.response.use(

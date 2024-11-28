@@ -19,6 +19,7 @@
             default: false,
         },
     });
+    console.log("subs:", props.submissions);
 
     defineEmits(["submitView"]);
     // Loading states
@@ -78,7 +79,11 @@
                             : 'bg-yellow-100 text-yellow-800',
                     ]"
                 >
-                    {{ submissions.graded ? "Graded" : "Not graded" }}
+                    {{
+                        submissions.graded
+                            ? `Graded  (${submissions.grade}/10)`
+                            : "Not graded"
+                    }}
                 </span>
             </div>
         </div>
@@ -122,7 +127,9 @@
                 >
                     <DocumentsDisplay
                         v-if="submissions.files"
-                        :submission-files="submissions?.files"
+                        :submission-files="
+                            submissions.files ? submissions.files : []
+                        "
                     />
 
                     <div v-else class="col-span-full">
