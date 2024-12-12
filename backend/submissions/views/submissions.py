@@ -1,8 +1,9 @@
 from ._base_imports import *
 
 from accounts.models.users import CustomUser
-from submissions.models.submissions import Submission, Comment
-from submissions.serializers.submissions import SubmissionSerializer, CommentSerializer
+from accounts.selectors.users import get_interns_by_supervisor
+from submissions.models.submissions import Submission
+from submissions.serializers.submissions import SubmissionSerializer
 from submissions.serializers.portfolios import (
     PortfolioFileSerializer,
     PortfolioImageSerializer,
@@ -138,17 +139,21 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    def get_interns_month_submissions(self, request, month):
+        supervisor = request.user
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+        if supervisor.account_type != "supervisor":
+            return Response(
+                {"detail": "You cannot perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
-    def list(self, request, submission_id, *args, **kwargs):
-        submission = get_submission_by_id(submission_id)
-        submission_post = SubmissionSerializer(submission).data
+        supervisor_interns = get_interns_by_supervisor(supervisor.id)
+        interns_submissions = self.queryset.filter(
+            month=month, intern__in=supervisor_interns
+        )
+        interns_submissions_data = self.get_serializer(
+            interns_submissions, many=True
+        ).data
 
-        comments = submission.comments.all()
-        post_comments = CommentSerializer(comments, many=True).data
-
-        submission_post["comments"] = [comment["content"] for comment in post_comments]
-        return Response(submission_post)
+        return Response(interns_submissions_data, status=status.HTTP_200_OK)

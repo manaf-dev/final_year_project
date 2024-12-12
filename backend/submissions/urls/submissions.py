@@ -17,4 +17,8 @@ SUBMISSION_URLS = [
         "submissions/upload/cv/",
         SubmissionViewSet.as_view({"post": "upload_cv"}),
     ),
+    path(
+        "interns/submissions/<int:month>/",
+        SubmissionViewSet.as_view({"get": "get_interns_month_submissions"}),
+    ),
 ]

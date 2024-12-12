@@ -26,10 +26,9 @@ def get_user_by_id(user_id: int):
 def get_user_by_username(username: str):
     try:
         user = CustomUser.objects.get(username=username)
+        return user
     except CustomUser.DoesNotExist:
         return None
-    else:
-        return user
 
 
 def get_interns_by_supervisor(supervisor_id: int):

@@ -18,10 +18,13 @@ class Submission(models.Model):
     graded = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.intern.username} - {self.month} submission"
+        return f"{self.intern.username} - month {self.month} submission"
 
 
 class Comment(models.Model):
+    author = models.ForeignKey(
+        CustomUser, null=True, blank=True, on_delete=models.CASCADE
+    )
     submission = models.ForeignKey(
         Submission, related_name="comments", on_delete=models.CASCADE
     )
