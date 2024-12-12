@@ -1,11 +1,13 @@
 <script setup>
     import apiClient from "@/services/api";
-    import { ref, onMounted } from "vue";
-    import SubmissionDisplay from "./SubmissionDisplay.vue";
+    import { ref, onMounted, watch } from "vue";
+    import { useAuthStore } from "@/stores/auth";
+    import SubmissionDisplay from "../SubmissionDisplay.vue";
     import Upload from "./Upload.vue";
+    import { onBeforeRouteUpdate } from "vue-router";
 
-    const props = defineProps({ month: Number });
-
+    const props = defineProps({ month: String });
+    const authStore = useAuthStore();
     const activeTab = ref("view");
     const submissions = ref({});
 
@@ -13,10 +15,12 @@
 
     const getSubmissions = async () => {
         loadingSubmissions.value = true;
-        console.log("headers", apiClient.defaults.headers);
 
         try {
-            const response = await apiClient.get(`portfolio/${props.month}/`);
+            const response = await apiClient.get(
+                `portfolio/${authStore.user.username}/${props.month}/`
+            );
+            console.log(response.data);
             submissions.value = response.data;
         } catch (error) {
             console.error(error);
@@ -26,6 +30,10 @@
     };
 
     onMounted(getSubmissions);
+
+    onBeforeRouteUpdate((to, from) => {
+        getSubmissions();
+    });
 
     const uploaded = () => {
         activeTab.value = "view";

@@ -1,17 +1,13 @@
 <script setup>
-    import { useAuthStore } from "@/stores/auth";
     import DashboardLayout from "@/components/Dashboard/DashboardLayout.vue";
-    import Home from "@/components/intern/Home.vue";
-
-    const authStore = useAuthStore();
-    const supervisor = authStore.user.supervisor;
+    import InternHome from "@/components/intern/InternHome.vue";
 </script>
 
 <template>
     <DashboardLayout>
         <template #title> Dashboard </template>
         <template #content>
-            <Home />
+            <InternHome />
         </template>
     </DashboardLayout>
 </template>

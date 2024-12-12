@@ -1,7 +1,6 @@
 import { useAuthStore } from '@/stores/auth';
 import axios from 'axios';
-import { config } from 'tailwindcss-primeui';
-import { useRoute } from 'vue-router';
+
 
 const apiClient = axios.create({
     baseURL: 'http://localhost:8000/api/',
@@ -20,7 +19,7 @@ const apiClient = axios.create({
 //     if (request.url !== 'accounts/auth/token/refresh/') {
 //         request.headers['Authorization'] = `Bearer ${accessToken}`
 //     }
-//     return requests
+//     return request
 // }, error => {
 //     return Promise.reject(error)
 // })
@@ -34,12 +33,16 @@ apiClient.interceptors.response.use(
         if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true
             try {
-
+                console.log('This is before refresh in interceptor')
                 await authStore.refreshAccessToken()
-
+                console.log('This is before authorization in interceptor')
+                originalRequest.headers['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`;
+                console.log('interceptor auth:', originalRequest.headers['Authorization'])
                 return apiClient(originalRequest)
             } catch (refreshError) {
+                console.log('This is before logout in interceptor')
                 authStore.logout()
+                console.log('This is after logout in interceptor')
             }
         }
         return Promise.reject(error)

@@ -49,10 +49,13 @@
 
                 <div v-if="activeTab === 'school'" class="mt-6">
                     <div class="bg-white rounded-lg shadow">
-                        <div class="px-6 py-4 border-b border-gray-200">
+                        <div
+                            class="flex items-center justify-between px-6 py-4 border-b border-gray-200"
+                        >
                             <h3 class="text-lg font-medium">
                                 Internship School Details
                             </h3>
+                            <span>Edit</span>
                         </div>
                         <div class="p-6 space-y-4">
                             <div class="grid gap-4">
@@ -99,8 +102,11 @@
 
                 <div v-if="activeTab === 'mentor'" class="mt-6 space-y-4">
                     <div class="bg-white rounded-lg shadow">
-                        <div class="px-6 py-4 border-b border-gray-200">
+                        <div
+                            class="flex items-center justify-between px-6 py-4 border-b border-gray-200"
+                        >
                             <h3 class="text-lg font-medium">Mentor Details</h3>
+                            <span>Edit</span>
                         </div>
 
                         <div class="p-6 space-y-4">

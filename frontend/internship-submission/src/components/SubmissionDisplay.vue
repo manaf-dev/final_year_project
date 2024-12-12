@@ -1,8 +1,10 @@
 <script setup>
     import { ref } from "vue";
     import BeatLoader from "vue-spinner/src/BeatLoader.vue";
-    import DocumentsDisplay from "../DocumentsDisplay.vue";
-    import ImageDisplay from "../ImageDisplay.vue";
+    import DocumentsDisplay from "./DocumentsDisplay.vue";
+    import ImageDisplay from "./ImageDisplay.vue";
+    import Loader from "./loader.vue";
+    import { useAuthStore } from "@/stores/auth";
 
     const props = defineProps({
         submissions: {
@@ -11,7 +13,7 @@
             default: () => ({}),
         },
         month: {
-            type: Number,
+            type: String,
             required: true,
         },
         loadingSubmissions: {
@@ -19,50 +21,18 @@
             default: false,
         },
     });
-    console.log("subs:", props.submissions);
+
+    const authStore = useAuthStore();
 
     defineEmits(["submitView"]);
-    // Loading states
-    const isDeleting = ref(null);
-    const isDownloading = ref(null);
 
-    // Delete handling
-    const confirmDelete = async (fileId) => {
-        if (confirm("Are you sure you want to delete this file?")) {
-            isDeleting.value = fileId;
-            try {
-                emit("delete", fileId);
-            } catch (error) {
-                console.error("Delete failed:", error);
-                alert("Failed to delete file. Please try again.");
-            } finally {
-                isDeleting.value = null;
-            }
-        }
-    };
-
-    // Download handling
-    const downloadFile = async (file) => {
-        isDownloading.value = file.id;
-        try {
-            emit("download", file);
-            // Actual download logic would be implemented in the parent component
-            const response = await fetch(file.image);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = file.name || `file-${file.id}`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-        } catch (error) {
-            console.error("Download failed:", error);
-            alert("Failed to download file. Please try again.");
-        } finally {
-            isDownloading.value = null;
-        }
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+        });
     };
 </script>
 
@@ -88,7 +58,7 @@
             </div>
         </div>
 
-        <BeatLoader :loading="loadingSubmissions" />
+        <Loader v-if="loadingSubmissions" />
 
         <section v-if="!loadingSubmissions" class="mt-4">
             <div v-if="submissions.images?.length" class="space-y-4">
@@ -118,7 +88,7 @@
             </div>
 
             <!-- Documents Section -->
-            <div v-if="month === 4" class="space-y-4">
+            <div v-if="month === '4'" class="space-y-4">
                 <h3 class="text-sm font-medium text-gray-900 mt-8">
                     Submitted Documents
                 </h3>
@@ -139,25 +109,39 @@
                     </div>
                 </div>
             </div>
+
             <!-- Comments Section -->
-            <!-- <div class="border-t pt-4">
+            <div class="border-t pt-4">
                 <h4 class="font-medium mb-2">Supervisor Comments</h4>
                 <div
-                    v-for="(comment, idx) in submission.comments"
-                    :key="idx"
+                    v-if="submissions.comments"
+                    v-for="comment in submissions.comments"
+                    :key="comment.id"
                     class="bg-gray-50 p-3 rounded-md mb-2"
                 >
-                    <div
-                        class="flex justify-between text-sm text-gray-600"
-                    >
-                        <span class="font-medium">{{
-                            comment.author
-                        }}</span>
-                        <span>{{ comment.date }}</span>
+                    <div class="flex justify-between text-sm text-gray-500">
+                        <span
+                            v-if="authStore.isIntern"
+                            class="font-medium capitalize"
+                            >{{ comment.author.title }}.
+                            {{ comment.author.last_name }}
+                            {{ comment.author.first_name }}</span
+                        >
+                        <span v-else class="font-medium capitalize">You</span>
+                        <span>{{ formatDate(comment.updated_at) }}</span>
                     </div>
-                    <p class="mt-1 text-gray-700">{{ comment.text }}</p>
+                    <p class="mt-1 pl-2 text-base text-gray-700">
+                        {{ comment.content }}
+                    </p>
                 </div>
-            </div> -->
+
+                <div
+                    v-if="!submissions?.comments?.length"
+                    class="bg-gray-50 p-3 rounded-md mb-2"
+                >
+                    <p class="mt-1 text-gray-700">No comments</p>
+                </div>
+            </div>
         </section>
     </div>
 </template>

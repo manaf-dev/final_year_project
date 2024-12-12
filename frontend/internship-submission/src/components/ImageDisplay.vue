@@ -1,6 +1,7 @@
 <script setup>
     import { ref } from "vue";
     import { useToast } from "vue-toastification";
+    import { useAuthStore } from "@/stores/auth";
     import ImageModal from "./ImageModal.vue";
     import ConfirmModal from "./ConfirmModal.vue";
     import BeatLoader from "vue-spinner/src/BeatLoader.vue";
@@ -9,7 +10,7 @@
     defineProps({
         images: { type: Object, required: true, default: () => ({}) },
     });
-
+    const authStore = useAuthStore();
     const toast = useToast();
     const deleting = ref(false);
     const selectedImage = ref({});
@@ -99,6 +100,7 @@
                 View
             </button>
             <button
+                v-if="authStore.isIntern"
                 @click="openConfirmModal(item)"
                 class="w-2/5 flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
             >

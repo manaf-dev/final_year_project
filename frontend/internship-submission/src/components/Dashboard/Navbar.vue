@@ -2,11 +2,6 @@
     import { ref } from "vue";
     import ProfileDropdown from "./ProfileDropdown.vue";
     import NotificationMenu from "./NotificationMenu.vue";
-
-    defineProps({
-        sidebarOpen: Boolean,
-    });
-    const sidebarOpen = ref(false);
 </script>
 
 <template>

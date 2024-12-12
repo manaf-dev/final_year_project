@@ -8,7 +8,7 @@
 
     const props = defineProps({
         month: {
-            type: Number,
+            type: String,
             required: true,
         },
     });
@@ -161,12 +161,11 @@
             </div>
 
             <!-- Philosophy Upload (Only in Month 4) -->
-            <div v-if="month === 4" class="p-6 border-b-2 border-gray-200">
+            <div v-if="month === '4'" class="p-6 border-b-2 border-gray-200">
                 <h3 class="text-lg font-medium mb-4">Teaching Philosophy</h3>
                 <div class="mb-4">
                     <form
                         @submit.prevent="handlePhilosophySubmit"
-                        v-if="month === 4"
                         class="space-y-4"
                         disabled
                     >
@@ -230,14 +229,10 @@
             </div>
 
             <!-- CV Upload (Only in Month 4) -->
-            <div v-if="month === 4" class="p-6 border-b-2 border-gray-200">
+            <div v-if="month === '4'" class="p-6 border-b-2 border-gray-200">
                 <h3 class="text-lg font-medium mb-4">CV</h3>
                 <div class="mb-4">
-                    <form
-                        @submit.prevent="handleCvSubmit"
-                        v-if="month === 4"
-                        class="space-y-4"
-                    >
+                    <form @submit.prevent="handleCvSubmit" class="space-y-4">
                         <div>
                             <label
                                 class="block text-sm font-medium text-gray-700"

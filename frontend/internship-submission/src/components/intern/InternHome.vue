@@ -65,22 +65,6 @@
         await getPortfolio();
         await getRecents();
     });
-    const quickActions = ref([
-        {
-            label: "Upload Files",
-            icon: "UploadIcon",
-            handler: () => {
-                /* Handle upload */
-            },
-        },
-        {
-            label: "View Notifications",
-            icon: "FolderPlusIcon",
-            handler: () => {
-                /* notifications project */
-            },
-        },
-    ]);
 
     const upcomingDeadlines = ref([
         {
@@ -98,18 +82,6 @@
         return "Good evening";
     });
 
-    // Methods
-    const refreshData = async () => {
-        isRefreshing.value = true;
-        try {
-            // Implement your refresh logic here
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            lastUpdated.value = new Date();
-        } finally {
-            isRefreshing.value = false;
-        }
-    };
-
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
         return date.toLocaleDateString("en-GB", {
@@ -117,10 +89,6 @@
             month: "numeric",
             day: "numeric",
         });
-    };
-
-    const viewSubmission = (submission) => {
-        // Implement view logic
     };
 </script>
 
@@ -189,20 +157,27 @@
                     Quick Actions
                 </h2>
                 <div class="grid grid-cols-2 gap-4">
-                    <button
-                        v-for="action in quickActions"
-                        :key="action.label"
-                        @click="action.handler"
+                    <router-link
+                        :to="{
+                            name: 'first-submission',
+                            params: { month: completedSubmissions + 1 },
+                        }"
                         class="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        <component
-                            :is="action.icon"
-                            class="w-6 h-6 text-gray-700 mb-2"
-                        />
-                        <span class="text-sm text-gray-700">{{
-                            action.label
-                        }}</span>
-                    </button>
+                        <span class="w-6 h-6 text-gray-700 mb-2">Icon</span>
+                        <span class="text-sm text-gray-700"
+                            >Submit Portfolio</span
+                        >
+                    </router-link>
+                    <router-link
+                        :to="{
+                            name: 'profile',
+                        }"
+                        class="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                        <span class="w-6 h-6 text-gray-700 mb-2">Icon</span>
+                        <span class="text-sm text-gray-700">View Profile</span>
+                    </router-link>
                 </div>
             </div>
 

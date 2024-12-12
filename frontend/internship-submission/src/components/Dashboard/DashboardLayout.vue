@@ -13,10 +13,7 @@
             @close-sidebar="sidebarOpen = false"
         />
         <div class="flex flex-col flex-1 overflow-hidden">
-            <Navbar
-                :sidebarOpen="sidebarOpen"
-                @open-sidebar="sidebarOpen = true"
-            />
+            <Navbar @open-sidebar="sidebarOpen = true" />
             <main class="flex-1 overflow-y-auto bg-gray-200">
                 <div class="container px-6 py-8 mx-auto">
                     <h3 class="text-3xl font-medium text-gray-700">

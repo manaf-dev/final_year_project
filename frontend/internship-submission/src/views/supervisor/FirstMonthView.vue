@@ -1,9 +1,8 @@
 <script setup>
     import DashboardLayout from "@/components/Dashboard/DashboardLayout.vue";
-    import Submission from "@/components/intern/Submission.vue";
-    import NewSubmission from "@/components/intern/NewSubmission.vue";
+    import FirstMonthList from "@/components/supervisor/FirstMonthList.vue";
     import { computed, ref } from "vue";
-    import { onBeforeRouteUpdate, useRoute } from "vue-router";
+    import { useRoute, onBeforeRouteUpdate } from "vue-router";
 
     const route = useRoute();
     const month = ref("");
@@ -39,6 +38,6 @@
 <template>
     <DashboardLayout>
         <template #title> {{ viewTitle }} </template>
-        <template #content> <Submission :month="month" /> </template>
+        <template #content> <FirstMonthList :month="month" /> </template>
     </DashboardLayout>
 </template>

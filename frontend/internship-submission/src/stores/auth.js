@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
     }),
 
     getters: {
-        isIntern: (state) => state.user.account_type === 'intern',
+        isIntern: (state) => state.user?.account_type === 'intern',
         isAuthenticated: (state) => !!state.accessToken,
         hasProvidedDetails: (state) => !!state.user.intern_school
     },
@@ -65,13 +65,17 @@ export const useAuthStore = defineStore('auth', {
 
         async refreshAccessToken() {
             try {
+                console.log('This is before request in refreshtoken')
                 const response = await apiClient.post('accounts/auth/token/refresh/', {
                     refresh: this.refreshToken
                 })
+                console.log('This is after request in refreshtoken')
                 this.accessToken = response.data.access
                 apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
+                console.log('Refresh auth:', apiClient.defaults.headers['Authorization'])
                 localStorage.setItem('accessToken', this.accessToken)
             } catch (error) {
+                console.log('refresh token error before logout')
                 this.logout()
                 toast.info('Please Login again')
             }
