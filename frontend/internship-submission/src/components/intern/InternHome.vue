@@ -7,8 +7,6 @@
 
     const supervisor = authStore.user.supervisor;
 
-    const lastUpdated = ref(new Date());
-    const isRefreshing = ref(false);
     const submissions = ref([]);
     const completedSubmissions = ref(0);
     const totalPortfolio = ref(0);
@@ -41,11 +39,6 @@
             console.log("portfolio error:", error);
         }
     };
-
-    const stats = ref([
-        { label: "Total Submissions", value: 48, unit: "files", trend: 12 },
-        { label: "Completed Submissions", value: "1/4", unit: "GB", trend: -5 },
-    ]);
 
     const recentSubmissions = ref([]);
 
@@ -310,8 +303,6 @@
 
                 <!-- Side Panel -->
                 <div class="space-y-6">
-                    <!-- Quick Actions -->
-
                     <!-- Upcoming Deadlines -->
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">

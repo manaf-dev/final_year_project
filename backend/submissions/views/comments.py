@@ -5,6 +5,8 @@ from submissions.serializers.comments import CommentSerializer
 from submissions.serializers.submissions import SubmissionSerializer
 from submissions.selectors.submissions import get_submission_by_id
 
+from submissions.utils.notifications import create_notification
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -42,6 +44,21 @@ class CommentViewSet(viewsets.ModelViewSet):
         comment_serializer = self.get_serializer(data=comment_data)
         comment_serializer.is_valid(raise_exception=True)
         comment_serializer.save()
+
+        if grade:
+            create_notification(
+                supervisor.id,
+                submission.intern,
+                title="Comment and grade on your Submission",
+                content="Your supervisor has commentted and graded your portfolio submission. You should Check it out",
+            )
+        else:
+            create_notification(
+                receiver=submission.intern,
+                title="Comment on your Submission",
+                content="Your supervisor has commentted on your portfolio submission. You should Check it out",
+            )
+
         return Response(
             {"detail": "Review Submitted Successfully"},
             status=status.HTTP_201_CREATED,

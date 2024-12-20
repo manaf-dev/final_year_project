@@ -2,18 +2,18 @@
     import { ref, reactive, computed, onMounted } from "vue";
     import { useToast } from "vue-toastification";
     import { useAuthStore } from "@/stores/auth";
-    import ScaleLoader from "vue-spinner/src/ScaleLoader.vue";
+    import aamustedlogo from "@/assets/imgs/aamustedlogo.png";
     import apiClient from "@/services/api";
     import router from "@/router";
 
     const toast = useToast();
     const authStore = useAuthStore();
+    const titles = ref(["mr", "mrs", "miss", "dr", "prof"]);
     const loading = ref(false);
-    const error = ref(null);
-    const formErrors = ref([]);
+    const departments = ref({});
 
     const form = reactive({
-        student_id: "",
+        username: "",
         title: "",
         first_name: "",
         last_name: "",
@@ -22,20 +22,7 @@
         department: "",
         password1: "",
         password2: "",
-    });
-
-    const isFieldEmpty = computed(() => {
-        return (
-            form.student_id &&
-            form.title &&
-            form.first_name &&
-            form.last_name &&
-            form.phone &&
-            form.email &&
-            form.department &&
-            form.password1 &&
-            form.password2
-        );
+        account_type: "intern",
     });
 
     const isEmailValid = computed(() => {
@@ -51,38 +38,23 @@
         return form.password1 === form.password2;
     });
 
-    const handleFormSubmit = () => {
-        if (!isFieldEmpty.value) formErrors.value.push("Field cannot be empty");
-        if (!isEmailValid.value) formErrors.value.push("Email is not valid.");
-        if (!isPasswordValid.value)
-            formErrors.value.push("Password must be at least 8 characters");
-        if (!passwordsMatch.value)
-            formErrors.value.push("Passwords do not match");
-
-        if (formErrors.value.length > 0) {
-            toast.error(formErrors.value[0]);
-            formErrors.value = [];
-        } else {
-            signup();
+    const handleSignup = () => {
+        if (!isEmailValid) {
+            toast.error("Invalid email provided");
         }
+        if (!isPasswordValid) {
+            toast.error("Invalid email provided");
+        }
+        if (!passwordsMatch) {
+            toast.error("Invalid email provided");
+        }
+        signup();
     };
 
     const signup = async () => {
+        loading.value = true;
         try {
-            loading.value = true;
-            const newUser = {
-                username: form.student_id,
-                title: form.title,
-                first_name: form.first_name,
-                last_name: form.last_name,
-                phone: form.phone,
-                email: form.email,
-                department: form.department,
-                account_type: "intern",
-                password1: form.password1,
-                password2: form.password2,
-            };
-            await authStore.register(newUser);
+            await authStore.register(form);
         } catch (error) {
             console.log(error);
         } finally {
@@ -90,7 +62,6 @@
         }
     };
 
-    const departments = ref({});
     onMounted(async () => {
         try {
             const response = await apiClient.get("accounts/departments/");
@@ -103,164 +74,200 @@
 </script>
 
 <template>
-    <div
-        class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
-    >
-        <div class="max-w-md w-full space-y-8">
-            <div>
-                <h2
-                    class="mt-6 text-center text-3xl font-extrabold text-gray-900"
-                >
-                    Register your Internship
-                </h2>
+    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div class="w-full max-w-lg p-6 my-8 bg-white rounded-lg shadow-md">
+            <!-- Logo Section -->
+            <div class="text-center mb-6">
+                <img
+                    :src="aamustedlogo"
+                    alt="University Logo"
+                    class="mx-auto w-24"
+                />
+                <h1 class="text-2xl font-semibold text-[#006938]">
+                    Register Your Account
+                </h1>
+                <p class="text-sm text-gray-500">
+                    Register to start your internship journey
+                </p>
             </div>
-            <form class="mt-8 space-y-6" @submit.prevent="handleFormSubmit">
-                <div class="rounded-md shadow-sm -space-y-px">
-                    <div>
-                        <label for="student-id" class="sr-only"
-                            >Student ID</label
-                        >
-                        <input
-                            id="student-id"
-                            v-model="form.student_id"
-                            type="text"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Student ID"
-                        />
-                    </div>
-                    <div>
-                        <label for="title" class="sr-only">title</label>
-                        <select
-                            id="title"
-                            v-model="form.title"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        >
-                            <option value="">Select Title</option>
-                            <option value="mr">Mr.</option>
-                            <option value="mrs">Mrs.</option>
-                            <option value="miss">Miss</option>
-                            <option value="dr">Dr.</option>
-                            <option value="prof">Prof.</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="first-name" class="sr-only"
-                            >First Name</label
-                        >
-                        <input
-                            id="first-name"
-                            v-model="form.first_name"
-                            type="text"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="First Name"
-                        />
-                    </div>
-                    <div>
-                        <label for="last-name" class="sr-only">Last Name</label>
-                        <input
-                            id="last-name"
-                            v-model="form.last_name"
-                            type="text"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Last Name"
-                        />
-                    </div>
-                    <div>
-                        <label for="phone" class="sr-only">Phone Number</label>
-                        <input
-                            id="phone"
-                            v-model="form.phone"
-                            type="phone"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Phone Number"
-                        />
-                    </div>
-                    <div>
-                        <label for="email" class="sr-only">Email address</label>
-                        <input
-                            id="email"
-                            v-model="form.email"
-                            type="email"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Email address"
-                        />
-                    </div>
-                    <div>
-                        <label for="department" class="sr-only"
-                            >Department</label
-                        >
-                        <select
-                            id="department"
-                            v-model="form.department"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        >
-                            <option value="">Select Department</option>
-                            <option
-                                v-for="department in departments"
-                                :key="department.id"
-                                :value="department.id"
-                            >
-                                {{ department.name }}
-                            </option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="password1" class="sr-only">Password</label>
-                        <input
-                            id="password1"
-                            v-model="form.password1"
-                            type="password"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Password"
-                        />
-                    </div>
-                    <div>
-                        <label for="password2" class="sr-only"
-                            >Confirm Password</label
-                        >
-                        <input
-                            id="password2"
-                            v-model="form.password2"
-                            type="password"
-                            required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Confirm Password"
-                        />
-                    </div>
-                </div>
 
-                <div v-if="error" class="text-red-500 text-sm text-center">
-                    {{ error }}
-                </div>
-
-                <div>
-                    <button
-                        type="submit"
-                        :disabled="loading"
-                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            <!-- Signup Form -->
+            <form @submit.prevent="handleSignup">
+                <div class="mb-4">
+                    <label
+                        for="id"
+                        class="block text-sm font-medium text-gray-700"
+                        >Student ID</label
                     >
-                        {{ loading ? "Creating account..." : "Create account" }}
-                    </button>
+                    <input
+                        v-model="form.username"
+                        type="text"
+                        id="id"
+                        placeholder="Enter your student ID"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        required
+                    />
                 </div>
+
+                <div class="mb-4">
+                    <label
+                        for="title"
+                        class="block text-sm font-medium text-gray-700"
+                        >Title</label
+                    >
+                    <select
+                        v-model="form.title"
+                        id="title"
+                        required
+                        class="w-full px-4 py-2 border rounded-md capitalize focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                    >
+                        <option value="">Select Title</option>
+                        <option
+                            v-for="title in titles"
+                            :key="title"
+                            :value="title"
+                        >
+                            {{ title }}.
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="fname"
+                        class="block text-sm font-medium text-gray-700"
+                        >First Name</label
+                    >
+                    <input
+                        v-model="form.first_name"
+                        type="text"
+                        id="fname"
+                        placeholder="Enter your First Name"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="lname"
+                        class="block text-sm font-medium text-gray-700"
+                        >Last Name</label
+                    >
+                    <input
+                        v-model="form.last_name"
+                        type="text"
+                        id="lname"
+                        placeholder="Enter your Last Name"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="phone"
+                        class="block text-sm font-medium text-gray-700"
+                        >Phone Number</label
+                    >
+                    <input
+                        v-model="form.phone"
+                        type="tel"
+                        id="phone"
+                        placeholder="Enter your Phone Number"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="email"
+                        class="block text-sm font-medium text-gray-700"
+                        >Email</label
+                    >
+                    <input
+                        v-model="form.email"
+                        type="email"
+                        id="email"
+                        placeholder="Enter your Email"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="department"
+                        class="block text-sm font-medium text-gray-700"
+                        >Department</label
+                    >
+                    <select
+                        v-model="form.department"
+                        id="department"
+                        required
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                    >
+                        <option value="">Select Department</option>
+                        <option
+                            v-for="department in departments"
+                            :key="department.id"
+                            :value="department.id"
+                        >
+                            {{ department.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="password1"
+                        class="block text-sm font-medium text-gray-700"
+                        >New Password</label
+                    >
+                    <input
+                        v-model="form.password1"
+                        type="password"
+                        id="password1"
+                        placeholder="Create a new password"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="password2"
+                        class="block text-sm font-medium text-gray-700"
+                        >Confirm Password</label
+                    >
+                    <input
+                        v-model="form.password2"
+                        type="password2"
+                        id="password2"
+                        placeholder="Confirm your password"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        required
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    :disabled="loading"
+                    class="w-full py-2 text-white bg-[#006938] rounded-md hover:bg-[#00562e] transition disabled:opacity-50"
+                >
+                    {{ loading ? "Sign Up..." : "Sign Up" }}
+                </button>
             </form>
 
-            <div class="text-center">
+            <p class="mt-4 text-center text-sm text-gray-600">
                 Already have an account?
                 <router-link
-                    to="/login"
-                    class="font-medium text-indigo-600 hover:text-indigo-500"
+                    :to="{ name: 'login' }"
+                    class="text-[#8c003b] hover:underline"
+                    >Login</router-link
                 >
-                    Sign in
-                </router-link>
-            </div>
+            </p>
         </div>
     </div>
 </template>

@@ -6,7 +6,7 @@
     import Loader from "../loader.vue";
 
     const authStore = useAuthStore();
-    defineProps({ month: String });
+    const props = defineProps({ month: String });
 
     const month_submissions = ref(null);
     const loading = ref(false);
@@ -17,7 +17,7 @@
         loading.value = true;
         try {
             const response = await apiClient.get(
-                `interns/submissions/${props.month.value}/`
+                `interns/submissions/${props.month}/`
             );
             month_submissions.value = response.data;
             console.log(month_submissions.value);

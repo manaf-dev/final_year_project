@@ -1,3 +1,27 @@
+<script setup>
+    import { onMounted, ref } from "vue";
+    import DefaultProfile from "@/assets/imgs/defaultProfile.png";
+    import apiClient from "@/services/api";
+
+    const notificationOpen = ref(false);
+    const notifications = ref({});
+
+    const get_notifications = async () => {
+        try {
+            const response = await apiClient.get("notifications/");
+            notifications.value = response.data;
+        } catch (error) {
+            console.log("Error loading notifications", error);
+        }
+    };
+
+    onMounted(get_notifications);
+
+    const toggleNotifications = () => {
+        notificationOpen.value = !notificationOpen.value;
+    };
+</script>
+
 <template>
     <div class="relative">
         <button
@@ -31,8 +55,10 @@
             class="absolute right-0 z-10 mt-2 overflow-hidden bg-white rounded-lg shadow-xl w-80"
             style="width: 20rem"
         >
-            <a
-                href="#"
+            <router-link
+                v-for="notification in notifications"
+                :key="notification.id"
+                :to="'/notification'"
                 class="flex items-center px-4 py-3 -mx-2 text-gray-600 hover:text-white hover:bg-indigo-600"
             >
                 <img
@@ -41,23 +67,13 @@
                     alt="avatar"
                 />
                 <p class="mx-2 text-sm">
-                    <span class="font-bold" href="#">Sara Salah</span>
-                    replied on the
-                    <span class="font-bold text-indigo-400" href="#"
-                        >Upload Image</span
-                    >
-                    artical . 2m
+                    <span class="font-bold text-indigo-400">{{
+                        notification.title
+                    }}</span
+                    ><br />
+                    <span class="">{{ notification.content }}</span>
                 </p>
-            </a>
+            </router-link>
         </div>
     </div>
 </template>
-
-<script setup>
-    import { ref } from "vue";
-    const notificationOpen = ref(false);
-    import DefaultProfile from "@/assets/imgs/defaultProfile.png";
-    const toggleNotifications = () => {
-        notificationOpen.value = !notificationOpen.value;
-    };
-</script>
