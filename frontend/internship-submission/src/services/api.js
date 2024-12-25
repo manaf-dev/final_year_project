@@ -5,10 +5,10 @@ import axios from 'axios';
 const apiClient = axios.create({
     baseURL: 'http://localhost:8000/api/',
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
+        // 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     },
-    xsrfCookieName: 'csrftoken',
-    xsrfHeaderName: 'X-CSRFToken',
+
 });
 
 

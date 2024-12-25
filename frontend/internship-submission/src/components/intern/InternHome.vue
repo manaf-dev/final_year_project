@@ -157,7 +157,9 @@
                         }"
                         class="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        <span class="w-6 h-6 text-gray-700 mb-2">Icon</span>
+                        <span class="w-6 h-6 text-gray-700 mb-2"
+                            ><i class="pi pi-save" style="font-size: 1rem"></i
+                        ></span>
                         <span class="text-sm text-gray-700"
                             >Submit Portfolio</span
                         >
@@ -168,7 +170,9 @@
                         }"
                         class="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        <span class="w-6 h-6 text-gray-700 mb-2">Icon</span>
+                        <span class="w-6 h-6 text-gray-700 mb-2"
+                            ><i class="pi pi-user" style="font-size: 1rem"></i
+                        ></span>
                         <span class="text-sm text-gray-700">View Profile</span>
                     </router-link>
                 </div>
@@ -199,50 +203,16 @@
                             <div
                                 class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center"
                             >
-                                <svg
+                                <i
                                     v-if="submission.image"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="text-gray-500"
-                                >
-                                    <rect
-                                        width="18"
-                                        height="18"
-                                        x="3"
-                                        y="3"
-                                        rx="2"
-                                        ry="2"
-                                    />
-                                    <circle cx="9" cy="9" r="2" />
-                                    <path
-                                        d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
-                                    />
-                                </svg>
-                                <svg
+                                    class="pi pi-image"
+                                    style="font-size: 1rem"
+                                ></i>
+                                <i
                                     v-if="submission.file"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="text-gray-500"
-                                >
-                                    <path
-                                        d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
-                                    />
-                                    <polyline points="14 2 14 8 20 8" />
-                                </svg>
+                                    class="pi pi-file-check"
+                                    style="font-size: 1rem"
+                                ></i>
                             </div>
 
                             <div class="flex-1 min-w-0">
@@ -271,23 +241,10 @@
                                     rel="noopener noreferrer"
                                     class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="18"
-                                        height="18"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path
-                                            d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                                        />
-                                        <polyline points="15 3 21 3 21 9" />
-                                        <line x1="10" x2="21" y1="14" y2="3" />
-                                    </svg>
+                                    <i
+                                        class="pi pi-external-link"
+                                        style="font-size: 1rem"
+                                    ></i>
                                 </a>
                             </div>
                         </div>
@@ -313,18 +270,18 @@
                                 <h3
                                     class="text-sm font-medium text-gray-900 capitalize"
                                 >
-                                    {{ supervisor.title }}.
-                                    {{ supervisor.last_name }}
-                                    {{ supervisor.first_name }}
+                                    {{ supervisor?.title }}.
+                                    {{ supervisor?.last_name }}
+                                    {{ supervisor?.first_name }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
-                                    {{ supervisor.phone }}
+                                    {{ supervisor?.phone }}
                                 </p>
                                 <p class="text-sm text-gray-500">
-                                    {{ supervisor.email }}
+                                    {{ supervisor?.email }}
                                 </p>
                                 <p class="text-sm text-gray-500">
-                                    {{ supervisor.department.name }}
+                                    {{ supervisor?.department.name }}
                                 </p>
                             </div>
                         </div>

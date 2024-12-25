@@ -15,9 +15,7 @@
         console.log("submit school", school);
 
         try {
-            apiClient.defaults.headers.common[
-                "Authorization"
-            ] = `Bearer ${authStore.accessToken}`;
+            
             const response = await apiClient.post(
                 "accounts/intern-school/new/",
                 school

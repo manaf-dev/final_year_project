@@ -92,7 +92,11 @@
                     :disabled="loading"
                     class="w-full py-2 text-white bg-[#8c003b] rounded-md hover:bg-[#70002e] transition disabled:opacity-50"
                 >
-                    {{ loading ? "Logging in..." : "Login" }}
+                    Login
+                    <i
+                        v-if="loading"
+                        class="pi pi-spin pi-spinner-dotted text-xl ml-4"
+                    ></i>
                 </button>
             </form>
 

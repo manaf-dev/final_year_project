@@ -5,25 +5,12 @@
     import ImageModal from "../ImageModal.vue";
     import DocumentsDisplay from "../DocumentsDisplay.vue";
     import ImageDisplay from "../ImageDisplay.vue";
+    import Loader from "../loader.vue";
 
     const loading = ref(false);
     const selectedItem = ref(null);
     const isModalOpen = ref(false);
-
     const portfolios = ref({});
-
-    const formatDate = (date) => {
-        return new Intl.DateTimeFormat("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-        }).format(new Date(date));
-    };
-
-    const openModal = (item) => {
-        selectedItem.value = item;
-        isModalOpen.value = true;
-    };
 
     const closeModal = () => {
         isModalOpen.value = false;
@@ -32,86 +19,83 @@
         }, 200);
     };
 
-    // Lifecycle
     const fetchPortfolios = async () => {
         loading.value = true;
+        console.log("loading....", loading.value);
         try {
-            // Replace with actual API call
+            console.log("fetching....");
             const response = await apiClient.get("portfolio/all/");
             portfolios.value = response.data;
         } catch (error) {
             console.error("Failed to fetch portfolios:", error);
         } finally {
             loading.value = false;
+            console.log("loading..", loading.value);
         }
+        console.log("loading....", loading.value);
     };
 
     fetchPortfolios();
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-100 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Header Section -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-semibold text-gray-900">
-                    Portfolio Gallery
-                </h1>
-                <p class="mt-1 text-sm text-gray-500">
-                    Browse through all portfolio submissions across different
-                    months
-                </p>
-            </div>
+    <div class="max-w-4xl mx-auto p-6 space-y-8 bg-white rounded-lg shadow">
+        <div class="pb-4 border-b border-gray-200">
+            <h3 class="text-md font-medium">Your Internship Portfolio</h3>
+        </div>
 
-            <!-- Loading State -->
-            <div v-if="loading" class="flex justify-center items-center py-12">
+        <Loader v-if="loading" />
+
+        <section v-else class="mt-4">
+            <div class="space-y-4">
+                <h3 class="text-sm font-medium text-gray-900">
+                    Portfolio Images
+                </h3>
                 <div
-                    class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
-                ></div>
-            </div>
-
-            <!-- Portfolio Grid -->
-            <div
-                v-else
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-            >
-                <ImageDisplay :images="portfolios.images" />
-
-                <!-- Empty State -->
-                <div
-                    v-if="!portfolios"
-                    class="col-span-full flex flex-col items-center justify-center py-12"
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="48"
-                        height="48"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="text-gray-400 mb-4"
-                    >
-                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                        <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-                    </svg>
-                    <p class="text-gray-500">No portfolios found</p>
+                    <ImageDisplay
+                        v-if="portfolios.images?.length"
+                        :images="portfolios.images"
+                        @refresh-page="fetchPortfolios"
+                    />
+
+                    <div v-else class="col-span-full">
+                        <p class="text-gray-500 text-center">
+                            No portfolio image submitted
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <ImageModal
-                v-if="isModalOpen"
-                :image="selectedItem.image"
-                :is-modal-open="isModalOpen"
-                @close-modal="closeModal"
-            />
-            <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8"
-            >
-                <DocumentsDisplay :submission-files="portfolios.files" />
+            <!-- Documents Section -->
+            <div class="space-y-4">
+                <h3 class="text-sm font-medium text-gray-900 mt-8">
+                    Portfolio Documents
+                </h3>
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                >
+                    <DocumentsDisplay
+                        v-if="portfolios.files?.length"
+                        :submission-files="portfolios.files"
+                        @refresh-page="fetchPortfolios"
+                    />
+
+                    <div v-else class="col-span-full">
+                        <p class="text-gray-500 text-center">
+                            No documents submitted yet
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <ImageModal
+            v-if="isModalOpen"
+            :image="selectedItem.image"
+            :is-modal-open="isModalOpen"
+            @close-modal="closeModal"
+        />
     </div>
 </template>

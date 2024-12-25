@@ -5,7 +5,7 @@ from accounts.serializers.users import CustomUserSerializer
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
-    intern = CustomUserSerializer()
+    # intern = CustomUserSerializer()
 
     class Meta:
         model = Submission

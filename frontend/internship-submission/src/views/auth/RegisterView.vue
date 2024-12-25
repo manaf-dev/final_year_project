@@ -243,7 +243,7 @@
                     >
                     <input
                         v-model="form.password2"
-                        type="password2"
+                        type="password"
                         id="password2"
                         placeholder="Confirm your password"
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
@@ -256,7 +256,11 @@
                     :disabled="loading"
                     class="w-full py-2 text-white bg-[#006938] rounded-md hover:bg-[#00562e] transition disabled:opacity-50"
                 >
-                    {{ loading ? "Sign Up..." : "Sign Up" }}
+                    Register
+                    <i
+                        v-if="loading"
+                        class="pi pi-spin pi-spinner-dotted text-xl ml-4"
+                    ></i>
                 </button>
             </form>
 

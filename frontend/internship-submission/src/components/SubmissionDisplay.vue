@@ -1,6 +1,5 @@
 <script setup>
     import { ref } from "vue";
-    import BeatLoader from "vue-spinner/src/BeatLoader.vue";
     import DocumentsDisplay from "./DocumentsDisplay.vue";
     import ImageDisplay from "./ImageDisplay.vue";
     import Loader from "./loader.vue";

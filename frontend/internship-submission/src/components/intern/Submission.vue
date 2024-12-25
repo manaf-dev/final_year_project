@@ -70,7 +70,7 @@
             </nav>
         </div>
 
-        <div v-if="activeTab === 'view'" class="mt-6 space-y-4">
+        <div v-if="activeTab === 'view'" class="mt-2 space-y-4">
             <SubmissionDisplay
                 @submit-view="activeTab = 'submit'"
                 :submissions="submissions"
@@ -79,7 +79,7 @@
             />
         </div>
 
-        <div v-if="activeTab === 'submit'" class="mt-6">
+        <div v-if="activeTab === 'submit'" class="mt-2">
             <div class="bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h2 class="text-lg font-medium">Submit New Work</h2>

@@ -123,8 +123,8 @@ class PortfolioList(viewsets.ModelViewSet):
 
         if not combined_items:
             return Response(
-                {"detail": "No portfolio items found."},
-                status=status.HTTP_404_NOT_FOUND,
+                {"detail": "No portfolio items submitted."},
+                status=status.HTTP_200_OK,
             )
 
         # Serialize items based on their type
@@ -153,8 +153,8 @@ class PortfolioList(viewsets.ModelViewSet):
 
         if not images and not files:
             return Response(
-                {"detail": "No portfolio images or files found."},
-                status=status.HTTP_404_NOT_FOUND,
+                {"detail": "No portfolio images or files Submitted."},
+                status=status.HTTP_200_OK,
             )
         images_data = self.get_serializer(images, many=True).data
         files_data = PortfolioFileSerializer(files, many=True).data

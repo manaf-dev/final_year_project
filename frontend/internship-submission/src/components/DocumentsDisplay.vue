@@ -8,6 +8,8 @@
         submissionFiles: { type: Array, required: true },
     });
 
+    const emit = defineEmits(["refreshPage"]);
+
     const toast = useToast();
     const deleting = ref(false);
     const isOpen = ref(false);
@@ -33,6 +35,7 @@
                 `portfolio/file/delete/${file_id}/`
             );
             toast.success(response.data.detail || "Deleted Successfully");
+            emit("refreshPage");
         } catch (error) {
             toast.error(error.response?.data?.detail || "Error deleting file");
         } finally {
@@ -52,23 +55,7 @@
         <div
             class="w-48 h-36 bg-gray-50 rounded-md flex items-center justify-center mb-2"
         >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-gray-400"
-            >
-                <path
-                    d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
-                />
-                <polyline points="14 2 14 8 20 8" />
-            </svg>
+            <i class="pi pi-file" style="font-size: 4rem; color: gray"></i>
         </div>
 
         <div class="w-full space-y-2">
@@ -85,47 +72,16 @@
                     rel="noopener noreferrer"
                     class="w-2/5 flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                        />
-                        <polyline points="15 3 21 3 21 9" />
-                        <line x1="10" x2="21" y1="14" y2="3" />
-                    </svg>
-                    View
+                    <i
+                        class="pi pi-window-maximize"
+                        style="font-size: 1rem"
+                    ></i>
                 </a>
                 <button
                     @click="openModal(file)"
-                    class="w-2/5 flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+                    class="w-2/5 flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                        />
-                        <polyline points="15 3 21 3 21 9" />
-                        <line x1="10" x2="21" y1="14" y2="3" />
-                    </svg>
-                    Delete
+                    <i class="pi pi-trash" style="font-size: 1rem"></i>
                 </button>
             </div>
         </div>
