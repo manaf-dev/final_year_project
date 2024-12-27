@@ -6,14 +6,6 @@ from accounts.views.departments import (
 )
 
 DEPARTMENTS_URLS = [
-    path(
-        "departments/",
-        DepartmentListCreateAPIView.as_view(),
-        name="department-list-create",
-    ),
-    path(
-        "department/<int:pk>/",
-        DepartmentRetrieveUpdateDestroyAPIView.as_view(),
-        name="department-retrieve",
-    ),
+    path("departments/", DepartmentListCreateAPIView.as_view()),
+    path("department/<int:pk>/", DepartmentRetrieveUpdateDestroyAPIView.as_view()),
 ]

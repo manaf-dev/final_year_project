@@ -38,6 +38,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "supervisor",
             "intern_school",
             "mentor",
+            'last_login',
         )
 
 

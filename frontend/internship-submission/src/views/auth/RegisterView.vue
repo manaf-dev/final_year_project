@@ -48,15 +48,25 @@
         if (!passwordsMatch) {
             toast.error("Invalid email provided");
         }
-        signup();
+        signup(form);
     };
 
-    const signup = async () => {
+    const signup = async (userData) => {
         loading.value = true;
         try {
-            await authStore.register(form);
+            const response = await apiClient.post(
+                "accounts/auth/registration/",
+                userData
+            );
+            router.push("/login");
+            toast.success(response.data.detail);
         } catch (error) {
-            console.log(error);
+            console.log("REG ERROR:", error);
+            toast.error(
+                error.response?.data?.detail ||
+                    error.response?.data?.username[0] ||
+                    "Registration failed"
+            );
         } finally {
             loading.value = false;
         }

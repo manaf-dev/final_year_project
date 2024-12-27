@@ -1,17 +1,17 @@
 from dj_rest_auth.registration.views import RegisterView
-from dj_rest_auth.views import LoginView
-from rest_framework import permissions
 from ._base_imports import *
 
 from accounts.models.users import CustomUser
 from accounts.serializers.users import CustomUserSerializer
 
 from accounts.selectors.users import *
+from accounts.selectors.intern_schools import get_intern_school_by_id
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_interns(self, request):
         supervisor = request.user
@@ -32,14 +32,31 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
         return Response(interns, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request, pk=None):
         instance = self.get_object()
+        data = user_info(instance)
+        user_data = data
+        return Response({"user": user_data}, status=status.HTTP_200_OK)
+
+    @action(methods=["patch"], detail=True)
+    def update_school(self, request, pk=None):
+        # print(request.data)
+        intern_school = get_intern_school_by_id(request.data.get("id"))
+
+        if not intern_school:
+            return Response(
+                {"detail": "School not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        instance = self.get_object()
+        instance.intern_school = intern_school
+        instance.save()
         serializer = self.get_serializer(instance)
-        user = serializer.data
-
-        user_info(user)
-
-        return Response(user)
+        context = {
+            "user": serializer.data,
+            "detail": "Internship school added successful",
+        }
+        return Response(context, status=status.HTTP_200_OK)
 
 
 class CustomRegisterView(RegisterView):

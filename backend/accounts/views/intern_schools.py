@@ -2,20 +2,17 @@ from ._base_imports import *
 
 from accounts.serializers.intern_schools import InternSchoolSerializer
 from accounts.models.intern_schools import InternSchool
-from accounts.models.users import CustomUser
-from accounts.selectors.users import get_user_by_id
-from accounts.services.intern_schools import create_school
+from accounts.serializers.users import CustomUserSerializer
 
 
 class InternSchoolViewSet(viewsets.ModelViewSet):
     queryset = InternSchool.objects.all()
     serializer_class = InternSchoolSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def new_intern_school(self, request):
+    def create_school(self, request):
         school = request.data
-        user = request.user
-        print(user)
-        intern = get_user_by_id(user.id)
+        intern = request.user
 
         if not intern:
             context = {
@@ -30,16 +27,20 @@ class InternSchoolViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=school)
         serializer.is_valid(raise_exception=True)
-        created_school = create_school(serializer.data)
+        created_school = serializer.save()
 
         if created_school:
             intern.intern_school = created_school
             intern.save()
+            user_serializer = CustomUserSerializer(intern)
+            context = {
+                "user": user_serializer.data,
+                "detail": "Internship school added successful",
+            }
             return Response(
-                {"detail": "Internship School Details Saved"},
+                context,
                 status=status.HTTP_201_CREATED,
             )
-        else:
-            return Response(
-                {"detail": "Could not create school"}, status=status.HTTP_403_FORBIDDEN
-            )
+        return Response(
+            {"detail": "Could not create school"}, status=status.HTTP_400_BAD_REQUEST
+        )

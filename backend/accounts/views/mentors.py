@@ -10,7 +10,7 @@ class MentorViewSet(viewsets.ModelViewSet):
     queryset = Mentor.objects.all()
     serializer_class = MentorSerializer
 
-    def new_mentor(self, request):
+    def create_mentor(self, request):
         mentor = request.data
         user = request.user
         intern = get_user_by_id(user.id)
@@ -28,7 +28,7 @@ class MentorViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=mentor)
         serializer.is_valid(raise_exception=True)
-        created_mentor = create_mentor(serializer.data)
+        created_mentor = serializer.save()
 
         if created_mentor:
             intern.mentor = created_mentor

@@ -2,6 +2,7 @@
     import apiClient from "@/services/api";
     import { useAuthStore } from "@/stores/auth";
     import { ref, computed, onMounted } from "vue";
+    import Loader from "../loader.vue";
 
     const authStore = useAuthStore();
 
@@ -10,6 +11,7 @@
     const submissions = ref([]);
     const completedSubmissions = ref(0);
     const totalPortfolio = ref(0);
+    const loading = ref(false);
 
     const getSubmissions = async () => {
         try {
@@ -54,9 +56,16 @@
     };
 
     onMounted(async () => {
-        await getSubmissions();
-        await getPortfolio();
-        await getRecents();
+        loading.value = true;
+        try {
+            await getSubmissions();
+            await getPortfolio();
+            await getRecents();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            loading.value = false;
+        }
     });
 
     const upcomingDeadlines = ref([
@@ -260,7 +269,6 @@
 
                 <!-- Side Panel -->
                 <div class="space-y-6">
-                    <!-- Upcoming Deadlines -->
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">
                             Supervisor
@@ -270,18 +278,18 @@
                                 <h3
                                     class="text-sm font-medium text-gray-900 capitalize"
                                 >
-                                    {{ supervisor?.title }}.
-                                    {{ supervisor?.last_name }}
-                                    {{ supervisor?.first_name }}
+                                    {{ supervisor.title }}.
+                                    {{ supervisor.last_name }}
+                                    {{ supervisor.first_name }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
-                                    {{ supervisor?.phone }}
+                                    {{ supervisor.phone }}
                                 </p>
                                 <p class="text-sm text-gray-500">
-                                    {{ supervisor?.email }}
+                                    {{ supervisor.email }}
                                 </p>
                                 <p class="text-sm text-gray-500">
-                                    {{ supervisor?.department.name }}
+                                    {{ supervisor.department.name }}
                                 </p>
                             </div>
                         </div>
@@ -328,6 +336,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div
+            v-if="loading"
+            class="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-lg z-20"
+        >
+            <Loader />
         </div>
     </div>
 </template>

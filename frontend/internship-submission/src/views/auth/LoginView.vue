@@ -25,9 +25,15 @@
         try {
             await authStore.login(credentials);
             if (authStore.isIntern) {
-                router.push("/in/dashboard");
+                if (!authStore.user.intern_school) {
+                    router.push({ name: "school" });
+                } else if (!authStore.user.mentor) {
+                    router.push({ name: "mentor" });
+                } else {
+                    router.push({ name: "intern-dashboard" });
+                }
             } else {
-                router.push("/sp/dashboard");
+                router.push({ name: "supervisor-dashboard" });
             }
         } catch (error) {
             console.log("Login Error:", error);

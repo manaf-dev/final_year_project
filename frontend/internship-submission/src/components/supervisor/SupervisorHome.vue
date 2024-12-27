@@ -2,8 +2,10 @@
     import apiClient from "@/services/api";
     import { useAuthStore } from "@/stores/auth";
     import { ref, computed, onMounted } from "vue";
+    import Loader from "../loader.vue";
 
     const authStore = useAuthStore();
+    const loading = ref(false);
 
     // Computed
     const getGreeting = computed(() => {
@@ -63,7 +65,7 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm">
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-medium text-gray-500">
-                            Completed submissions
+                            Graded submissions
                         </span>
                         <span> 10% </span>
                     </div>
@@ -103,6 +105,13 @@
                     </router-link>
                 </div>
             </div>
+        </div>
+
+        <div
+            v-if="loading"
+            class="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-lg z-20"
+        >
+            <Loader />
         </div>
     </div>
 </template>

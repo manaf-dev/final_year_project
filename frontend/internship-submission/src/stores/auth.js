@@ -20,15 +20,13 @@ export const useAuthStore = defineStore('auth', {
         hasProvidedDetails: (state) => !!state.user.intern_school
     },
     actions: {
-        async register(userData) {
-            try {
-                const response = await apiClient.post('accounts/auth/registration/', userData);
-                router.push('/login')
 
-                toast.success(response.data.detail);
+        async getUserInfo() {
+            try {
+                const response = await apiClient.get(`accounts/user/${this.user.id}/info/`)
+                localStorage.setItem('user', JSON.stringify(response.data.user))
             } catch (error) {
-                console.log('REG ERROR:', error)
-                toast.error(error.response?.data?.detail || error.response?.data?.username[0] || 'Registration failed');
+                console.log('error getting user infor', error)
             }
         },
 
@@ -52,15 +50,21 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        logout() {
-            this.user = null;
-            this.accessToken = null;
-            this.refreshToken = null;
-            localStorage.removeItem('user')
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
-            delete apiClient.defaults.headers.common['Authorization']
-            router.push('/login')
+        async logout() {
+            try {
+                const response = await apiClient.post('accounts/auth/logout/')
+                this.user = null;
+                this.accessToken = null;
+                this.refreshToken = null;
+                localStorage.removeItem('user')
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                delete apiClient.defaults.headers.common['Authorization']
+                router.push('/login')
+                toast.success('Logout successful')
+            } catch (error) {
+                toast.error('Logout failed')
+            }
         },
 
         async refreshAccessToken() {

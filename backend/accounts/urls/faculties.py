@@ -6,14 +6,6 @@ from accounts.views.faculties import (
 )
 
 FACULTIES_URLS = [
-    path(
-        "faculties/",
-        FacultyListCreateAPIView.as_view(),
-        name="faculty-list-create",
-    ),
-    path(
-        "faculty/<int:pk>/",
-        FacultyRetrieveUpdateDestroyAPIView.as_view(),
-        name="faculty-retrieve",
-    ),
+    path("faculties/", FacultyListCreateAPIView.as_view()),
+    path("faculty/<int:pk>/", FacultyRetrieveUpdateDestroyAPIView.as_view()),
 ]

@@ -1,8 +1,9 @@
 <script setup>
     import apiClient from "@/services/api";
     import { ref } from "vue";
-    import BeatLoader from "vue-spinner/src/BeatLoader.vue";
+    Loader;
     import { useToast } from "vue-toastification";
+    import Loader from "../loader.vue";
 
     const emits = defineEmits(["submissionCompleted"]);
 
@@ -295,7 +296,7 @@
             v-if="submitting"
             class="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-lg z-20"
         >
-            <BeatLoader />
+            <Loader />
         </div>
     </div>
 </template>
