@@ -9,6 +9,7 @@
 
     defineProps({
         images: { type: Object, required: true, default: () => ({}) },
+        showDelete: { type: Boolean, default: true },
     });
     const emit = defineEmits(["refreshPage"]);
 
@@ -87,7 +88,7 @@
                 <i class="pi pi-window-maximize" style="font-size: 1rem"></i>
             </button>
             <button
-                v-if="authStore.isIntern"
+                v-if="authStore.isIntern && showDelete"
                 @click="openConfirmModal(item)"
                 class="w-2/5 flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
             >

@@ -43,7 +43,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         # Create a new submission if none exists
         if not submission:
             serializer = self.get_serializer(
-                data={"month": request.data.get("month"), "intern": intern.id}
+                data={"month": request.data.get("month"), "intern_source": intern.id}
             )
             serializer.is_valid(raise_exception=True)
             submission = serializer.save()
@@ -139,7 +139,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    def get_interns_month_submissions(self, request, month):
+    def check_supervisor(self, request):
         supervisor = request.user
 
         if supervisor.account_type != "supervisor":
@@ -148,10 +148,26 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
+        return supervisor
+
+    def get_interns_month_submissions(self, request, month):
+        supervisor = self.check_supervisor(request)
+
         supervisor_interns = get_interns_by_supervisor(supervisor.id)
         interns_submissions = self.queryset.filter(
             month=month, intern__in=supervisor_interns
-        )
+        ).order_by("-id")
+        interns_submissions_data = self.get_serializer(
+            interns_submissions, many=True
+        ).data
+
+        return Response(interns_submissions_data, status=status.HTTP_200_OK)
+
+    def get_submissions_toSupervisor(self, request):
+        supervisor = self.check_supervisor(request)
+        supervisor_interns = get_interns_by_supervisor(supervisor.id)
+        interns_submissions = self.queryset.filter(intern__in=supervisor_interns)
+
         interns_submissions_data = self.get_serializer(
             interns_submissions, many=True
         ).data

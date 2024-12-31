@@ -47,8 +47,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
         if grade:
             create_notification(
-                supervisor.id,
-                submission.intern,
+                receiver=submission.intern,
                 title="Comment and grade on your Submission",
                 content="Your supervisor has commentted and graded your portfolio submission. You should Check it out",
             )

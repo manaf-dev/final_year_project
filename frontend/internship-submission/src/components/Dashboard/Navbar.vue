@@ -5,7 +5,7 @@
 
 <template>
     <header
-        class="flex items-center justify-between px-6 py-4 bg-white border-b-4 border-red-700"
+        class="flex items-center justify-between lg:justify-end px-6 py-4 bg-white border-b-4 border-red-700"
     >
         <button
             @click="$emit('openSidebar')"

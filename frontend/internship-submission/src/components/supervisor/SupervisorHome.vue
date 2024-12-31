@@ -5,6 +5,7 @@
     import Loader from "../loader.vue";
 
     const authStore = useAuthStore();
+    const submissions = ref([]);
     const loading = ref(false);
 
     // Computed
@@ -23,6 +24,25 @@
             day: "numeric",
         });
     };
+
+    const getSubmissions = async () => {
+        loading.value = true;
+        try {
+            const response = await apiClient.get("submissions/to-supervisor/");
+            submissions.value = response.data;
+            console.log("subs", submissions.value);
+        } catch (error) {
+            console.error("error fetching subs", error);
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const gradedSubmissions = computed(() => {
+        return submissions.value.filter((submission) => submission.graded)
+            .length;
+    });
+    onMounted(getSubmissions);
 </script>
 
 <template>
@@ -57,9 +77,11 @@
                     </div>
                     <div class="mt-2 flex items-baseline">
                         <span class="text-2xl font-semibold text-gray-900">
-                            20
+                            {{ submissions.length }}
                         </span>
-                        <span class="ml-2 text-sm text-gray-500"> graded </span>
+                        <span class="ml-2 text-sm text-gray-500">
+                            submissions
+                        </span>
                     </div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm">
@@ -67,11 +89,19 @@
                         <span class="text-sm font-medium text-gray-500">
                             Graded submissions
                         </span>
-                        <span> 10% </span>
+                        <span>
+                            {{
+                                Math.ceil(
+                                    (gradedSubmissions / submissions.length) *
+                                        100
+                                )
+                            }}
+                            %
+                        </span>
                     </div>
                     <div class="mt-2 flex items-baseline">
                         <span class="text-2xl font-semibold text-gray-900">
-                            1/4
+                            {{ gradedSubmissions }}
                         </span>
                         <span class="ml-2 text-sm text-gray-500"> graded </span>
                     </div>
@@ -89,9 +119,14 @@
                         }"
                         class="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        <span class="w-6 h-6 text-gray-700 mb-2">Icon</span>
+                        <span class="w-6 h-6 text-gray-700 mb-2"
+                            ><i
+                                class="pi pi-folder-open"
+                                style="font-size: 1rem"
+                            ></i
+                        ></span>
                         <span class="text-sm text-gray-700"
-                            >Submit Portfolio</span
+                            >View Submissions</span
                         >
                     </router-link>
                     <router-link
@@ -100,7 +135,9 @@
                         }"
                         class="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        <span class="w-6 h-6 text-gray-700 mb-2">Icon</span>
+                        <span class="w-6 h-6 text-gray-700 mb-2"
+                            ><i class="pi pi-user" style="font-size: 1rem"></i
+                        ></span>
                         <span class="text-sm text-gray-700">View Profile</span>
                     </router-link>
                 </div>

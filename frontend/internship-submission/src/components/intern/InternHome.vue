@@ -219,7 +219,7 @@
                                 ></i>
                                 <i
                                     v-if="submission.file"
-                                    class="pi pi-file-check"
+                                    class="pi pi-file-pdf"
                                     style="font-size: 1rem"
                                 ></i>
                             </div>

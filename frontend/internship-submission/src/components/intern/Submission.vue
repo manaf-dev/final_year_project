@@ -32,6 +32,7 @@
     onMounted(getSubmissions);
 
     onBeforeRouteUpdate((to, from) => {
+        submissions.value = {};
         getSubmissions();
     });
 
@@ -42,7 +43,7 @@
 </script>
 
 <template>
-    <div class="container mx-auto p-4 max-w-4xl">
+    <div class="container mx-auto p-4">
         <div class="border-b border-gray-200">
             <nav class="flex -mb-px">
                 <button

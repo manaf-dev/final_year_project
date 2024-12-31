@@ -21,4 +21,8 @@ SUBMISSION_URLS = [
         "interns/submissions/<int:month>/",
         SubmissionViewSet.as_view({"get": "get_interns_month_submissions"}),
     ),
+    path(
+        "submissions/to-supervisor/",
+        SubmissionViewSet.as_view({"get": "get_submissions_toSupervisor"}),
+    ),
 ]

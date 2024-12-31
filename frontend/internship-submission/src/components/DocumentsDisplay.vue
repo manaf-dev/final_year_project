@@ -55,7 +55,7 @@
         <div
             class="w-48 h-36 bg-gray-50 rounded-md flex items-center justify-center mb-2"
         >
-            <i class="pi pi-file" style="font-size: 4rem; color: gray"></i>
+            <i class="pi pi-file-pdf" style="font-size: 4rem; color: gray"></i>
         </div>
 
         <div class="w-full space-y-2">

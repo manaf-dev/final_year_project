@@ -8,7 +8,7 @@
     const authStore = useAuthStore();
     const props = defineProps({ month: String });
 
-    const month_submissions = ref(null);
+    const month_submissions = ref([]);
     const loading = ref(false);
     const route = useRoute();
 
@@ -153,7 +153,7 @@
                                 >
                             </td>
                         </tr>
-                        <tr v-if="!month_submissions?.length">
+                        <tr v-if="!month_submissions.length">
                             <td
                                 class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
                                 colspan="5"

@@ -4,6 +4,7 @@
     import { useRoute } from "vue-router";
     import SubmissionDisplay from "../SubmissionDisplay.vue";
     import { useToast } from "vue-toastification";
+    import Loader from "../loader.vue";
 
     const route = useRoute();
     const toast = useToast();
@@ -62,14 +63,14 @@
             supervisorComment.value = "";
         }
     };
+
+    const grades = computed(() => {
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    });
 </script>
 
 <template>
-    <SubmissionDisplay
-        :submissions="portfolio"
-        :month="Number(route.params.month)"
-        :loading-submissions="loadingSubmissions"
-    />
+    <SubmissionDisplay :submissions="portfolio" :month="route.params.month" />
 
     <div v-if="portfolio" class="bg-white p-8 rounded-md">
         <form @submit.prevent="submitReview">
@@ -93,16 +94,9 @@
                 >
                 <select v-model="grade" class="w-full border rounded-md p-2">
                     <option value="" selected disabled>Select Grade</option>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
+                    <option v-for="grade in grades" :key="grade" :value="grade">
+                        {{ grade }}
+                    </option>
                 </select>
             </div>
 
@@ -116,5 +110,12 @@
                 </button>
             </div>
         </form>
+    </div>
+
+    <div
+        v-if="loadingSubmissions"
+        class="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-lg z-20"
+    >
+        <Loader />
     </div>
 </template>

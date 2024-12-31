@@ -36,7 +36,7 @@
 </script>
 
 <template>
-    <div class="max-w-4xl mx-auto p-6 space-y-8 bg-white rounded-lg shadow">
+    <div class="mx-auto p-6 space-y-8 bg-white rounded-lg shadow">
         <div class="pb-4 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-medium">Portfolio For The Month</h3>
@@ -67,7 +67,10 @@
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
                 >
-                    <ImageDisplay :images="submissions.images" />
+                    <ImageDisplay
+                        :images="submissions.images"
+                        :show-delete="!submissions.graded"
+                    />
                 </div>
             </div>
 
@@ -110,7 +113,7 @@
             </div>
 
             <!-- Comments Section -->
-            <div class="border-t pt-4">
+            <div class="pt-4">
                 <h4 class="font-medium mb-2">Supervisor Comments</h4>
                 <div
                     v-if="submissions.comments"

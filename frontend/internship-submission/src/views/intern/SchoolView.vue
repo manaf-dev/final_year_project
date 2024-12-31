@@ -64,8 +64,8 @@
                                         class="block text-sm font-medium text-gray-700"
                                         >Name</label
                                     >
-                                    <p class="mt-1 text-gray-900">
-                                        {{ school.name }}
+                                    <p class="mt-1 text-gray-900 capitalize">
+                                        {{ school.school }}
                                     </p>
                                 </div>
                                 <div>
@@ -73,7 +73,7 @@
                                         class="block text-sm font-medium text-gray-700"
                                         >Location</label
                                     >
-                                    <p class="mt-1 text-gray-900">
+                                    <p class="mt-1 text-gray-900 capitalize">
                                         {{ school.location }}
                                     </p>
                                 </div>
@@ -82,7 +82,7 @@
                                         class="block text-sm font-medium text-gray-700"
                                         >District</label
                                     >
-                                    <p class="mt-1 text-gray-900">
+                                    <p class="mt-1 text-gray-900 capitalize">
                                         {{ school.district }}
                                     </p>
                                 </div>
@@ -91,7 +91,7 @@
                                         class="block text-sm font-medium text-gray-700"
                                         >Region</label
                                     >
-                                    <p class="mt-1 text-gray-900">
+                                    <p class="mt-1 text-gray-900 capitalize">
                                         {{ school.region }}
                                     </p>
                                 </div>

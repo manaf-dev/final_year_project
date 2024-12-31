@@ -96,4 +96,4 @@ class CustomLoginView(APIView):
             }
             return Response(context, status=status.HTTP_200_OK)
 
-        raise AuthenticationFailed("Incorrect login credentials provided")
+        raise AuthenticationFailed("Incorrect password")

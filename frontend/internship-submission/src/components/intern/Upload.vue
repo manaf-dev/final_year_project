@@ -103,7 +103,7 @@
 </script>
 
 <template>
-    <div class="container mx-auto p-4 max-w-4xl">
+    <div class="container mx-auto p-4">
         <div class="space-y-6">
             <!-- Image Upload -->
             <div class="p-6 border-b-2 border-gray-200">

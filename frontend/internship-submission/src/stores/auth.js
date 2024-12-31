@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', {
         async login(credentials) {
             try {
                 const response = await apiClient.post('accounts/auth/login/', credentials);
-                this.user = response.data.user
+                this.user = response.data?.user
                 this.accessToken = response.data?.token?.access;
                 this.refreshToken = response.data?.token?.refresh;
 
@@ -45,8 +45,8 @@ export const useAuthStore = defineStore('auth', {
 
                 toast.success(response.data.detail);
             } catch (error) {
-                // console.log('DATA', error.response.data.detail)
-                toast.error(error.response?.data?.detail || 'Login failed');
+                console.log('DATA--', error)
+                toast.error(error.response?.data?.detail || error.message || 'Login failed');
             }
         },
 

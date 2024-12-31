@@ -39,7 +39,7 @@
 </script>
 
 <template>
-    <div class="max-w-4xl mx-auto p-6 space-y-8 bg-white rounded-lg shadow">
+    <div class="mx-auto p-6 space-y-8 bg-white rounded-lg shadow">
         <div class="pb-4 border-b border-gray-200">
             <h3 class="text-md font-medium">Your Internship Portfolio</h3>
         </div>
@@ -57,6 +57,7 @@
                     <ImageDisplay
                         v-if="portfolios.images?.length"
                         :images="portfolios.images"
+                        :show-delete="false"
                         @refresh-page="fetchPortfolios"
                     />
 
