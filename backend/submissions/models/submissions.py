@@ -16,6 +16,7 @@ class Submission(models.Model):
     )
     grade = models.PositiveIntegerField(default=0, null=True, blank=True)
     graded = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.intern.username} - month {self.month} submission"

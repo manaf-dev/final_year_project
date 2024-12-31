@@ -14,5 +14,5 @@ class CohortViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def years(self, request):
-        years = Cohort.objects.values_list("year", flat=True).distinct()
+        years = Cohort.objects.values_list("id", "year", flat=True).distinct()
         return Response(years)

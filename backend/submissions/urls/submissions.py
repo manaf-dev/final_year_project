@@ -4,25 +4,18 @@ from submissions.views.submissions import *
 
 
 SUBMISSION_URLS = [
+    path("intern/", SubmissionViewSet.as_view({"get": "get_intern_submissions"})),
+    path("upload/img/", SubmissionViewSet.as_view({"post": "upload_img"})),
     path(
-        "submissions/intern/",
-        SubmissionViewSet.as_view({"get": "get_intern_submissions"}),
+        "upload/philosophy/", SubmissionViewSet.as_view({"post": "upload_philosophy"})
     ),
-    path("submissions/upload/img/", SubmissionViewSet.as_view({"post": "upload_img"})),
+    path("upload/cv/", SubmissionViewSet.as_view({"post": "upload_cv"})),
     path(
-        "submissions/upload/philosophy/",
-        SubmissionViewSet.as_view({"post": "upload_philosophy"}),
-    ),
-    path(
-        "submissions/upload/cv/",
-        SubmissionViewSet.as_view({"post": "upload_cv"}),
+        "cohort/<str:cohort>/<int:month>/",
+        SubmissionViewSet.as_view({"get": "get_cohort_submissions"}),
     ),
     path(
-        "interns/submissions/<int:month>/",
-        SubmissionViewSet.as_view({"get": "get_interns_month_submissions"}),
-    ),
-    path(
-        "submissions/to-supervisor/",
+        "to-supervisor/",
         SubmissionViewSet.as_view({"get": "get_submissions_toSupervisor"}),
     ),
 ]

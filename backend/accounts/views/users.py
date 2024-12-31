@@ -1,5 +1,6 @@
 from dj_rest_auth.registration.views import RegisterView
 from ._base_imports import *
+from django.utils import timezone
 
 from accounts.models.users import CustomUser
 from accounts.serializers.users import CustomUserSerializer
@@ -58,6 +59,28 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         }
         return Response(context, status=status.HTTP_200_OK)
 
+    def check_supervisor(self, request):
+        supervisor = request.user
+
+        if supervisor.account_type != "supervisor":
+            return Response(
+                {"detail": "You cannot perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return supervisor
+
+    def get_current_cohort_interns(self, request):
+        supervisor = self.check_supervisor(request)
+        current_year = timezone.now().year
+
+        supervisor_interns = get_interns_by_supervisor(supervisor.id)
+        current_cohort_interns = supervisor_interns.filter(cohort=str(current_year))
+
+        interns_data = self.get_serializer(supervisor_interns, many=True).data
+
+        return Response(interns_data, status=status.HTTP_200_OK)
+
 
 class CustomRegisterView(RegisterView):
     def create(self, request, *args, **kwargs):
@@ -86,6 +109,13 @@ class CustomLoginView(APIView):
             raise NotFound(context)
 
         if user.check_password(password) and user.is_active:
+            if user.account_type == "intern" and user.level != "400":
+                context = {
+                    "detail": f"You do not have access yet, level {user.level}",
+                    "errors": {"Cohort": ["User level don't have access to system"]},
+                }
+                raise AuthenticationFailed(context)
+
             # generate token for user
             token = RefreshToken.for_user(user)
             user_data = user_info(user)

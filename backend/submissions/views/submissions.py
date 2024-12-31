@@ -1,5 +1,5 @@
 from ._base_imports import *
-
+from django.utils import timezone
 from accounts.models.users import CustomUser
 from accounts.selectors.users import get_interns_by_supervisor
 from submissions.models.submissions import Submission
@@ -150,18 +150,32 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         return supervisor
 
-    def get_interns_month_submissions(self, request, month):
+    # def get_interns_month_submissions(self, request, month):
+    #     supervisor = self.check_supervisor(request)
+
+    #     supervisor_interns = get_interns_by_supervisor(supervisor.id)
+    #     interns_submissions = self.queryset.filter(
+    #         month=month, intern__in=supervisor_interns
+    #     ).order_by("-id")
+    #     interns_submissions_data = self.get_serializer(
+    #         interns_submissions, many=True
+    #     ).data
+
+    #     return Response(interns_submissions_data, status=status.HTTP_200_OK)
+
+    def get_cohort_submissions(self, request, cohort, month):
         supervisor = self.check_supervisor(request)
+        current_year = timezone.now().year
 
         supervisor_interns = get_interns_by_supervisor(supervisor.id)
-        interns_submissions = self.queryset.filter(
-            month=month, intern__in=supervisor_interns
-        ).order_by("-id")
-        interns_submissions_data = self.get_serializer(
-            interns_submissions, many=True
-        ).data
+        cohort_interns = supervisor_interns.filter(cohort=cohort)
 
-        return Response(interns_submissions_data, status=status.HTTP_200_OK)
+        interns_submissions = self.queryset.filter(
+            month=month, intern__in=cohort_interns
+        ).order_by("created_at")
+        serializer = self.get_serializer(interns_submissions, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_submissions_toSupervisor(self, request):
         supervisor = self.check_supervisor(request)
