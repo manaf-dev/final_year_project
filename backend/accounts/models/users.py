@@ -5,7 +5,7 @@ from .departments import Department
 from .mentors import Mentor
 from .intern_schools import InternSchool
 
-# from submissions.models.tracking import InternshipPeriod
+from internships.models import Cohort
 
 
 class CustomUser(AbstractUser):
@@ -28,7 +28,7 @@ class CustomUser(AbstractUser):
         choices=[("intern", "Intern"), ("supervisor", "Supervisor")],
         null=True,
     )
-
+    level = models.CharField(max_length=25, null=True)
     supervisor = models.ForeignKey(
         "self", related_name="interns", on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -40,12 +40,7 @@ class CustomUser(AbstractUser):
         blank=True,
     )
     mentor = models.ForeignKey(Mentor, on_delete=models.SET_NULL, null=True, blank=True)
-    # year = models.ForeignKey(
-    #     InternshipPeriod,
-    #     related_name="year_interns",
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    # )
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.username

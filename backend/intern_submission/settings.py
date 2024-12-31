@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     # custom apps
     "accounts.apps.AccountsConfig",
     "submissions.apps.SubmissionsConfig",
+    "internships.apps.InternshipsConfig",
 ]
 
 MIDDLEWARE = [
