@@ -40,7 +40,9 @@ class CustomUser(AbstractUser):
         blank=True,
     )
     mentor = models.ForeignKey(Mentor, on_delete=models.SET_NULL, null=True, blank=True)
-    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE, null=True)
+    cohort = models.ForeignKey(
+        Cohort, related_name="cohort_interns", on_delete=models.CASCADE, null=True
+    )
 
     def __str__(self):
         return self.username

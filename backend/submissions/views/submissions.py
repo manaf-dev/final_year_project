@@ -15,6 +15,7 @@ from submissions.selectors.submissions import (
     filter_submissions_by_intern,
 )
 from accounts.selectors.users import get_user_by_id
+from internships.selectors import get_cohort_by_year
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -165,10 +166,10 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     def get_cohort_submissions(self, request, cohort, month):
         supervisor = self.check_supervisor(request)
-        current_year = timezone.now().year
+        internship_cohort = get_cohort_by_year(year=cohort)
 
-        supervisor_interns = get_interns_by_supervisor(supervisor.id)
-        cohort_interns = supervisor_interns.filter(cohort=cohort)
+        interns = get_interns_by_supervisor(supervisor.id)
+        cohort_interns = interns.filter(cohort=internship_cohort)
 
         interns_submissions = self.queryset.filter(
             month=month, intern__in=cohort_interns

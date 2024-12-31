@@ -77,7 +77,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         supervisor_interns = get_interns_by_supervisor(supervisor.id)
         current_cohort_interns = supervisor_interns.filter(cohort=str(current_year))
 
-        interns_data = self.get_serializer(supervisor_interns, many=True).data
+        interns_data = self.get_serializer(current_cohort_interns, many=True).data
 
         return Response(interns_data, status=status.HTTP_200_OK)
 

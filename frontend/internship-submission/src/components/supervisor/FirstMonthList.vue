@@ -17,7 +17,7 @@
         loading.value = true;
         try {
             const response = await apiClient.get(
-                `interns/submissions/${props.month}/`
+                `submissions/cohort/${new Date().getFullYear()}/${props.month}/`
             );
             month_submissions.value = response.data;
             console.log(month_submissions.value);
