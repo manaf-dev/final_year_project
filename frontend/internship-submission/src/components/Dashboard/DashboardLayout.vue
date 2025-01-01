@@ -17,7 +17,7 @@
             <main class="flex-1 overflow-y-auto bg-gray-200">
                 <div class="container px-4 py-2 mx-auto">
                     <h3
-                        class="text-xl sm:text-3xl font-medium text-gray-700 capitalize"
+                        class="text-xl sm:text-2xl font-medium text-maroon capitalize"
                     >
                         <slot name="title">Dashboard</slot>
                     </h3>

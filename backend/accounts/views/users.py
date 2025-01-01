@@ -7,6 +7,7 @@ from accounts.serializers.users import CustomUserSerializer
 
 from accounts.selectors.users import *
 from accounts.selectors.intern_schools import get_intern_school_by_id
+from internships.selectors import get_cohort_by_year
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -70,12 +71,12 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
         return supervisor
 
-    def get_current_cohort_interns(self, request):
+    def get_cohort_interns(self, request, year):
         supervisor = self.check_supervisor(request)
-        current_year = timezone.now().year
+        cohort = get_cohort_by_year(year=year)
 
         supervisor_interns = get_interns_by_supervisor(supervisor.id)
-        current_cohort_interns = supervisor_interns.filter(cohort=str(current_year))
+        current_cohort_interns = supervisor_interns.filter(cohort=cohort)
 
         interns_data = self.get_serializer(current_cohort_interns, many=True).data
 

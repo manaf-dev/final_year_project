@@ -15,4 +15,8 @@ USERS_URLS = [
     ),
     path("user/<int:pk>/delete/", CustomUserViewSet.as_view({"delete": "destroy"})),
     path("supervisor/interns/", CustomUserViewSet.as_view({"get": "get_interns"})),
+    path(
+        "cohort/<str:year>/interns/",
+        CustomUserViewSet.as_view({"get": "get_cohort_interns"}),
+    ),
 ]

@@ -14,5 +14,6 @@ class CohortViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def years(self, request):
-        years = Cohort.objects.values_list("id", "year", flat=True).distinct()
-        return Response(years)
+        cohorts = Cohort.objects.all().distinct()
+        serializer = self.get_serializer(cohorts, many=True)
+        return Response(serializer.data)

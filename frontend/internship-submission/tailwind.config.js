@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        maroon: '#8c003b',
+        green: '#006938',
+        yellow: '#ffc712',
+      },
+    },
   },
   plugins: [require('tailwindcss-primeui')]
 }

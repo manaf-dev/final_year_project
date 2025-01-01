@@ -91,7 +91,7 @@
 <template>
     <div class="min-h-screen bg-gray-100 py-6">
         <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold text-center text-[#8c003b] mb-4">
+            <h2 class="text-xl font-bold text-center text-maroon mb-4">
                 Internship Details
             </h2>
 
@@ -116,7 +116,7 @@
                             id="school"
                             autocomplete="off"
                             placeholder="Search for a school..."
-                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-[#8c003b]"
                         />
                         <ul
                             v-show="dropdownActive"
@@ -146,7 +146,7 @@
                             v-model="schoolDetails.location"
                             type="text"
                             id="location"
-                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-[#8c003b]"
                             :readonly="!isCustomSchool"
                             required
                         />
@@ -162,7 +162,7 @@
                             v-model="schoolDetails.district"
                             type="text"
                             id="district"
-                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-[#8c003b]"
                             :readonly="!isCustomSchool"
                             required
                         />
@@ -178,7 +178,7 @@
                             v-model="schoolDetails.region"
                             type="text"
                             id="region"
-                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                            class="w-full px-4 py-2 capitalize border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-[#8c003b]"
                             :readonly="!isCustomSchool"
                             required
                         />
@@ -203,7 +203,7 @@
                 <button
                     type="submit"
                     :disabled="loading"
-                    class="mt-4 w-full py-2 text-white bg-[#8c003b] rounded-md hover:bg-[#70002e] transition"
+                    class="mt-4 w-full py-2 text-white bg-maroon rounded-md hover:bg-[#70002e] transition"
                 >
                     Submit
                     <i

@@ -93,7 +93,7 @@
                     alt="University Logo"
                     class="mx-auto w-24"
                 />
-                <h1 class="text-2xl font-semibold text-[#006938]">
+                <h1 class="text-2xl font-semibold text-green">
                     Register Your Account
                 </h1>
                 <p class="text-sm text-gray-500">
@@ -114,7 +114,7 @@
                         type="text"
                         id="id"
                         placeholder="Enter your student ID"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />
                 </div>
@@ -129,7 +129,7 @@
                         v-model="form.title"
                         id="title"
                         required
-                        class="w-full px-4 py-2 border rounded-md capitalize focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md capitalize focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                     >
                         <option value="">Select Title</option>
                         <option
@@ -153,7 +153,7 @@
                         type="text"
                         id="fname"
                         placeholder="Enter your First Name"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />
                 </div>
@@ -169,7 +169,7 @@
                         type="text"
                         id="lname"
                         placeholder="Enter your Last Name"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />
                 </div>
@@ -185,7 +185,7 @@
                         type="tel"
                         id="phone"
                         placeholder="Enter your Phone Number"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />
                 </div>
@@ -201,7 +201,7 @@
                         type="email"
                         id="email"
                         placeholder="Enter your Email"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />
                 </div>
@@ -216,7 +216,7 @@
                         v-model="form.department"
                         id="department"
                         required
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                     >
                         <option value="">Select Department</option>
                         <option
@@ -240,7 +240,7 @@
                         type="password"
                         id="password1"
                         placeholder="Create a new password"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />
                 </div>
@@ -256,7 +256,7 @@
                         type="password"
                         id="password2"
                         placeholder="Confirm your password"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#006938] focus:border-[#006938]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />
                 </div>
@@ -264,7 +264,7 @@
                 <button
                     type="submit"
                     :disabled="loading"
-                    class="w-full py-2 text-white bg-[#006938] rounded-md hover:bg-[#00562e] transition disabled:opacity-50"
+                    class="w-full py-2 text-white bg-green rounded-md hover:bg-[#00562e] transition disabled:opacity-50"
                 >
                     Register
                     <i
@@ -278,7 +278,7 @@
                 Already have an account?
                 <router-link
                     :to="{ name: 'login' }"
-                    class="text-[#8c003b] hover:underline"
+                    class="text-maroon hover:underline"
                     >Login</router-link
                 >
             </p>

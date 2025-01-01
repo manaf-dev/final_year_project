@@ -33,7 +33,7 @@
 <template>
     <div class="min-h-screen bg-gray-100 py-6">
         <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold text-center text-[#8c003b] mb-4">
+            <h2 class="text-xl font-bold text-center text-maroon mb-4">
                 Internship Details
             </h2>
 
@@ -53,7 +53,7 @@
                         type="text"
                         id="mentor-name"
                         placeholder="Enter mentor's name"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon"
                         required
                     />
                 </div>
@@ -69,7 +69,7 @@
                         type="tel"
                         id="mentor-phone"
                         placeholder="Enter mentor's phone number"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon"
                         required
                     />
                 </div>
@@ -85,7 +85,7 @@
                         type="email"
                         id="mentor-email"
                         placeholder="Enter mentor's email"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon"
                         required
                     />
                 </div>
@@ -93,7 +93,7 @@
                 <button
                     type="submit"
                     :disabled="loading"
-                    class="mt-4 w-full py-2 text-white bg-[#006938] rounded-md hover:bg-[#00562e] transition"
+                    class="mt-4 w-full py-2 text-white bg-green rounded-md hover:bg-[#00562e] transition"
                 >
                     Submit
                     <i

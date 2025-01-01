@@ -53,7 +53,7 @@
                     alt="University Logo"
                     class="mx-auto w-24"
                 />
-                <h1 class="text-2xl font-semibold text-[#8c003b]">TIPS</h1>
+                <h1 class="text-2xl font-semibold text-maroon">TIPS</h1>
                 <p class="text-sm text-gray-500">
                     Login to access your account
                 </p>
@@ -72,7 +72,7 @@
                         type="text"
                         id="id"
                         placeholder="Enter your student ID"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon"
                         required
                     />
                 </div>
@@ -88,7 +88,7 @@
                         type="password"
                         id="password"
                         placeholder="Enter your password"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon"
                         required
                     />
                 </div>
@@ -96,7 +96,7 @@
                 <button
                     type="submit"
                     :disabled="loading"
-                    class="w-full py-2 text-white bg-[#8c003b] rounded-md hover:bg-[#70002e] transition disabled:opacity-50"
+                    class="w-full py-2 text-white bg-maroon rounded-md hover:bg-maroon transition disabled:opacity-50"
                 >
                     Login
                     <i
@@ -110,7 +110,7 @@
                 First time here?
                 <router-link
                     :to="{ name: 'register' }"
-                    class="text-[#006938] hover:underline"
+                    class="text-green hover:underline"
                     >Register</router-link
                 >
             </p>

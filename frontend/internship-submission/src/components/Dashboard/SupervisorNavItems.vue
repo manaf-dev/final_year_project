@@ -129,6 +129,23 @@
                 'px-6',
                 'py-2',
                 'mt-3',
+                isActiveLink('/sp/dashboard/cohorts')
+                    ? 'text-gray-100 bg-opacity-25 bg-gray-700'
+                    : 'text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
+            ]"
+            :to="{ name: 'cohorts-list' }"
+        >
+            <span><i class="pi pi-briefcase" style="font-size: 1rem"></i></span>
+            <span class="mx-3">Cohorts</span>
+        </RouterLink>
+
+        <RouterLink
+            :class="[
+                'flex',
+                'items-center',
+                'px-6',
+                'py-2',
+                'mt-3',
                 isActiveLink('/sp/submissions/past')
                     ? 'text-gray-100 bg-opacity-25 bg-gray-700'
                     : 'text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',

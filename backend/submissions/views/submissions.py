@@ -164,12 +164,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     #     return Response(interns_submissions_data, status=status.HTTP_200_OK)
 
-    def get_cohort_submissions(self, request, cohort, month):
+    def get_cohort_submissions(self, request, year, month):
         supervisor = self.check_supervisor(request)
-        internship_cohort = get_cohort_by_year(year=cohort)
+        cohort = get_cohort_by_year(year=year)
 
         interns = get_interns_by_supervisor(supervisor.id)
-        cohort_interns = interns.filter(cohort=internship_cohort)
+        cohort_interns = interns.filter(cohort=cohort)
 
         interns_submissions = self.queryset.filter(
             month=month, intern__in=cohort_interns
