@@ -1,43 +1,34 @@
 <script setup>
-    import { ref, onMounted } from "vue";
-    import apiClient from "@/services/api";
-    import Loader from "@/components/loader.vue";
+    import BackButton from "@/components/BackButton.vue";
     import DashboardLayout from "@/components/Dashboard/DashboardLayout.vue";
+    import { useRoute } from "vue-router";
 
-    const cohorts = ref([]);
-    const loading = ref(false);
-
-    onMounted(async () => {
-        loading.value = true;
-        try {
-            const response = await apiClient.get("internships/cohorts/");
-            cohorts.value = response.data;
-            cohorts.value = cohorts.value.filter(
-                (item) => item.year < String(new Date().getFullYear())
-            );
-        } catch (error) {
-            console.error("Error fetching cohorts:", error);
-        } finally {
-            loading.value = false;
-        }
-    });
+    const route = useRoute();
+    const months = [
+        { id: 1, desc: "First Month" },
+        { id: 2, desc: "Second Month" },
+        { id: 3, desc: "Third Month" },
+        { id: 4, desc: "Fourth Month" },
+    ];
 </script>
 
 <template>
     <DashboardLayout :title="'Past Submissions'">
         <template #content>
             <div class="p-6 bg-gray-50 min-h-screen">
-                <p class="text-gray-600 mt-4">Cohorts</p>
-                <div v-if="loading" class="flex justify-center items-center">
-                    <Loader />
-                </div>
-                <div v-else>
+                <BackButton />
+                <p class="text-gray-600 mt-4">
+                    {{ route.params.year }} Cohort Months
+                </p>
+                <div>
                     <table
                         class="table-auto w-full border-collapse bg-white shadow-md rounded-lg"
                     >
                         <thead>
                             <tr class="bg-maroon text-white">
-                                <th class="border px-4 py-2 text-left">Year</th>
+                                <th class="border px-4 py-2 text-left">
+                                    Month
+                                </th>
                                 <th class="border px-4 py-2 text-left">
                                     Action
                                 </th>
@@ -45,18 +36,21 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="cohort in cohorts"
-                                :key="cohort.id"
+                                v-for="month in months"
+                                :key="month.id"
                                 class="hover:bg-gray-200 hover:bg-opacity-20 even:bg-gray-100"
                             >
                                 <td class="border px-4 py-2">
-                                    {{ cohort.year }} Internship Cohort
+                                    {{ month.desc }}
                                 </td>
                                 <td class="border px-4 py-2 text-center">
                                     <router-link
                                         :to="{
-                                            name: 'past-submissions-months',
-                                            params: { year: cohort.year },
+                                            name: 'past-submissions-interns',
+                                            params: {
+                                                month: month.id,
+                                                year: route.params.year,
+                                            },
                                         }"
                                         class="text-green hover:underline"
                                     >

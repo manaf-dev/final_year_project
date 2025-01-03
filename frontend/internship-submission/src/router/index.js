@@ -16,6 +16,8 @@ import PortfolioDetailView from '@/views/supervisor/PortfolioDetailView.vue'
 import MentorDetailView from '@/views/auth/MentorDetailView.vue'
 import CohortList from '@/views/supervisor/CohortList.vue'
 import CohortDetail from '@/views/supervisor/CohortDetail.vue'
+import PastSubmissionsMonths from '@/views/supervisor/PastSubmissionsMonths.vue'
+import PastSubmissionsInterns from '@/views/supervisor/PastSubmissionsInterns.vue'
 
 
 
@@ -91,9 +93,21 @@ const router = createRouter({
       meta: { requiresAuth: true, supervisorOnly: true }
     },
     {
-      path: '/sp/submissions/past',
-      name: 'past-submissions',
+      path: '/sp/past/submissions/cohorts',
+      name: 'past-submissions-cohorts',
       component: PastSubmissions,
+      meta: { requiresAuth: true, supervisorOnly: true }
+    },
+    {
+      path: '/sp/past/:year/months',
+      name: 'past-submissions-months',
+      component: PastSubmissionsMonths,
+      meta: { requiresAuth: true, supervisorOnly: true }
+    },
+    {
+      path: '/sp/past/:year/:month/interns',
+      name: 'past-submissions-interns',
+      component: PastSubmissionsInterns,
       meta: { requiresAuth: true, supervisorOnly: true }
     },
     {

@@ -6,7 +6,10 @@
     import Loader from "../loader.vue";
 
     const authStore = useAuthStore();
-    const props = defineProps({ month: String });
+    const props = defineProps({
+        month: String,
+        year: { type: String, default: String(new Date().getFullYear()) },
+    });
 
     const month_submissions = ref([]);
     const loading = ref(false);
@@ -17,7 +20,7 @@
         loading.value = true;
         try {
             const response = await apiClient.get(
-                `submissions/cohort/${new Date().getFullYear()}/${props.month}/`
+                `submissions/cohort/${props.year}/${props.month}/`
             );
             month_submissions.value = response.data;
             console.log(month_submissions.value);
@@ -36,6 +39,7 @@
     // });
 
     onBeforeRouteUpdate((to, from) => {
+        month_submissions.value = [];
         get_month_submissions();
     });
 </script>
@@ -158,7 +162,7 @@
                                 class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
                                 colspan="5"
                             >
-                                No Submission made for this month yet.
+                                No Submission made for this month.
                             </td>
                         </tr>
                     </tbody>
