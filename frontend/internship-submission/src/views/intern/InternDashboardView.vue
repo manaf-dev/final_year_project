@@ -4,8 +4,7 @@
 </script>
 
 <template>
-    <DashboardLayout>
-        <template #title> Dashboard </template>
+    <DashboardLayout :title="'Dashboard'">
         <template #content>
             <InternHome />
         </template>

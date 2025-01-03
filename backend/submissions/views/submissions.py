@@ -151,26 +151,13 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         return supervisor
 
-    # def get_interns_month_submissions(self, request, month):
-    #     supervisor = self.check_supervisor(request)
-
-    #     supervisor_interns = get_interns_by_supervisor(supervisor.id)
-    #     interns_submissions = self.queryset.filter(
-    #         month=month, intern__in=supervisor_interns
-    #     ).order_by("-id")
-    #     interns_submissions_data = self.get_serializer(
-    #         interns_submissions, many=True
-    #     ).data
-
-    #     return Response(interns_submissions_data, status=status.HTTP_200_OK)
-
-    def get_cohort_submissions(self, request, year, month):
+    def get_cohort_month_submissions(self, request, year, month):
         supervisor = self.check_supervisor(request)
         cohort = get_cohort_by_year(year=year)
 
         interns = get_interns_by_supervisor(supervisor.id)
         cohort_interns = interns.filter(cohort=cohort)
-
+        print("cohort_interns", cohort_interns)
         interns_submissions = self.queryset.filter(
             month=month, intern__in=cohort_interns
         ).order_by("created_at")
@@ -178,13 +165,15 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def get_submissions_toSupervisor(self, request):
+    def get_month_submissions_count(self, request, year, month):
         supervisor = self.check_supervisor(request)
-        supervisor_interns = get_interns_by_supervisor(supervisor.id)
-        interns_submissions = self.queryset.filter(intern__in=supervisor_interns)
+        cohort = get_cohort_by_year(year=year)
 
-        interns_submissions_data = self.get_serializer(
-            interns_submissions, many=True
-        ).data
-
-        return Response(interns_submissions_data, status=status.HTTP_200_OK)
+        interns = get_interns_by_supervisor(supervisor.id)
+        cohort_interns = interns.filter(cohort=cohort)
+        print("cohot", cohort_interns)
+        submissions_count = self.queryset.filter(
+            month=month, intern__in=cohort_interns
+        ).count()
+        context = {"month": month, "submissions_count": submissions_count}
+        return Response(context, status=status.HTTP_200_OK)

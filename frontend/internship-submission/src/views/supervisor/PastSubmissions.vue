@@ -3,8 +3,7 @@
 </script>
 
 <template>
-    <DashboardLayout>
-        <template #title> Past Submissions </template>
+    <DashboardLayout :title="'Past Submissions'">
         <template #content> <h1>Past Submissions</h1> </template>
     </DashboardLayout>
 </template>

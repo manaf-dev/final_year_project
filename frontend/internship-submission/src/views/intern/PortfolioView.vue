@@ -7,8 +7,7 @@
 </script>
 
 <template>
-    <DashboardLayout>
-        <template #title> Your Portfolio </template>
+    <DashboardLayout :title="'Your Portfolio'">
         <template #content><Portfolio /></template>
     </DashboardLayout>
 </template>

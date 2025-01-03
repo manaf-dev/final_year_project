@@ -21,8 +21,7 @@
 </script>
 
 <template>
-    <DashboardLayout>
-        <template #title>Cohorts</template>
+    <DashboardLayout :title="'Cohorts'">
         <template #content>
             <div class="p-6 bg-gray-50 min-h-screen">
                 <div v-if="loading" class="flex justify-center items-center">

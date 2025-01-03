@@ -19,4 +19,8 @@ USERS_URLS = [
         "cohort/<str:year>/interns/",
         CustomUserViewSet.as_view({"get": "get_cohort_interns"}),
     ),
+    path(
+        "cohort/<str:year>/interns/count/",
+        CustomUserViewSet.as_view({"get": "get_cohort_interns_count"}),
+    ),
 ]

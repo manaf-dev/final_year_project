@@ -4,6 +4,7 @@
     import ImageDisplay from "./ImageDisplay.vue";
     import Loader from "./loader.vue";
     import { useAuthStore } from "@/stores/auth";
+    import BackButton from "./BackButton.vue";
 
     const props = defineProps({
         submissions: {
@@ -37,6 +38,7 @@
 
 <template>
     <div class="mx-auto p-6 space-y-8 bg-white rounded-lg shadow">
+        <BackButton />
         <div class="pb-4 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-medium">Portfolio For The Month</h3>

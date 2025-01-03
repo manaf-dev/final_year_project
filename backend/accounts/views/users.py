@@ -15,25 +15,6 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_interns(self, request):
-        supervisor = request.user
-        if not supervisor.account_type == "supervisor":
-            return Response(
-                {"detail": "You are not a supervisor"}, status=status.HTTP_403_FORBIDDEN
-            )
-
-        queryset = get_interns_by_supervisor(supervisor.id)
-        serializer = self.get_serializer(queryset, many=True)
-        interns = serializer.data
-
-        for intern in interns:
-            set_department(intern)
-            set_supervisor(intern)
-            set_intern_school(intern)
-            set_mentor(intern)
-
-        return Response(interns, status=status.HTTP_200_OK)
-
     def retrieve(self, request, pk=None):
         instance = self.get_object()
         data = user_info(instance)
@@ -76,11 +57,19 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         cohort = get_cohort_by_year(year=year)
 
         supervisor_interns = get_interns_by_supervisor(supervisor.id)
-        current_cohort_interns = supervisor_interns.filter(cohort=cohort)
-
-        interns_data = self.get_serializer(current_cohort_interns, many=True).data
+        cohort_interns = supervisor_interns.filter(cohort=cohort)
+        interns_data = self.get_serializer(cohort_interns, many=True).data
 
         return Response(interns_data, status=status.HTTP_200_OK)
+
+    def get_cohort_interns_count(self, request, year):
+        supervisor = self.check_supervisor(request)
+        cohort = get_cohort_by_year(year=year)
+
+        supervisor_interns = get_interns_by_supervisor(supervisor.id)
+        interns_count = supervisor_interns.filter(cohort=cohort).count()
+        context = {"cohort": cohort.year, "interns_count": interns_count}
+        return Response(context, status=status.HTTP_200_OK)
 
 
 class CustomRegisterView(RegisterView):

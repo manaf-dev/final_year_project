@@ -36,8 +36,7 @@
 </script>
 
 <template>
-    <DashboardLayout>
-        <template #title> {{ viewTitle }} </template>
+    <DashboardLayout :title="viewTitle">
         <template #content> <FirstMonthList :month="month" /> </template>
     </DashboardLayout>
 </template>

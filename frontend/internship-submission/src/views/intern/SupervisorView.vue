@@ -9,8 +9,7 @@
 </script>
 
 <template>
-    <DashboardLayout>
-        <template #title> Your Supervisor </template>
+    <DashboardLayout :title="'Your Supervisor'">
         <template #content>
             <div class="container mx-auto px-4 py-8 max-w-5xl">
                 <div

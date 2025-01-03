@@ -16,10 +16,10 @@ SUBMISSION_URLS = [
     path("submissions/upload/cv/", SubmissionViewSet.as_view({"post": "upload_cv"})),
     path(
         "submissions/cohort/<str:year>/<int:month>/",
-        SubmissionViewSet.as_view({"get": "get_cohort_submissions"}),
+        SubmissionViewSet.as_view({"get": "get_cohort_month_submissions"}),
     ),
     path(
-        "submissions/to-supervisor/",
-        SubmissionViewSet.as_view({"get": "get_submissions_toSupervisor"}),
+        "submissions/cohort/<str:year>/<int:month>/count/",
+        SubmissionViewSet.as_view({"get": "get_month_submissions_count"}),
     ),
 ]

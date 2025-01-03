@@ -26,12 +26,11 @@
 </script>
 
 <template>
-    <DashboardLayout>
-        <template #title>Cohort {{ route.params.year }}</template>
+    <DashboardLayout :title="route.params.year + ' Cohort'">
         <template #content>
             <div class="p-6 bg-gray-50 min-h-screen">
                 <BackButton />
-                <p class="text-gray-600 mb-4">Cohort Interns List</p>
+                <p class="text-gray-600 mt-4">Cohort Interns List</p>
                 <div v-if="loading" class="flex justify-center items-center">
                     <Loader />
                 </div>
