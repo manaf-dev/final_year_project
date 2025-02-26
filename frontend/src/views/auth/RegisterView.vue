@@ -58,7 +58,7 @@
                 "accounts/auth/registration/",
                 userData
             );
-            router.push("/login");
+            router.push({ name: "login" });
             toast.success(response.data.detail);
         } catch (error) {
             console.log("REG ERROR:", error);

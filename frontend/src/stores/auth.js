@@ -17,7 +17,6 @@ export const useAuthStore = defineStore('auth', {
     getters: {
         isIntern: (state) => state.user?.account_type === 'intern',
         isAuthenticated: (state) => !!state.accessToken,
-        hasProvidedDetails: (state) => !!state.user.intern_school
     },
     actions: {
 
