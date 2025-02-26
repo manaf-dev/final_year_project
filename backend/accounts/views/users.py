@@ -93,7 +93,7 @@ class CustomLoginView(APIView):
 
         if not user:
             context = {
-                "detail": "Invalid Student ID",
+                "detail": "Incorrect username",
                 "errors": {"Username": [f"no account found for '{username}'"]},
             }
             raise NotFound(context)
@@ -101,8 +101,14 @@ class CustomLoginView(APIView):
         if user.check_password(password) and user.is_active:
             if user.account_type == "intern" and user.level != "400":
                 context = {
-                    "detail": f"You do not have access yet, level {user.level}",
+                    "detail": f"Level {user.level}, you do not have access",
                     "errors": {"Cohort": ["User level don't have access to system"]},
+                }
+                raise AuthenticationFailed(context)
+            if user.account_type == "intern" and not user.supervisor:
+                context = {
+                    "detail": f"Supervisor not assigned to you yet. \nTry again later or visit IT directorate.",
+                    "errors": {"Supervisor": ["User not assigned supervisor"]},
                 }
                 raise AuthenticationFailed(context)
 

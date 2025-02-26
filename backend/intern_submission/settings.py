@@ -183,10 +183,13 @@ REST_AUTH = {
     "USE_JWT": True,
     "JWT_AUTH_HTTPONLY": True,
     "REGISTER_SERIALIZER": "accounts.serializers.users.CustomRegisterSerializer",
+    'OLD_PASSWORD_FIELD_ENABLED': True,
+    'LOGOUT_ON_PASSWORD_CHANGE': True,
 }
 
 SITE_ID = 1
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Configuration for Allauth settings
 # ACCOUNT_CONFIRM_EMAIL_ON_GET = True

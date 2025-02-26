@@ -1,9 +1,19 @@
 from django.urls import path, include
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+
 
 from accounts.views.users import CustomUserViewSet, CustomRegisterView, CustomLoginView
 
 USERS_URLS = [
     path("auth/login/", CustomLoginView.as_view()),
+    path(
+        "password/reset/",
+        PasswordResetView.as_view(),
+    ),
+    path(
+        "password/reset/<uidb64>/<token>/",
+        PasswordResetConfirmView.as_view(),
+    ),
     path("auth/", include("dj_rest_auth.urls")),
     path("auth/registration/", CustomRegisterView.as_view()),
     path("users/", CustomUserViewSet.as_view({"get": "list"})),

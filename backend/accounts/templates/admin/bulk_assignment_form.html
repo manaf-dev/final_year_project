@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    <p>Select a supervisor for the selected interns:</p>
+    {{ form.as_p }}
+    <input type="hidden" name="action" value="assign_interns_to_supervisor">
+    <button type="submit" class="button">Assign</button>
+  </form>
+{% endblock %}

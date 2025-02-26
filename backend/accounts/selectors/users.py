@@ -4,10 +4,12 @@ from accounts.serializers.users import CustomUserSerializer, SupervisorSerialize
 from accounts.selectors.departments import get_departments_by_id
 from accounts.selectors.intern_schools import get_intern_school_by_id
 from accounts.selectors.mentors import get_mentor_by_id
+from internships.selectors import get_cohort_by_id
 
 from accounts.serializers.departments import DepartmentSerializer
 from accounts.serializers.intern_schools import InternSchoolSerializer
 from accounts.serializers.mentors import MentorSerializer
+from internships.serializers import CohortSerializer
 
 
 def get_users():
@@ -72,10 +74,19 @@ def set_mentor(data: dict):
     return data
 
 
+def set_cohort(data: dict):
+    if data["cohort"]:
+        cohort = get_cohort_by_id(data["cohort"])
+        data["cohort"] = CohortSerializer(cohort).data
+        return data
+    return data
+
+
 def user_info(user):
     data = CustomUserSerializer(user).data
     data = set_department(data)
     data = set_supervisor(data)
     data = set_intern_school(data)
     data = set_mentor(data)
+    data = set_cohort(data)
     return data

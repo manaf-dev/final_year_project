@@ -161,3 +161,11 @@ class PortfolioList(viewsets.ModelViewSet):
 
         context = {"images": images_data, "files": files_data}
         return Response(context, status=status.HTTP_200_OK)
+
+    def total_portfolio_count(self, request):
+        intern = request.user
+        submissions = filter_submissions_by_intern(intern.id)
+        images = PortfolioImage.objects.filter(submission__in=submissions).count()
+        files = PortfolioFile.objects.filter(submission__in=submissions).count()
+        context = {"portfolio_count": images + files}
+        return Response(context, status=status.HTTP_200_OK)
