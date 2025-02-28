@@ -11,6 +11,7 @@
     const titles = ref(["mr", "mrs", "miss", "dr", "prof"]);
     const loading = ref(false);
     const departments = ref({});
+    const cohorts = ref({});
 
     const form = reactive({
         username: "",
@@ -19,7 +20,9 @@
         last_name: "",
         phone: "",
         email: "",
+        level: "",
         department: "",
+        cohort: "",
         password1: "",
         password2: "",
         account_type: "intern",
@@ -74,11 +77,13 @@
 
     onMounted(async () => {
         try {
-            const response = await apiClient.get("accounts/departments/");
-            departments.value = response.data;
-            console.log(departments.value);
+            const dep_response = await apiClient.get("accounts/departments/");
+            departments.value = dep_response.data;
+            const coh_response = await apiClient.get("internships/cohorts/");
+            cohorts.value = coh_response.data;
+            console.log("deps", departments.value, "cohots", cohorts.value);
         } catch (error) {
-            console.log("Error Getting department:", error);
+            console.log("Error Getting departments and cohorts:", error);
         }
     });
 </script>
@@ -205,6 +210,21 @@
                         required
                     />
                 </div>
+                <div class="mb-4">
+                    <label
+                        for="email"
+                        class="block text-sm font-medium text-gray-700"
+                        >Email</label
+                    >
+                    <input
+                        v-model="form.email"
+                        type="email"
+                        id="email"
+                        placeholder="Enter your Email"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
+                        required
+                    />
+                </div>
 
                 <div class="mb-4">
                     <label
@@ -225,6 +245,28 @@
                             :value="department.id"
                         >
                             {{ department.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label
+                        for="cohort"
+                        class="block text-sm font-medium text-gray-700"
+                        >Cohort</label
+                    >
+                    <select
+                        v-model="form.cohort"
+                        id="cohort"
+                        required
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
+                    >
+                        <option value="">Select Cohort</option>
+                        <option
+                            v-for="cohort in cohorts"
+                            :key="cohort.id"
+                            :value="cohort.id"
+                        >
+                            {{ cohort.year }} Internship Cohort
                         </option>
                     </select>
                 </div>

@@ -29,13 +29,16 @@ class PortfolioViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_month_portfolio(self, request, username, month):
+        """
+        Get portfolio images and files for a specific month
+        """
+
         intern = get_user_by_username(username)
         if not intern:
             return Response(
                 {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-        print("int:", intern, "mon:", month)
         submission = get_submission_by_intern(intern, month)
         if not submission:
             return Response(
@@ -72,6 +75,10 @@ class PortfolioViewset(viewsets.ModelViewSet):
         return Response(context, status=status.HTTP_200_OK)
 
     def delete_portfolio_img(self, request, portfolio_id):
+        """
+        Delete a portfolio image
+        """
+
         portfolio_img = get_portfolio_images_by_id(portfolio_id)
 
         if portfolio_img:

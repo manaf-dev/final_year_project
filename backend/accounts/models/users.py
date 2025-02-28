@@ -28,7 +28,7 @@ class CustomUser(AbstractUser):
         choices=[("intern", "Intern"), ("supervisor", "Supervisor")],
         null=True,
     )
-    level = models.CharField(max_length=25, null=True)
+    level = models.CharField(max_length=25, null=True, blank=True)
     supervisor = models.ForeignKey(
         "self", related_name="interns", on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -41,7 +41,7 @@ class CustomUser(AbstractUser):
     )
     mentor = models.ForeignKey(Mentor, on_delete=models.SET_NULL, null=True, blank=True)
     cohort = models.ForeignKey(
-        Cohort, related_name="cohort_interns", on_delete=models.CASCADE, null=True
+        Cohort, related_name="cohort_interns", on_delete=models.CASCADE, null=True, blank=True
     )
 
     def __str__(self):

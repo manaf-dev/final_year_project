@@ -53,16 +53,15 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         return submission
 
     def upload_img(self, request):
-
+        """
+        Uploads image files to the portfolio
+        """
         submission = self.get_existing_submissions(request)
 
-        # Access multiple files for 'portfolio_imgs'
         portfolio_imgs = request.FILES.getlist("files")
         portfolio_images_data = [
             {"image": img, "submission": submission.id} for img in portfolio_imgs
         ]
-
-        print("Portfolio images data to be serialized:", portfolio_images_data)
 
         portfolio_serializer = PortfolioImageSerializer(
             data=portfolio_images_data, many=True
@@ -71,7 +70,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         try:
             portfolio_serializer.save()
-            print("Portfolio images saved successfully.")
         except Exception as e:
             print("Error saving portfolio images:", e)
 
