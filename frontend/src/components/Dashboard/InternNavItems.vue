@@ -67,7 +67,7 @@
                             ? 'text-gray-100 bg-opacity-25 bg-gray-700'
                             : 'text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
                     ]"
-                    :to="{ name: 'first-submission', params: { month: 1 } }"
+                    :to="{ name: 'submissions-page', params: { month: 1 } }"
                     ><i class="pi pi-file" style="font-size: 1rem"></i>
                     <span class="mx-3">First Month</span>
                 </RouterLink>
@@ -83,7 +83,7 @@
                             ? 'text-gray-100 bg-opacity-25 bg-gray-700'
                             : 'text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
                     ]"
-                    :to="{ name: 'first-submission', params: { month: 2 } }"
+                    :to="{ name: 'submissions-page', params: { month: 2 } }"
                     ><i class="pi pi-file" style="font-size: 1rem"></i>
                     <span class="mx-3">Second Month</span></RouterLink
                 >
@@ -99,7 +99,7 @@
                             ? 'text-gray-100 bg-opacity-25 bg-gray-700'
                             : 'text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
                     ]"
-                    :to="{ name: 'first-submission', params: { month: 3 } }"
+                    :to="{ name: 'submissions-page', params: { month: 3 } }"
                     ><i class="pi pi-file" style="font-size: 1rem"></i>
                     <span class="mx-3">Third Month</span></RouterLink
                 >
@@ -115,7 +115,7 @@
                             ? 'text-gray-100 bg-opacity-25 bg-gray-700'
                             : 'text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
                     ]"
-                    :to="{ name: 'first-submission', params: { month: 4 } }"
+                    :to="{ name: 'submissions-page', params: { month: 4 } }"
                     ><i class="pi pi-file" style="font-size: 1rem"></i>
                     <span class="mx-3">Fourth Month</span></RouterLink
                 >

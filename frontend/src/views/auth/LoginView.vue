@@ -25,13 +25,7 @@
         try {
             await authStore.login(credentials);
             if (authStore.isIntern) {
-                if (!authStore.user.intern_school) {
-                    router.push({ name: "school" });
-                } else if (!authStore.user.mentor) {
-                    router.push({ name: "mentor" });
-                } else {
-                    router.push({ name: "intern-dashboard" });
-                }
+                router.push({ name: "intern-dashboard" });
             } else {
                 router.push({ name: "supervisor-dashboard" });
             }
@@ -90,17 +84,17 @@
                         placeholder="Enter your password"
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon"
                         required
-                        />
-                    </div>
+                    />
+                </div>
 
-                    <p class="mb-4 text-md text-gray-600">
-                        Forgot password? 
-                        <router-link
-                            :to="{ name: 'password-reset' }"
-                            class="text-green hover:underline"
-                            >Reset</router-link
-                        >
-                    </p>
+                <p class="mb-4 text-md text-gray-600">
+                    Forgot password?
+                    <router-link
+                        :to="{ name: 'password-reset' }"
+                        class="text-green hover:underline"
+                        >Reset</router-link
+                    >
+                </p>
 
                 <button
                     type="submit"

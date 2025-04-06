@@ -207,7 +207,7 @@
                     <router-link
                         class="mt-4 bg-green text-white px-4 py-2 rounded-lg hover:bg-[#008f4f] flex items-center"
                         :to="{
-                            name: 'submissions-first',
+                            name: 'submissions-list',
                             params: { month: '1' },
                         }"
                     >

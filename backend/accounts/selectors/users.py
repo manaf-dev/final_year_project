@@ -11,6 +11,8 @@ from accounts.serializers.intern_schools import InternSchoolSerializer
 from accounts.serializers.mentors import MentorSerializer
 from internships.serializers import CohortSerializer
 
+from dj_rest_auth.models import TokenModel
+
 
 def get_users():
     return CustomUser.objects.all()
@@ -25,12 +27,30 @@ def get_user_by_id(user_id: int):
         return user
 
 
+def get_user_by_email(email: str):
+    try:
+        user = CustomUser.objects.get(email=email)
+        return user
+    except CustomUser.DoesNotExist:
+        return None
+
+
 def get_user_by_username(username: str):
     try:
         user = CustomUser.objects.get(username=username)
         return user
     except CustomUser.DoesNotExist:
         return None
+
+
+def get_user_by_token(token: str):
+    try:
+        token = TokenModel.objects.get(key=token)
+        user = token.user
+    except TokenModel.DoesNotExist:
+        return None
+    else:
+        return user
 
 
 def get_interns_by_supervisor(supervisor_id: int):

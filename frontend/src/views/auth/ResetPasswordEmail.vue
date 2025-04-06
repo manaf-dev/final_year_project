@@ -4,8 +4,9 @@
     import apiClient from "@/services/api";
     import router from "@/router";
 
-    const email = ref("");
     const toast = useToast();
+
+    const email = ref("");
     const loading = ref(false);
 
     const handleResetRequest = async () => {
@@ -13,15 +14,19 @@
             toast.error("Email is required.");
             return;
         }
+
         loading.value = true;
+
         try {
-            const response = apiClient.post("accounts/auth/password/reset/", {
+            const response = await apiClient.post("accounts/password/reset/", {
                 email: email.value,
             });
+            console.log(response);
             toast.success(response.data.detail);
             router.push({ name: "email-sent" });
         } catch (error) {
             toast.error("An error occurred. Please try again later.");
+            console.error("Error sending reset email:", error);
         } finally {
             loading.value = false;
         }

@@ -212,18 +212,22 @@
                 </div>
                 <div class="mb-4">
                     <label
-                        for="email"
+                        for="level"
                         class="block text-sm font-medium text-gray-700"
-                        >Email</label
+                        >Level</label
                     >
-                    <input
-                        v-model="form.email"
-                        type="email"
-                        id="email"
-                        placeholder="Enter your Email"
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
+                    <select
+                        v-model="form.level"
+                        id="level"
                         required
-                    />
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
+                    >
+                        <option value="">Select Level</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                        <option value="300">300</option>
+                        <option value="400">400</option>
+                    </select>
                 </div>
 
                 <div class="mb-4">

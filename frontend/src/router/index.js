@@ -53,7 +53,7 @@ const router = createRouter({
       meta: { guest: true }
     },
     {
-      path: '/reset/password/new',
+      path: '/reset/password/new/:token',
       name: 'new-password',
       component: ResetNewPassword,
       meta: { guest: true }
@@ -72,7 +72,7 @@ const router = createRouter({
     },
     {
       path: '/in/submission/:month',
-      name: 'first-submission',
+      name: 'submissions-page',
       component: MonthPortfolio,
       meta: { requiresAuth: true, internsOnly: true }
     },
@@ -104,7 +104,7 @@ const router = createRouter({
     },
     {
       path: '/sp/submissions/:month',
-      name: 'submissions-first',
+      name: 'submissions-list',
       component: MonthSubmissions,
       meta: { requiresAuth: true, supervisorsOnly: true }
     },

@@ -9,7 +9,7 @@
     const supervisor = authStore.user.supervisor;
 
     const submissions = ref([]);
-    const completedSubmissions = ref(1);
+    const completedSubmissions = ref(0);
     const totalPortfolio = ref(0);
     const loading = ref(false);
 
@@ -69,6 +69,14 @@
         if (hour < 12) return "Good morning";
         if (hour < 18) return "Good afternoon";
         return "Good evening";
+    });
+
+    const currentSubmission = computed(() => {
+        if (completedSubmissions.value === 0) {
+            return completedSubmissions.value + 1;
+        } else {
+            return completedSubmissions.value;
+        }
     });
 </script>
 
@@ -152,8 +160,8 @@
                     </p>
                     <router-link
                         :to="{
-                            name: 'first-submission',
-                            params: { month: completedSubmissions + 1 },
+                            name: 'submissions-page',
+                            params: { month: 1 },
                         }"
                         class="mt-4 bg-maroon text-white px-4 py-2 w-fit rounded-lg hover:bg-[#a00048] flex items-center"
                     >
@@ -175,8 +183,8 @@
                     </p>
                     <router-link
                         :to="{
-                            name: 'first-submission',
-                            params: { month: completedSubmissions },
+                            name: 'submissions-page',
+                            params: { month: currentSubmission },
                         }"
                         class="mt-4 bg-green text-white px-4 py-2 w-fit rounded-lg hover:bg-[#008f4f] flex items-center"
                     >
