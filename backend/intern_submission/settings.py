@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import os
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
@@ -28,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
 
 
 # Application definition
@@ -95,7 +94,7 @@ WSGI_APPLICATION = "intern_submission.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": config("DB_ENGINE"),
         "NAME": config("DB_NAME"),
         "USER": config("DB_USER"),
         "HOST": config("DB_HOST"),
@@ -146,6 +145,15 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+# AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+# AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+# AWS_S3_REGION_NAME = "us-west-2"
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -154,8 +162,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS").split(",")
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS").split(",")
+CORS_ALLOW_ALL_ORIGINS = False
 
 
 REST_FRAMEWORK = {

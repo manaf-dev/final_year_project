@@ -27,26 +27,8 @@ urlpatterns = [
     path("api/accounts/", include("accounts.urls")),
     path("api/internships/", include("internships.urls")),
     path("api/", include("submissions.urls")),
-    # path("api-auth/", include("rest_framework.urls")),
-    # path("api/dj-rest-auth/", include("dj_rest_auth.urls")),
-    # path("api/dj-rest-auth/registration/", include("dj_rest_auth.registration.urls")),
-    # path(
-    #     "api/dj-rest-auth/verify-email/",
-    #     VerifyEmailView.as_view(),
-    #     name="rest_verify_email",
-    # ),
-    # path("account-confirm-email/<str:key>/", ConfirmEmailView.as_view()),
-    # path(
-    #     "api/dj-rest-auth/account-confirm-email/",
-    #     VerifyEmailView.as_view(),
-    #     name="account_email_verification_sent",
-    # ),
-    # re_path(
-    #     r"^account-confirm-email/(?P<key>[-:\w]+)/$",
-    #     VerifyEmailView.as_view(),
-    #     name="account_confirm_email",
-    # ),
 ]
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
