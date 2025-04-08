@@ -205,7 +205,7 @@
                         v-model="form.email"
                         type="email"
                         id="email"
-                        placeholder="Enter your Email"
+                        placeholder="Enter a valid Email"
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
                         required
                     />

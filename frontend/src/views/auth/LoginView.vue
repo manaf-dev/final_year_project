@@ -7,16 +7,27 @@
 
     const toast = useToast();
     const authStore = useAuthStore();
-    const loginForm = reactive({ username: "", password: "" });
+    const username_or_email = ref("");
+    const password = ref("");
     const loading = ref(false);
 
-    const handleLogin = () => {
-        if (loginForm.username == "") {
-            toast.error("Provide Student ID");
-        } else if (loginForm.password == "") {
+    const validateLogin = () => {
+        if (username_or_email.value == "") {
+            toast.error("Provide username or email");
+            return;
+        } else if (password.value == "") {
             toast.error("Provide Password");
+            return;
         } else {
-            login(loginForm);
+            const userCredentials = {};
+            if (username_or_email.value.includes("@")) {
+                userCredentials.email = username_or_email.value;
+            } else {
+                loginData.username = username_or_email.value;
+                userCredentials.username = username_or_email.value;
+            }
+            userCredentials.password = password.value;
+            login(userCredentials);
         }
     };
 
@@ -54,7 +65,7 @@
             </div>
 
             <!-- Login Form -->
-            <form @submit.prevent="handleLogin">
+            <form @submit.prevent="validateLogin">
                 <div class="mb-4">
                     <label
                         for="id"
@@ -62,10 +73,10 @@
                         >Username</label
                     >
                     <input
-                        v-model="loginForm.username"
+                        v-model="username_or_email"
                         type="text"
                         id="id"
-                        placeholder="Enter your username"
+                        placeholder="Enter your ID or email"
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon"
                         required
                     />
@@ -78,7 +89,7 @@
                         >Password</label
                     >
                     <input
-                        v-model="loginForm.password"
+                        v-model="password"
                         type="password"
                         id="password"
                         placeholder="Enter your password"

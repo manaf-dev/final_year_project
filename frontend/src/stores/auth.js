@@ -32,19 +32,30 @@ export const useAuthStore = defineStore('auth', {
         async login(credentials) {
             try {
                 const response = await apiClient.post('accounts/auth/login/', credentials);
-                this.user = response.data?.user
-                this.accessToken = response.data?.token?.access;
-                this.refreshToken = response.data?.token?.refresh;
+                if (response.data) {
+                    this.user = response.data.user || null;
+                    this.accessToken = response.data.token?.access || null;
+                    this.refreshToken = response.data.token?.refresh || null;
 
-                apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
+                    if (this.accessToken) {
+                        apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`;
+                        localStorage.setItem('accessToken', this.accessToken);
+                    }
+                    if (this.refreshToken) {
+                        localStorage.setItem('refreshToken', this.refreshToken);
+                    }
+                    if (this.user) {
+                        localStorage.setItem('user', JSON.stringify(this.user));
+                    }
 
-                localStorage.setItem('accessToken', this.accessToken)
-                localStorage.setItem('refreshToken', this.refreshToken)
-                localStorage.setItem('user', JSON.stringify(this.user))
-
-                toast.success(response.data.detail);
+                    if (response.data.detail) {
+                        toast.success(response.data.detail);
+                    }
+                } else {
+                    throw new Error('Invalid response data');
+                }
             } catch (error) {
-                console.log('DATA--', error)
+                console.log('DATA--', error);
                 toast.error(error.response?.data?.detail || error.message || 'Login failed');
             }
         },
