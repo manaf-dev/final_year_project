@@ -15,7 +15,9 @@
             <i class="pi pi-align-left" style="font-size: 1.3rem"></i>
         </button>
 
-        <h3 class="text-xl sm:text-2xl font-medium text-maroon capitalize">
+        <h3
+            class="text-xl sm:text-2xl text-center font-medium text-maroon capitalize"
+        >
             {{ title }}
         </h3>
 
