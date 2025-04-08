@@ -11,14 +11,14 @@ from accounts.models import *
 admin.site.site_header = "TIPS Admin"
 admin.site.register(Department)
 admin.site.register(Faculty)
-admin.site.register(Mentor)
+# admin.site.register(Mentor)
 
 
-@admin.register(InternSchool)
-class InternSchoolAdmin(admin.ModelAdmin):
-    list_display = ["school", "location", "district", "region"]
-    list_filter = ["district", "region"]
-    search_fields = ["school", "location", "district", "region"]
+# @admin.register(InternSchool)
+# class InternSchoolAdmin(admin.ModelAdmin):
+#     list_display = ["school", "location", "district", "region"]
+#     list_filter = ["district", "region"]
+#     search_fields = ["school", "location", "district", "region"]
 
 
 @admin.action(description="Assign selected interns to a supervisor")
