@@ -26,12 +26,14 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     def get_intern_submissions(self, request):
         intern = request.user
         submissions = filter_submissions_by_intern(intern.id).order_by("month")
-        if submissions:
+        try:
             submissions_data = self.get_serializer(submissions, many=True).data
             return Response(submissions_data, status=status.HTTP_200_OK)
-        else:
+        except Exception as e:
+            print("Error fetching intern submissions:", e)
             return Response(
-                {"detail": "No submission found"}, status=status.HTTP_404_NOT_FOUND
+                {"detail": "Error fetching intern submissions"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     def get_existing_submissions(self, request):
