@@ -4,12 +4,12 @@ import TokenService from './TokenServices';
 
 
 const apiClient = axios.create({
-    baseURL: process.env.VUE_APP_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
         'Content-Type': 'application/json'
     },
 });
-console.log('API Base URL:', process.env.VUE_APP_API_BASE_URL);
+console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL);
 // refresh token interceptor
 apiClient.interceptors.request.use(
     (config) => {
