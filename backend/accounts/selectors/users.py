@@ -78,20 +78,20 @@ def set_department(data: dict):
     return data
 
 
-def set_intern_school(data: dict):
-    if data["intern_school"]:
-        intern_school = get_intern_school_by_id(data["intern_school"])
-        data["intern_school"] = InternSchoolSerializer(intern_school).data
-        return data
-    return data
+# def set_intern_school(data: dict):
+#     if data["intern_school"]:
+#         intern_school = get_intern_school_by_id(data["intern_school"])
+#         data["intern_school"] = InternSchoolSerializer(intern_school).data
+#         return data
+#     return data
 
 
-def set_mentor(data: dict):
-    if data["mentor"]:
-        mentor = get_mentor_by_id(data["mentor"])
-        data["mentor"] = MentorSerializer(mentor).data
-        return data
-    return data
+# def set_mentor(data: dict):
+#     if data["mentor"]:
+#         mentor = get_mentor_by_id(data["mentor"])
+#         data["mentor"] = MentorSerializer(mentor).data
+#         return data
+#     return data
 
 
 def set_cohort(data: dict):
@@ -106,7 +106,7 @@ def user_info(user):
     data = CustomUserSerializer(user).data
     data = set_department(data)
     data = set_supervisor(data)
-    data = set_intern_school(data)
-    data = set_mentor(data)
+    # data = set_intern_school(data)
+    # data = set_mentor(data)
     data = set_cohort(data)
     return data

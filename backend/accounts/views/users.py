@@ -25,25 +25,25 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         user_data = data
         return Response({"user": user_data}, status=status.HTTP_200_OK)
 
-    @action(methods=["patch"], detail=True)
-    def update_school(self, request, pk=None):
-        # print(request.data)
-        intern_school = get_intern_school_by_id(request.data.get("id"))
+    # @action(methods=["patch"], detail=True)
+    # def update_school(self, request, pk=None):
+    #     # print(request.data)
+    #     intern_school = get_intern_school_by_id(request.data.get("id"))
 
-        if not intern_school:
-            return Response(
-                {"detail": "School not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+    #     if not intern_school:
+    #         return Response(
+    #             {"detail": "School not found"}, status=status.HTTP_404_NOT_FOUND
+    #         )
 
-        instance = self.get_object()
-        instance.intern_school = intern_school
-        instance.save()
-        serializer = self.get_serializer(instance)
-        context = {
-            "user": serializer.data,
-            "detail": "Internship school added successful",
-        }
-        return Response(context, status=status.HTTP_200_OK)
+    #     instance = self.get_object()
+    #     instance.intern_school = intern_school
+    #     instance.save()
+    #     serializer = self.get_serializer(instance)
+    #     context = {
+    #         "user": serializer.data,
+    #         "detail": "Internship school added successful",
+    #     }
+    #     return Response(context, status=status.HTTP_200_OK)
 
     def check_supervisor(self, request):
         supervisor = request.user
@@ -87,13 +87,16 @@ class CustomLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        username = request.data.get("username")
+        username_or_email = request.data.get("username") or request.data.get("email")
         password = request.data.get("password")
 
-        if not username or not password:
-            raise AuthenticationFailed("Missing required login credential")
+        if not username_or_email or not password:
+            raise AuthenticationFailed("Missing required login credentials")
 
-        user = get_user_by_username(username)
+        if "@" in username_or_email:
+            user = get_user_by_email(username_or_email)
+        else:
+            user = get_user_by_username(username_or_email)
 
         if not user:
             context = {
