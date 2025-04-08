@@ -13,7 +13,7 @@
         <template #content>
             <div class="container mx-auto px-4 py-8 max-w-5xl">
                 <div
-                    class="bg-white w-full max-w-[60%] shadow-lg rounded-lg overflow-hidden"
+                    class="bg-white w-full md:w-2/3 shadow-lg rounded-lg overflow-hidden"
                 >
                     <div class="border-b border-gray-200">
                         <div class="-mb-px flex">
