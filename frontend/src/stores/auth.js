@@ -25,7 +25,7 @@ export const useAuthStore = defineStore('auth', {
                 const response = await apiClient.get(`accounts/user/${this.user.id}/info/`)
                 localStorage.setItem('user', JSON.stringify(response.data.user))
             } catch (error) {
-                console.log('error getting user infor', error)
+                console.error(error)
             }
         },
 
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', {
                     throw new Error('Invalid response data');
                 }
             } catch (error) {
-                console.log('DATA--', error);
+                // console.log('DATA--', error);
                 toast.error(error.response?.data?.detail || error.message || 'Login failed');
             }
         },
@@ -85,7 +85,7 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.setItem('accessToken', this.accessToken)
                 apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
             } catch (error) {
-                console.log('refresh token error', error)
+                console.error(error)
             }
         },
 

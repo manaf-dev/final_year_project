@@ -27,9 +27,9 @@
                 "accounts/intern-schools/all/"
             );
             schools.value = response.data;
-            console.log(schools.value);
+            // console.log(schools.value);
         } catch (error) {
-            console.log("Error fetching schools", error);
+            console.log(error);
         }
     };
 
@@ -52,7 +52,7 @@
         schoolDetails.region = school.region;
         isCustomSchool.value = false;
         dropdownActive.value = false;
-        console.log("school", schoolDetails);
+        // console.log("school", schoolDetails);
     };
 
     const handleSchoolDetailsSubmit = async () => {
@@ -70,12 +70,12 @@
                     selectedSchool.value
                 );
             }
-            console.log(response.data);
+            // console.log(response.data);
             authStore.getUserInfo();
             toast.success(response.data.detail || "School details added");
             router.push("/mentor");
         } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
             toast.error(error.response.data.detail || "Error adding school");
         } finally {
             loading.value = false;

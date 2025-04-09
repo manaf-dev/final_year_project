@@ -13,7 +13,7 @@
     });
 
     const viewTitle = computed(() => {
-        console.log("switch value ", month.value);
+        // console.log("switch value ", month.value);
         switch (month.value) {
             case "1":
                 return "First Month Submissions";

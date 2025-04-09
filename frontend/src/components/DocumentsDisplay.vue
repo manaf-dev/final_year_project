@@ -16,10 +16,10 @@
     const selectedFile = ref(null);
 
     const openModal = (file) => {
-        console.log("opening modal");
+        // console.log("opening modal");
         selectedFile.value = file;
         isOpen.value = true;
-        console.log(selectedFile.value, "--", isOpen.value);
+        // console.log(selectedFile.value, "--", isOpen.value);
     };
 
     const cancelDelete = () => {

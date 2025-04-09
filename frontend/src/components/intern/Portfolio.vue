@@ -21,18 +21,18 @@
 
     const fetchPortfolios = async () => {
         loading.value = true;
-        console.log("loading....", loading.value);
+        // console.log("loading....", loading.value);
         try {
-            console.log("fetching....");
+            // console.log("fetching....");
             const response = await apiClient.get("portfolio/all/");
             portfolios.value = response.data;
         } catch (error) {
-            console.error("Failed to fetch portfolios:", error);
+            throw new Error("Error fetching portfolios");
         } finally {
             loading.value = false;
-            console.log("loading..", loading.value);
+            // console.log("loading..", loading.value);
         }
-        console.log("loading....", loading.value);
+        // console.log("loading....", loading.value);
     };
 
     fetchPortfolios();

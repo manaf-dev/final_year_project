@@ -16,16 +16,16 @@
     const route = useRoute();
 
     const get_month_submissions = async () => {
-        console.log("calling...");
+        // console.log("calling...");
         loading.value = true;
         try {
             const response = await apiClient.get(
                 `submissions/cohort/${props.year}/${props.month}/`
             );
             month_submissions.value = response.data;
-            console.log(month_submissions.value);
+            // console.log(month_submissions.value);
         } catch (error) {
-            console.log("error loading month submissions:", error);
+            throw new Error("Error fetching month submissions");
         } finally {
             loading.value = false;
         }

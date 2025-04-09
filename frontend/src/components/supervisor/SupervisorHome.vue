@@ -37,22 +37,22 @@
         const endDate = new Date(cohort.value.end_date);
         const currentDate = new Date();
 
-        console.log(
-            "start:",
-            startDate,
-            "end:",
-            endDate,
-            "currentDate:",
-            currentDate,
-            "cY:",
-            currentDate.getFullYear(),
-            "sY:",
-            startDate.getFullYear(),
-            "cM:",
-            currentDate.getMonth(),
-            "sM:",
-            startDate.getMonth()
-        );
+        // console.log(
+        //     "start:",
+        //     startDate,
+        //     "end:",
+        //     endDate,
+        //     "currentDate:",
+        //     currentDate,
+        //     "cY:",
+        //     currentDate.getFullYear(),
+        //     "sY:",
+        //     startDate.getFullYear(),
+        //     "cM:",
+        //     currentDate.getMonth(),
+        //     "sM:",
+        //     startDate.getMonth()
+        // );
         if (currentDate < startDate) return 1;
 
         const monthDifference =
@@ -72,7 +72,7 @@
                 `submissions/cohort/${currentYear}/${currentMonth.value}/count/`
             );
             submissions.value = response.data;
-            console.log("subs", submissions.value);
+            // console.log("subs", submissions.value);
         } catch (error) {
             console.error("error fetching subs", error);
         }
@@ -84,7 +84,7 @@
                 `accounts/cohort/${currentYear}/interns/count/`
             );
             interns.value = response.data;
-            console.log("interns", interns.value);
+            // console.log("interns", interns.value);
         } catch (error) {
             console.error("error fetching interns", error);
         }

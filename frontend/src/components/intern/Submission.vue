@@ -47,7 +47,7 @@
                 const response = await apiClient.get(
                     `portfolio/${authStore.user.username}/${props.month}/`
                 );
-                console.log(response.data);
+                // console.log(response.data);
                 submissions.value = response.data;
             } catch (error) {
                 console.error(error);

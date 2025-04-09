@@ -46,12 +46,13 @@
             toast.success(response.data.detail);
             authStore.logout();
         } catch (error) {
-            console.log("error", error);
-            toast.error(
+            // console.log("error", error);
+            const errorMessage =
                 error.response?.data?.old_password?.[0] ||
-                    error.response?.data?.new_password2?.[0] ||
-                    "An error occurred"
-            );
+                error.response?.data?.new_password2?.[0] ||
+                error.response?.data?.detail ||
+                "An error occurred";
+            toast.error(errorMessage);
         } finally {
             passwordData.old_password = "";
             passwordData.new_password1 = "";

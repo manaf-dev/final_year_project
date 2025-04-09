@@ -64,12 +64,17 @@
             router.push({ name: "login" });
             toast.success(response.data.detail);
         } catch (error) {
-            console.log("REG ERROR:", error);
-            toast.error(
+            // console.log("REG ERROR:", error);
+            const errorMessage =
                 error.response?.data?.detail ||
-                    error.response?.data?.username[0] ||
-                    "Registration failed"
-            );
+                (error.response?.data?.username &&
+                    error.response.data.username[0]) ||
+                (error.response?.data?.email && error.response.data.email[0]) ||
+                (error.response?.data?.phone && error.response.data.phone[0]) ||
+                (error.response?.data?.password1 &&
+                    error.response.data.password1[0]) ||
+                "Registration failed";
+            toast.error(errorMessage);
         } finally {
             loading.value = false;
         }
@@ -81,9 +86,9 @@
             departments.value = dep_response.data;
             const coh_response = await apiClient.get("internships/cohorts/");
             cohorts.value = coh_response.data;
-            console.log("deps", departments.value, "cohots", cohorts.value);
+            // console.log("deps", departments.value, "cohots", cohorts.value);
         } catch (error) {
-            console.log("Error Getting departments and cohorts:", error);
+            console.log(error);
         }
     });
 </script>

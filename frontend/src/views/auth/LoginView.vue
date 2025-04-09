@@ -23,7 +23,6 @@
             if (username_or_email.value.includes("@")) {
                 userCredentials.email = username_or_email.value;
             } else {
-                loginData.username = username_or_email.value;
                 userCredentials.username = username_or_email.value;
             }
             userCredentials.password = password.value;
@@ -41,7 +40,7 @@
                 router.push({ name: "supervisor-dashboard" });
             }
         } catch (error) {
-            console.log("Login Error:", error);
+            console.log(error);
         } finally {
             loading.value = false;
         }

@@ -24,7 +24,7 @@
                 `portfolio/${route.params.intern}/${route.params.month}/`
             );
             portfolio.value = response.data;
-            console.log(portfolio.value);
+            // console.log(portfolio.value);
         } catch (error) {
             console.error(error);
         } finally {
@@ -35,9 +35,9 @@
     onMounted(get_portfolio);
 
     const submitReview = async () => {
-        console.log("submitting review...");
-        console.log(supervisorComment.value);
-        console.log(grade.value);
+        // console.log("submitting review...");
+        // console.log(supervisorComment.value);
+        // console.log(grade.value);
 
         submittingReview.value = true;
 
@@ -58,7 +58,7 @@
             toast.error(
                 error.response?.data?.detail || "Error submitting review"
             );
-            console.log(error);
+            console.error(error);
         } finally {
             submittingReview.value = false;
             supervisorComment.value = "";

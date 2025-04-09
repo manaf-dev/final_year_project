@@ -33,10 +33,10 @@
     };
 
     const openConfirmModal = (image) => {
-        console.log("opening modal");
+        // console.log("opening modal");
         selectedImage.value = image;
         isConfirmOpen.value = true;
-        console.log(selectedImage.value, "--", isConfirmOpen.value);
+        // console.log(selectedImage.value, "--", isConfirmOpen.value);
     };
 
     const cancelDelete = () => {
@@ -47,9 +47,9 @@
     const confirmDelete = async (img_id) => {
         isConfirmOpen.value = false;
         deleting.value = true;
-        console.log("deleting...", deleting.value);
+        // console.log("deleting...", deleting.value);
 
-        console.log("headers", apiClient.defaults.headers);
+        // console.log("headers", apiClient.defaults.headers);
         try {
             const response = await apiClient.delete(
                 `portfolio/img/delete/${img_id}/`

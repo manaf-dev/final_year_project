@@ -26,7 +26,7 @@
             const response = await apiClient.get("notifications/");
             notifications.value = response.data;
         } catch (error) {
-            console.log("Error loading notifications", error);
+            console.log(error);
         } finally {
             loading.value = false;
         }
@@ -42,7 +42,7 @@
             );
             get_notifications();
         } catch (error) {
-            console.log("Error marking as read", error);
+            console.log(error);
         } finally {
             marking.value = false;
         }
@@ -56,7 +56,7 @@
             );
             get_notifications();
         } catch (error) {
-            console.log("Error deleting", error);
+            console.log(error);
         } finally {
             deleting.value = false;
         }
@@ -70,7 +70,7 @@
             );
             get_notifications();
         } catch (error) {
-            console.log("Error marking as read", error);
+            console.log(error);
         } finally {
             marking.value = false;
         }

@@ -21,7 +21,7 @@
             const response = await apiClient.post("accounts/password/reset/", {
                 email: email.value,
             });
-            console.log(response);
+            // console.log(response);
             toast.success(response.data.detail);
             router.push({ name: "email-sent" });
         } catch (error) {
@@ -61,13 +61,22 @@
                     :disabled="loading"
                     class="w-full bg-[#8c003b] hover:bg-[#a00449] text-white font-medium py-2 px-4 rounded-md shadow transition disabled:opacity-50"
                 >
-                    Send Reset Link
+                    Reset Password
                     <i
                         v-if="loading"
                         class="pi pi-spin pi-spinner-dotted text-xl ml-4"
                     ></i>
                 </button>
             </form>
+
+            <p class="mt-4 text-center text-sm text-gray-600">
+                Go back to
+                <router-link
+                    :to="{ name: 'login' }"
+                    class="text-maroon hover:underline"
+                    >Login</router-link
+                >
+            </p>
         </div>
     </div>
 </template>

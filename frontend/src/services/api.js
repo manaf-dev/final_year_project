@@ -9,7 +9,7 @@ const apiClient = axios.create({
         'Content-Type': 'application/json'
     },
 });
-console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL);
+// console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL);
 // refresh token interceptor
 apiClient.interceptors.request.use(
     (config) => {

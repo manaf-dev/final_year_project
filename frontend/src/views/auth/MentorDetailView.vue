@@ -22,7 +22,7 @@
             toast.success(response.data.details || "Mentor details added");
             router.push({ name: "intern-dashboard" });
         } catch (error) {
-            console.log("creating mentor", error);
+            // console.log("creating mentor", error);
             toast.error("Error adding mentor");
         } finally {
             loading.value = false;

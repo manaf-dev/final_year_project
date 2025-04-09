@@ -11,7 +11,7 @@
             const response = await apiClient.get("notifications/");
             notifications.value = response.data;
         } catch (error) {
-            console.log("Error loading notifications", error);
+            throw new Error("Error fetching notifications");
         }
     };
 

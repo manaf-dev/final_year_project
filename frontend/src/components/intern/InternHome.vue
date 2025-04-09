@@ -17,14 +17,14 @@
         try {
             const response = await apiClient.get("submissions/intern/");
             submissions.value = response.data;
-            console.log("getting submissions...");
+            // console.log("getting submissions...");
             submissions.value.forEach((submission) => {
                 if (submission.graded) {
                     completedSubmissions.value += 1;
                 }
             });
         } catch (error) {
-            console.log("submissions error:", error);
+            throw new Error("Error fetching submissions");
         }
     };
 
@@ -33,7 +33,7 @@
             const response = await apiClient.get("portfolio/count-all/");
             totalPortfolio.value += response.data.portfolio_count;
         } catch (error) {
-            console.log("portfolio count error:", error);
+            throw new Error("Error fetching portfolio count");
         }
     };
 
@@ -57,7 +57,7 @@
             await getPortfolioCount();
             // await getRecents();
         } catch (error) {
-            console.log(error);
+            throw new Error("Error fetching data");
         } finally {
             loading.value = false;
         }

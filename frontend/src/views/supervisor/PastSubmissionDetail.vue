@@ -13,7 +13,7 @@
                 `portfolio/${route.params.intern}/${route.params.month}/`
             );
             portfolio.value = response.data;
-            console.log(portfolio.value);
+            // console.log(portfolio.value);
         } catch (error) {
             console.error(error);
         } finally {

@@ -76,7 +76,7 @@
             toast.success(response.data.detail);
             emits("submissionCompleted");
         } catch (error) {
-            console.log("error", error, "error-r", error.response);
+            // console.log("error", error, "error-r", error.response);
             toast.error(error.response?.data?.detail || "Error uploading file");
         } finally {
             submitting.value = false;
