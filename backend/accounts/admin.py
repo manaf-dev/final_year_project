@@ -55,7 +55,7 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ("username", "email", "account_type", "supervisor", "cohort")
     list_filter = ("account_type", "cohort", "department")
-    search_fields = ("username", "email", "department__name")
+    search_fields = ("username", "email", "department_name")
     actions = [assign_interns_to_supervisor]
 
     def get_queryset(self, request):
@@ -84,8 +84,6 @@ class CustomUserAdmin(UserAdmin):
                     "account_type",
                     "level",
                     "supervisor",
-                    "intern_school",
-                    "mentor",
                     "cohort",
                 ),
             },

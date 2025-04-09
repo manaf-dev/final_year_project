@@ -5,6 +5,7 @@ from accounts.models.users import CustomUser
 from accounts.selectors.departments import get_departments_by_id
 from accounts.serializers.departments import DepartmentSerializer
 from internships.selectors import get_cohort_by_id
+from allauth.account.models import EmailAddress
 
 
 class SupervisorSerializer(serializers.ModelSerializer):
@@ -38,8 +39,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "level",
             "department",
             "supervisor",
-            "intern_school",
-            "mentor",
             "cohort",
             "last_login",
         )
@@ -54,6 +53,12 @@ class CustomRegisterSerializer(RegisterSerializer):
     department = serializers.CharField(required=True)
     level = serializers.CharField(required=True)
     cohort = serializers.CharField(required=True)
+
+    # unique phone
+    def validate_phone(self, phone):
+        if CustomUser.objects.filter(phone=phone).exists():
+            raise serializers.ValidationError("Phone number already exists")
+        return phone
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
@@ -80,6 +85,11 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.account_type = self.cleaned_data["account_type"]
         user.phone = self.cleaned_data["phone"]
         user.level = self.cleaned_data["level"]
+        email_address, created = EmailAddress.objects.get_or_create(
+            user=user, email=user.email
+        )
+        email_address.verified = True
+        email_address.save()
 
         try:
             department = get_departments_by_id(self.cleaned_data["department"])
