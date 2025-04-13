@@ -3,13 +3,12 @@
     import { useAuthStore } from "@/stores/auth";
     import { ref, computed, onMounted } from "vue";
     import Loader from "../loader.vue";
+    import router from "@/router";
 
     const authStore = useAuthStore();
-    const submissions = ref({});
-    const interns = ref({});
-    const loading = ref(false);
+    const submissionCounts = ref({});
     const currentYear = new Date().getFullYear();
-    const cohort = ref(null);
+    const loading = ref(false);
 
     // Computed
     const getGreeting = computed(() => {
@@ -19,83 +18,22 @@
         return "Good evening";
     });
 
-    const fetchCurrentCohort = async () => {
+    const getSubmissionCounts = async () => {
         try {
             const response = await apiClient.get(
-                `internships/cohort/${currentYear}/`
+                `submissions/cohort/${currentYear}/count/`
             );
-            cohort.value = response.data;
-        } catch (error) {
-            console.error("error fetching current cohort", error);
-        }
-    };
-
-    const determineMonth = () => {
-        if (!cohort.value) return 1;
-
-        const startDate = new Date(cohort.value.start_date);
-        const endDate = new Date(cohort.value.end_date);
-        const currentDate = new Date();
-
-        // console.log(
-        //     "start:",
-        //     startDate,
-        //     "end:",
-        //     endDate,
-        //     "currentDate:",
-        //     currentDate,
-        //     "cY:",
-        //     currentDate.getFullYear(),
-        //     "sY:",
-        //     startDate.getFullYear(),
-        //     "cM:",
-        //     currentDate.getMonth(),
-        //     "sM:",
-        //     startDate.getMonth()
-        // );
-        if (currentDate < startDate) return 1;
-
-        const monthDifference =
-            (currentDate.getFullYear() - startDate.getFullYear()) * 12 +
-            (currentDate.getMonth() - startDate.getMonth());
-        if (monthDifference < 1) return 1;
-        if (monthDifference < 2) return 2;
-        if (monthDifference < 3) return 3;
-        return 4;
-    };
-
-    const currentMonth = computed(determineMonth);
-
-    const fetchSubmissions = async () => {
-        try {
-            const response = await apiClient.get(
-                `submissions/cohort/${currentYear}/${currentMonth.value}/count/`
-            );
-            submissions.value = response.data;
-            // console.log("subs", submissions.value);
+            submissionCounts.value = response.data;
+            // console.log("subs", submissionCounts.value);
         } catch (error) {
             console.error("error fetching subs", error);
-        }
-    };
-
-    const fetchInterns = async () => {
-        try {
-            const response = await apiClient.get(
-                `accounts/cohort/${currentYear}/interns/count/`
-            );
-            interns.value = response.data;
-            // console.log("interns", interns.value);
-        } catch (error) {
-            console.error("error fetching interns", error);
         }
     };
 
     onMounted(async () => {
         loading.value = true;
         try {
-            await fetchCurrentCohort();
-            await fetchSubmissions();
-            await fetchInterns();
+            await getSubmissionCounts();
         } catch (error) {
             console.error("error fetching data", error);
         } finally {
@@ -134,9 +72,9 @@
                     <i class="pi pi-users text-5xl text-maroon"></i>
                     <div>
                         <h2 class="text-3xl font-bold text-maroon">
-                            {{ interns.interns_count || 0 }}
+                            {{ submissionCounts.value.interns_count || 0 }}
                         </h2>
-                        <p class="text-gray-600">Total Interns</p>
+                        <p class="text-gray-600">Total Assigned Interns</p>
                     </div>
                 </div>
 
@@ -147,7 +85,7 @@
                     <i class="pi pi-folder text-5xl text-green"></i>
                     <div>
                         <h2 class="text-3xl font-bold text-green">
-                            {{ submissions.submissions_count || 0 }}
+                            {{ submissionCounts.value.submissions_count }}
                         </h2>
                         <p class="text-gray-600">Total Submissions</p>
                     </div>
@@ -161,11 +99,10 @@
                     <div>
                         <h2 class="text-3xl font-bold text-yellow">
                             {{
-                                interns.interns_count -
-                                    submissions.submissions_count || 0
+                                submissionCounts.value.graded_submissions_count
                             }}
                         </h2>
-                        <p class="text-gray-600">Pending Submissions</p>
+                        <p class="text-gray-600">Graded Submissions</p>
                     </div>
                 </div>
             </div>
@@ -227,12 +164,12 @@
                         Stay updated with the latest notifications about
                         submissions, grading, and system updates.
                     </p>
-                    <button
+                    <router-link
                         class="mt-4 bg-yellow text-black px-4 py-2 rounded-lg hover:bg-[#ffd83e] flex items-center"
-                        @click="navigateTo('notifications')"
+                        :to="{ name: 'notifications' }"
                     >
                         <i class="pi pi-bell mr-2"></i> View Notifications
-                    </button>
+                    </router-link>
                 </div>
             </div>
         </div>

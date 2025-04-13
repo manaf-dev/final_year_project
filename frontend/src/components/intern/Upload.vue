@@ -1,7 +1,6 @@
 <script setup>
     import apiClient from "@/services/api";
     import { ref } from "vue";
-    Loader;
     import { useToast } from "vue-toastification";
     import Loader from "../loader.vue";
 
@@ -60,12 +59,10 @@
     };
 
     // File submission functions
-    const handleSubmit = async (endpoint, files) => {
+    const handleSubmit = async (endpoint, file) => {
         const formData = new FormData();
         formData.append("month", props.month);
-        files.forEach((file) => {
-            formData.append("files", file);
-        });
+        formData.append("file", file);
 
         submitting.value = true;
         try {

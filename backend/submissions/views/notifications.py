@@ -11,12 +11,15 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
     def get_notifications(self, request):
         user = request.user
-        notifications = self.queryset.filter(receiver=user).order_by("-timestamp")
-
-        if not notifications:
+        if not user:
             return Response(
-                [], status=status.HTTP_200_OK
+                {"detail": "User not authenticated"},
+                status=status.HTTP_401_UNAUTHORIZED,
             )
+
+        notifications = self.queryset.filter(receiver=user).order_by("-timestamp")
+        if not notifications:
+            return Response([], status=status.HTTP_200_OK)
 
         notifications_data = self.get_serializer(notifications, many=True).data
         return Response(notifications_data, status=status.HTTP_200_OK)

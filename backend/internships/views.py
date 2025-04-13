@@ -18,7 +18,7 @@ class CohortViewSet(viewsets.ModelViewSet):
     def years(self, request):
         cohorts = Cohort.objects.all().distinct()
         serializer = self.get_serializer(cohorts, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
         year = kwargs.get("year")
@@ -26,4 +26,4 @@ class CohortViewSet(viewsets.ModelViewSet):
         if not cohort:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.get_serializer(cohort)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)

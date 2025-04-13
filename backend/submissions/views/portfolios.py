@@ -42,7 +42,7 @@ class PortfolioViewset(viewsets.ModelViewSet):
         submission = get_submission_by_intern(intern, month)
         if not submission:
             return Response(
-                {"detail": "No submission found"}, status=status.HTTP_404_NOT_FOUND
+                {"detail": "No submission found"}, status=status.HTTP_200_OK
             )
 
         portfolio_imgs = get_portfolio_images_by_submission(submission.id)

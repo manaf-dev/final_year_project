@@ -1,5 +1,6 @@
 from ._base_imports import *
 from django.utils import timezone
+from django.db.models import Count, Q
 from accounts.models.users import CustomUser
 from accounts.selectors.users import get_interns_by_supervisor
 from submissions.models.submissions import Submission
@@ -140,7 +141,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    def check_supervisor(self, request):
+    def is_supervisor(self, request):
         supervisor = request.user
 
         if supervisor.account_type != "supervisor":
@@ -152,7 +153,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         return supervisor
 
     def get_cohort_month_submissions(self, request, year, month):
-        supervisor = self.check_supervisor(request)
+        supervisor = self.is_supervisor(request)
         cohort = get_cohort_by_year(year=year)
 
         interns = get_interns_by_supervisor(supervisor.id)
@@ -165,15 +166,20 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def get_month_submissions_count(self, request, year, month):
-        supervisor = self.check_supervisor(request)
+    def get_submissions_count(self, request, year):
+        supervisor = self.is_supervisor(request)
         cohort = get_cohort_by_year(year=year)
 
         interns = get_interns_by_supervisor(supervisor.id)
         cohort_interns = interns.filter(cohort=cohort)
-        print("cohot", cohort_interns)
-        submissions_count = self.queryset.filter(
-            month=month, intern__in=cohort_interns
-        ).count()
-        context = {"month": month, "submissions_count": submissions_count}
-        return Response(context, status=status.HTTP_200_OK)
+
+        counts = self.queryset.filter(intern__in=cohort_interns).aggregate(
+            submissions_count=Count("id"),
+            graded_submissions_count=Count("id", filter=Q(graded=True)),
+        )
+        counts = {
+            "submissions_count": counts.get("submissions_count", 0),
+            "graded_submissions_count": counts.get("graded_submissions_count", 0),
+            "interns_count": cohort_interns.count(),
+        }
+        return Response(counts, status=status.HTTP_200_OK)

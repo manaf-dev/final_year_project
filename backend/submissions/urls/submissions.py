@@ -19,7 +19,7 @@ SUBMISSION_URLS = [
         SubmissionViewSet.as_view({"get": "get_cohort_month_submissions"}),
     ),
     path(
-        "submissions/cohort/<str:year>/<int:month>/count/",
-        SubmissionViewSet.as_view({"get": "get_month_submissions_count"}),
+        "submissions/cohort/<str:year>/count/",
+        SubmissionViewSet.as_view({"get": "get_submissions_count"}),
     ),
 ]

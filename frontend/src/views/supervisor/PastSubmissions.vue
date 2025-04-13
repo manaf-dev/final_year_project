@@ -12,9 +12,6 @@
         try {
             const response = await apiClient.get("internships/cohorts/");
             cohorts.value = response.data;
-            cohorts.value = cohorts.value.filter(
-                (item) => item.year < String(new Date().getFullYear())
-            );
         } catch (error) {
             console.error("Error fetching cohorts:", error);
         } finally {
