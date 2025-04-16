@@ -179,10 +179,15 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30), 
     "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
+    "BLACKLIST_AFTER_ROTATION": True,  # Enable blacklisting of tokens after logout
+#     "AUTH_COOKIE": "access_token",  # Name of the access token cookie
+#     "AUTH_COOKIE_SECURE": True,    # Use HTTPS
+#     "AUTH_COOKIE_HTTP_ONLY": True, # Prevent JavaScript access
+#     "AUTH_COOKIE_PATH": "/",       # Path for the cookie
+#     "AUTH_COOKIE_SAMESITE": "Lax", # CSRF protection
 }
 
 

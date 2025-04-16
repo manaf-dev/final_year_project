@@ -94,11 +94,11 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     def upload_philosophy(self, request):
         submission = self.get_existing_submissions(request)
 
-        philosophy_file = request.data.get("files")
+        philosophy_file = request.data.get("file")
         print("Philosophy:", philosophy_file)
 
         if not philosophy_file:
-            return Response({"detail": "Philosophy file not sent"})
+            return Response({"detail": "Philosophy file not sent"}, status=status.HTTP_400_BAD_REQUEST)
 
         philosophy = {
             "submission": submission.id,
@@ -122,11 +122,11 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     def upload_cv(self, request):
         submission = self.get_existing_submissions(request)
 
-        cv_file = request.data.get("files")
+        cv_file = request.data.get("file")
         print("CV:", cv_file)
 
         if not cv_file:
-            return Response({"detail": "CV file not sent"})
+            return Response({"detail": "CV file not sent"}, status=status.HTTP_400_BAD_REQUEST)
 
         cv = {
             "submission": submission.id,

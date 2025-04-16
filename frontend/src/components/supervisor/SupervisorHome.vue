@@ -33,6 +33,7 @@
     onMounted(async () => {
         loading.value = true;
         try {
+console.log('fetching....')
             await getSubmissionCounts();
         } catch (error) {
             console.error("error fetching data", error);
@@ -72,7 +73,7 @@
                     <i class="pi pi-users text-5xl text-maroon"></i>
                     <div>
                         <h2 class="text-3xl font-bold text-maroon">
-                            {{ submissionCounts.value.interns_count || 0 }}
+                            {{ submissionCounts.interns_count }}
                         </h2>
                         <p class="text-gray-600">Total Assigned Interns</p>
                     </div>
@@ -85,7 +86,7 @@
                     <i class="pi pi-folder text-5xl text-green"></i>
                     <div>
                         <h2 class="text-3xl font-bold text-green">
-                            {{ submissionCounts.value.submissions_count }}
+                            {{ submissionCounts.submissions_count }}
                         </h2>
                         <p class="text-gray-600">Total Submissions</p>
                     </div>
@@ -99,7 +100,7 @@
                     <div>
                         <h2 class="text-3xl font-bold text-yellow">
                             {{
-                                submissionCounts.value.graded_submissions_count
+                                submissionCounts.graded_submissions_count
                             }}
                         </h2>
                         <p class="text-gray-600">Graded Submissions</p>

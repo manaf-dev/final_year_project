@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import { computed } from 'vue';
 import { useToast } from 'vue-toastification';
 import apiClient from '../services/api';
 import router from '@/router';
+import TokenService from '@/services/TokenServices';
 
 
 const toast = useToast();
@@ -10,8 +10,8 @@ const toast = useToast();
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: JSON.parse(localStorage.getItem('user')) || null,
-        accessToken: localStorage.getItem('accessToken') || null,
-        refreshToken: localStorage.getItem('refreshToken') || null,
+        accessToken: TokenService.getAccessToken(),
+        refreshToken: TokenService.getRefreshToken(),
     }),
 
     getters: {
@@ -39,10 +39,10 @@ export const useAuthStore = defineStore('auth', {
 
                     if (this.accessToken) {
                         apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`;
-                        localStorage.setItem('accessToken', this.accessToken);
+                        TokenService.saveToken(this.accessToken);
                     }
                     if (this.refreshToken) {
-                        localStorage.setItem('refreshToken', this.refreshToken);
+                        TokenService.saveRefreshToken(this.refreshToken);
                     }
                     if (this.user) {
                         localStorage.setItem('user', JSON.stringify(this.user));
@@ -52,7 +52,7 @@ export const useAuthStore = defineStore('auth', {
                         toast.success(response.data.detail);
                     }
                 } else {
-                    throw new Error('Invalid response data');
+                    toast.error('Login failed');
                 }
             } catch (error) {
                 // console.log('DATA--', error);

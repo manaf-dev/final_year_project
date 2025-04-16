@@ -1,6 +1,7 @@
 class TokenService {
     static getAccessToken() {
-        return localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem('accessToken');
+        return accessToken ? accessToken : null;
     }
 
     static saveToken(token) {
@@ -12,7 +13,8 @@ class TokenService {
     }
 
     static getRefreshToken() {
-        return localStorage.getItem('refreshToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        return refreshToken ? refreshToken : null;
     }
 
     static saveRefreshToken(refreshToken) {
