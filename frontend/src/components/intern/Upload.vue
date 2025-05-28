@@ -21,6 +21,7 @@
     const philosophyFile = ref(null);
     const cvFile = ref(null);
     const submitting = ref(false);
+    const videoUrl = ref("");
 
     // Image handling
     const handleImageChange = (event) => {
@@ -97,6 +98,30 @@
     const handleCvSubmit = async () => {
         await handleSubmit("submissions/upload/cv/", cvFile.value);
         cvFile.value = null;
+    };
+
+    const handleVideoSubmit = async () => {
+        if (!videoUrl.value) {
+            toast.error("Please enter a valid video URL");
+            return;
+        }
+
+        submitting.value = true;
+        try {
+            const response = await apiClient.post("submissions/submit/video/", {
+                month: props.month,
+                video_url: videoUrl.value,
+            });
+
+            toast.success(response.data.detail);
+            emits("submissionCompleted");
+        } catch (error) {
+            toast.error(
+                error.response?.data?.detail || "Error uploading video URL"
+            );
+        } finally {
+            submitting.value = false;
+        }
     };
 </script>
 
@@ -266,6 +291,47 @@
                             <i class="pi pi-upload mr-2"></i> Submit CV
                         </button>
                     </form>
+                </div>
+
+                <div
+                    v-if="month === '4'"
+                    class="bg-white rounded-lg shadow p-6"
+                >
+                    <h2 class="text-lg font-semibold text-[#8c003b] mb-4">
+                        Video Url
+                    </h2>
+                    <p class="text-sm text-gray-600 mb-4">
+                        Please upload your video to YouTube or any video hosting
+                        platform and paste the link below.
+                    </p>
+                    <div>
+                        <form
+                            @submit.prevent="handleVideoSubmit"
+                            class="space-y-4"
+                        >
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                >
+                                    Video URL
+                                </label>
+                                <input
+                                    type="url"
+                                    v-model="videoUrl"
+                                    class="py-3 px-3 block w-full text-sm text-gray-500 rounded-lg border border-gray-300 focus:ring-[#8c003b] focus:border-[#8c003b]"
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                :disabled="!videoUrl"
+                                class="w-full py-2 px-4 bg-[#8c003b] text-white font-medium rounded-lg hover:bg-[#a00048]"
+                            >
+                                <i class="pi pi-upload mr-2"></i> Submit Video
+                                URL
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

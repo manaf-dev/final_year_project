@@ -2,6 +2,7 @@
     import { ref } from "vue";
     import DocumentsDisplay from "./DocumentsDisplay.vue";
     import ImageDisplay from "./ImageDisplay.vue";
+    import VideoDisplay from "./VideoDisplay.vue";
     import Loader from "./loader.vue";
     import { useAuthStore } from "@/stores/auth";
 
@@ -89,6 +90,21 @@
                     >
                         Submit here
                     </button>
+                </div>
+            </div>
+
+            <!-- Video Section -->
+            <div v-if="month === '4'" class="space-y-4">
+                <h3 class="text-sm font-medium text-gray-900 mt-8">
+                    Submitted Video
+                </h3>
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                >
+                    <VideoDisplay
+                        v-if="submissions.video"
+                        :submission-video="submissions.video"
+                    />
                 </div>
             </div>
 
