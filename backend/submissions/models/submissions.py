@@ -37,9 +37,21 @@ class Comment(models.Model):
         return f"Comment to {self.submission.intern.username}'s submission"
 
 
-class Grade(models.Model):
-    mark = models.PositiveIntegerField(default=0)
-    submission = models.ForeignKey(
-        Submission, related_name="grades", on_delete=models.CASCADE
+# class Grade(models.Model):
+#     mark = models.PositiveIntegerField(default=0)
+#     submission = models.ForeignKey(
+#         Submission, related_name="grades", on_delete=models.CASCADE
+#     )
+#     graded_at = models.DateTimeField(auto_now=True)
+
+
+class SubmissionVideo(models.Model):
+    submission = models.OneToOneField(
+        Submission, on_delete=models.CASCADE, related_name="video"
     )
-    graded_at = models.DateTimeField(auto_now=True)
+    video_url = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Video for {self.submission.intern.username}'s submission"

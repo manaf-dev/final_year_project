@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -180,14 +182,14 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=30), 
-    "ROTATE_REFRESH_TOKENS": False,
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,  # Enable blacklisting of tokens after logout
-#     "AUTH_COOKIE": "access_token",  # Name of the access token cookie
-#     "AUTH_COOKIE_SECURE": True,    # Use HTTPS
-#     "AUTH_COOKIE_HTTP_ONLY": True, # Prevent JavaScript access
-#     "AUTH_COOKIE_PATH": "/",       # Path for the cookie
-#     "AUTH_COOKIE_SAMESITE": "Lax", # CSRF protection
+    #     "AUTH_COOKIE": "access_token",  # Name of the access token cookie
+    #     "AUTH_COOKIE_SECURE": True,    # Use HTTPS
+    #     "AUTH_COOKIE_HTTP_ONLY": True, # Prevent JavaScript access
+    #     "AUTH_COOKIE_PATH": "/",       # Path for the cookie
+    #     "AUTH_COOKIE_SAMESITE": "Lax", # CSRF protection
 }
 
 

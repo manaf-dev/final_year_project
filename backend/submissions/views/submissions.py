@@ -3,8 +3,11 @@ from django.utils import timezone
 from django.db.models import Count, Q
 from accounts.models.users import CustomUser
 from accounts.selectors.users import get_interns_by_supervisor
-from submissions.models.submissions import Submission
-from submissions.serializers.submissions import SubmissionSerializer
+from submissions.models.submissions import Submission, SubmissionVideo
+from submissions.serializers.submissions import (
+    SubmissionSerializer,
+    SubmissionVideoSerializer,
+)
 from submissions.serializers.portfolios import (
     PortfolioFileSerializer,
     PortfolioImageSerializer,
@@ -14,6 +17,7 @@ from submissions.selectors.submissions import (
     get_submission_by_intern,
     get_submission_by_id,
     filter_submissions_by_intern,
+    get_submission_video_by_submission,
 )
 from accounts.selectors.users import get_user_by_id
 from internships.selectors import get_cohort_by_year
@@ -47,10 +51,11 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         # Create a new submission if none exists
         if not submission:
             serializer = self.get_serializer(
-                data={"month": request.data.get("month"), "intern_source": intern.id}
+                data={"month": request.data.get("month"), "intern": intern.id}
             )
             serializer.is_valid(raise_exception=True)
-            submission = serializer.save()
+            submission_data = serializer.save()
+            submission = get_submission_by_id(submission_data.get("id"))
             print("New submission created:", submission)
 
         return submission
@@ -98,7 +103,10 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         print("Philosophy:", philosophy_file)
 
         if not philosophy_file:
-            return Response({"detail": "Philosophy file not sent"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Philosophy file not sent"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         philosophy = {
             "submission": submission.id,
@@ -126,7 +134,9 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         print("CV:", cv_file)
 
         if not cv_file:
-            return Response({"detail": "CV file not sent"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "CV file not sent"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         cv = {
             "submission": submission.id,
@@ -183,3 +193,42 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             "interns_count": cohort_interns.count(),
         }
         return Response(counts, status=status.HTTP_200_OK)
+
+    def submit_video(self, request):
+        submission = self.get_existing_submissions(request)
+
+        video_url = request.data.get("video_url")
+        if not video_url:
+            return Response(
+                {"detail": "Video URL not provided"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        video_data = {"video_url": video_url, "submission": submission.id}
+
+        submission_video = get_submission_video_by_submission(submission.id)
+        if submission_video:
+            serializer = SubmissionVideoSerializer(data=video_data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(
+                    {"detail": "Video submitted successfully"},
+                    status=status.HTTP_200_OK,
+                )
+
+            return Response(
+                {"detail": "Error submitting video"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = SubmissionVideoSerializer(data=video_data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"detail": "Video submitted successfully"},
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            {"detail": "Error submitting video"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )

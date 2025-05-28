@@ -9,6 +9,7 @@ from submissions.serializers.portfolios import (
     PortfolioImageSerializer,
 )
 from submissions.serializers.comments import CommentSerializer
+from submissions.serializers.submissions import SubmissionSerializer
 
 from submissions.selectors.submissions import (
     get_submission_by_intern,
@@ -51,11 +52,7 @@ class PortfolioViewset(viewsets.ModelViewSet):
             get_portfolio_files_by_submission(submission.id) if month == 4 else None
         )
 
-        context = {
-            "id": submission.id,
-            "grade": submission.grade,
-            "graded": submission.graded,
-        }
+        context = SubmissionSerializer(submission).data
 
         if portfolio_imgs:
             portfolio_imgs_data = self.get_serializer(portfolio_imgs, many=True).data

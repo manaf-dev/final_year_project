@@ -15,6 +15,10 @@ SUBMISSION_URLS = [
     ),
     path("submissions/upload/cv/", SubmissionViewSet.as_view({"post": "upload_cv"})),
     path(
+        "submissions/submit/video/",
+        SubmissionViewSet.as_view({"post": "submit_video"}),
+    ),
+    path(
         "submissions/cohort/<str:year>/<int:month>/",
         SubmissionViewSet.as_view({"get": "get_cohort_month_submissions"}),
     ),
