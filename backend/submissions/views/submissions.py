@@ -55,7 +55,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             )
             serializer.is_valid(raise_exception=True)
             submission_data = serializer.save()
-            submission = get_submission_by_id(submission_data.get("id"))
+            submission = get_submission_by_id(submission_data.data.get("id"))
             print("New submission created:", submission)
 
         return submission
@@ -66,11 +66,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         """
         submission = self.get_existing_submissions(request)
 
-        portfolio_imgs = request.FILES.getlist("files")
+        portfolio_imgs = request.FILES.getlist("file")
+        print("Portfolio images:", portfolio_imgs)
         portfolio_images_data = [
             {"image": img, "submission": submission.id} for img in portfolio_imgs
         ]
-
+        print("Portfolio images data:", portfolio_images_data)
         portfolio_serializer = PortfolioImageSerializer(
             data=portfolio_images_data, many=True
         )
@@ -92,14 +93,17 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             file_serializer = PortfolioFileSerializer(data=file)
             file_serializer.is_valid(raise_exception=True)
             file_serializer.save()
-            return True
+            return True, file_serializer.data
+        # except file_serializer.ValidationError as e:
+        #     print("Error saving file:", e)
+        #     return False, file_serializer.errors
         except Exception as e:
-            return False
+            return False, str(e)
 
     def upload_philosophy(self, request):
         submission = self.get_existing_submissions(request)
 
-        philosophy_file = request.data.get("file")
+        philosophy_file = request.data.getlist("file")[0]
         print("Philosophy:", philosophy_file)
 
         if not philosophy_file:
@@ -114,7 +118,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             "file": philosophy_file,
         }
 
-        file_save = self.save_file(philosophy)
+        file_save, errors = self.save_file(philosophy)
 
         if file_save:
             return Response(
@@ -123,14 +127,14 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             )
         else:
             return Response(
-                {"detail": "Error saving file"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                {"detail": "Error saving file", "errors": errors},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
     def upload_cv(self, request):
         submission = self.get_existing_submissions(request)
 
-        cv_file = request.data.get("file")
+        cv_file = request.data.getlist("file")[0]
         print("CV:", cv_file)
 
         if not cv_file:

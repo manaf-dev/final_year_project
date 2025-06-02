@@ -47,7 +47,11 @@ class Comment(models.Model):
 
 class SubmissionVideo(models.Model):
     submission = models.OneToOneField(
-        Submission, on_delete=models.CASCADE, related_name="video"
+        Submission,
+        on_delete=models.CASCADE,
+        related_name="video",
+        null=False,
+        blank=False,
     )
     video_url = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

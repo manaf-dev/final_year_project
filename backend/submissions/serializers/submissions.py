@@ -10,15 +10,7 @@ from django.core.exceptions import ValidationError
 class SubmissionVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubmissionVideo
-        fields = ("id", "video_url", "created_at", "updated_at")
-
-    def create(self, validated_data):
-        print("validated_data", validated_data)
-        video = SubmissionVideo.objects.create(
-            video_url=validated_data["video_url"],
-            submission=validated_data.get("submission"),
-        )
-        return video
+        fields = "__all__"
 
     def validate(self, attrs):
         video_url = attrs.get("video_url")
