@@ -83,7 +83,7 @@
                 <h3 class="text-sm font-medium text-gray-900 mt-8">
                     Submitted Video
                 </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 gap-6">
                     <VideoDisplay v-if="submissions.video" :submission-video="submissions.video" />
                 </div>
             </div>

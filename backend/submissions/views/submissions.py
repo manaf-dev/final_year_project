@@ -212,7 +212,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         submission_video = get_submission_video_by_submission(submission.id)
         if submission_video:
-            serializer = SubmissionVideoSerializer(data=video_data, partial=True)
+            serializer = SubmissionVideoSerializer(
+                submission_video,
+                data=video_data,
+                partial=True,
+                context={"request": request},
+            )
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(
