@@ -32,13 +32,7 @@ const youTubeEmbedUrl = computed(() => {
 </script>
 
 <template>
-    <div class="mx-auto space-y-8 bg-white rounded-lg shadow">
-        <!-- Header -->
-        <div
-            class="bg-[#8c003b] text-white rounded-lg shadow-lg px-6 py-4 flex justify-between items-center"
-        >
-            <h1 class="text-xl font-medium">Video Submission</h1>
-        </div>
+    <div class="w-full lg:w-1/2 space-y-8 bg-white rounded-lg shadow">
 
         <!-- Video Player -->
         <div class="p-6">
