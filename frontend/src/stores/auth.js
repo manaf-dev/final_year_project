@@ -62,7 +62,7 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             try {
-                const response = await apiClient.post('accounts/auth/logout/')
+                // const response = await apiClient.post('accounts/auth/logout/')
                 this.user = null;
                 this.accessToken = null;
                 this.refreshToken = null;
