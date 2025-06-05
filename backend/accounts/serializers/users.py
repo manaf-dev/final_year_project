@@ -1,109 +1,34 @@
-from dj_rest_auth.registration.serializers import RegisterSerializer
 from ._base_imports import *
-
-from accounts.models.users import CustomUser
-from accounts.selectors.departments import get_departments_by_id
+from accounts.models.users import UserAccount
 from accounts.serializers.departments import DepartmentSerializer
-from internships.selectors import get_cohort_by_id
-from allauth.account.models import EmailAddress
+from internships.serializers import CohortSerializer
 
 
-class SupervisorSerializer(serializers.ModelSerializer):
-    department = DepartmentSerializer(read_only=True)
-
+class UserAccountSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser
-        fields = (
-            "title",
-            "first_name",
-            "last_name",
-            "phone",
-            "email",
-            "department",
+        model = UserAccount
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["department"] = (
+            DepartmentSerializer(instance.department).data
+            if instance.department
+            else None
         )
-
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = (
-            "id",
-            "username",
-            "title",
-            "first_name",
-            "last_name",
-            "phone",
-            "email",
-            "avatar",
-            "account_type",
-            "level",
-            "department",
-            "supervisor",
-            "cohort",
-            "last_login",
-        )
-
-
-class CustomRegisterSerializer(RegisterSerializer):
-    title = serializers.CharField(required=True)
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
-    account_type = serializers.CharField(required=True)
-    phone = serializers.CharField(required=True)
-    department = serializers.CharField(required=True)
-    level = serializers.CharField(required=True)
-    cohort = serializers.CharField(required=True)
-
-    # unique phone
-    def validate_phone(self, phone):
-        if CustomUser.objects.filter(phone=phone).exists():
-            raise serializers.ValidationError("Phone number already exists")
-        return phone
-
-    def get_cleaned_data(self):
-        data = super().get_cleaned_data()
-        data.update(
+        data["supervisor"] = (
             {
-                field: self.validated_data.get(field, "")
-                for field in [
-                    "title",
-                    "first_name",
-                    "last_name",
-                    "account_type",
-                    "phone",
-                    "department",
-                    "level",
-                    "cohort",
-                ]
+                "title": instance.supervisor.title,
+                "first_name": instance.supervisor.first_name,
+                "last_name": instance.supervisor.last_name,
+                "phone": instance.supervisor.phone,
+                "email": instance.supervisor.email,
+                "department": DepartmentSerializer(instance.supervisor.department).data,
             }
+            if instance.supervisor
+            else None
+        )
+        data["cohort"] = (
+            CohortSerializer(instance.cohort).data if instance.cohort else None
         )
         return data
-
-    def save(self, request):
-        user = super().save(request)
-        user.title = self.cleaned_data["title"]
-        user.account_type = self.cleaned_data["account_type"]
-        user.phone = self.cleaned_data["phone"]
-        user.level = self.cleaned_data["level"]
-        email_address, created = EmailAddress.objects.get_or_create(
-            user=user, email=user.email
-        )
-        email_address.verified = True
-        email_address.save()
-
-        try:
-            department = get_departments_by_id(self.cleaned_data["department"])
-            if not department:
-                raise serializers.ValidationError("Department not found")
-            user.department = department
-
-            cohort = get_cohort_by_id(self.cleaned_data["cohort"])
-            if not cohort:
-                raise serializers.ValidationError("Cohort not found")
-            user.cohort = cohort
-
-            user.save()
-        except Exception as e:
-            raise serializers.ValidationError(str(e))
-
-        return user

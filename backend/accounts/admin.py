@@ -3,22 +3,14 @@ from django.contrib.auth.admin import UserAdmin
 from django.db.models import Q
 from django.template.response import TemplateResponse
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm, BulkAssignmentForm
+from .forms import UserAccountCreationForm, UserAccountChangeForm, BulkAssignmentForm
 
-# from accounts.models.users import CustomUser
+# from accounts.models.users import UserAccount
 from accounts.models import *
 
 admin.site.site_header = "TIPS Admin"
 admin.site.register(Department)
 admin.site.register(Faculty)
-# admin.site.register(Mentor)
-
-
-# @admin.register(InternSchool)
-# class InternSchoolAdmin(admin.ModelAdmin):
-#     list_display = ["school", "location", "district", "region"]
-#     list_filter = ["district", "region"]
-#     search_fields = ["school", "location", "district", "region"]
 
 
 @admin.action(description="Assign selected interns to a supervisor")
@@ -48,11 +40,11 @@ def assign_interns_to_supervisor(modeladmin, request, queryset):
     return TemplateResponse(request, "admin/bulk_assignment_form.html", context)
 
 
-@admin.register(CustomUser)
-class CustomUserAdmin(UserAdmin):
-    form = CustomUserChangeForm
-    add_form = CustomUserCreationForm
-    model = CustomUser
+@admin.register(UserAccount)
+class UserAccountAdmin(UserAdmin):
+    form = UserAccountChangeForm
+    add_form = UserAccountCreationForm
+    model = UserAccount
     list_display = ("username", "email", "account_type", "supervisor", "cohort")
     list_filter = ("account_type", "cohort", "department")
     search_fields = ("username", "email", "department_name")
@@ -67,7 +59,7 @@ class CustomUserAdmin(UserAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser:
-            form.base_fields["supervisor"].queryset = CustomUser.objects.filter(
+            form.base_fields["supervisor"].queryset = UserAccount.objects.filter(
                 account_type="supervisor"
             )
         return form
@@ -78,7 +70,6 @@ class CustomUserAdmin(UserAdmin):
             {
                 "fields": (
                     "title",
-                    "avatar",
                     "phone",
                     "department",
                     "account_type",

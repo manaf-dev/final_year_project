@@ -1,6 +1,6 @@
+import uuid
 from django.db import models
-
-from accounts.models.users import CustomUser
+from accounts.models.users import UserAccount
 
 
 class Submission(models.Model):
@@ -10,9 +10,10 @@ class Submission(models.Model):
         ("3", "Third Month"),
         ("4", "Fourth Month"),
     ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     month = models.CharField(max_length=10, choices=MONTHS)
     intern = models.ForeignKey(
-        CustomUser, related_name="submissions", on_delete=models.CASCADE
+        UserAccount, related_name="submissions", on_delete=models.CASCADE
     )
     grade = models.PositiveIntegerField(default=0, null=True, blank=True)
     graded = models.BooleanField(default=False)
@@ -23,8 +24,9 @@ class Submission(models.Model):
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(
-        CustomUser, null=True, blank=True, on_delete=models.CASCADE
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    supervisor = models.ForeignKey(
+        UserAccount, null=True, blank=True, on_delete=models.CASCADE
     )
     submission = models.ForeignKey(
         Submission, related_name="comments", on_delete=models.CASCADE
@@ -37,15 +39,8 @@ class Comment(models.Model):
         return f"Comment to {self.submission.intern.username}'s submission"
 
 
-# class Grade(models.Model):
-#     mark = models.PositiveIntegerField(default=0)
-#     submission = models.ForeignKey(
-#         Submission, related_name="grades", on_delete=models.CASCADE
-#     )
-#     graded_at = models.DateTimeField(auto_now=True)
-
-
 class SubmissionVideo(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     submission = models.OneToOneField(
         Submission,
         on_delete=models.CASCADE,

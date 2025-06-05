@@ -1,7 +1,7 @@
 from ._base_imports import *
 from django.utils import timezone
 from django.db.models import Count, Q
-from accounts.models.users import CustomUser
+from accounts.models.users import UserAccount
 from accounts.selectors.users import get_interns_by_supervisor
 from submissions.models.submissions import Submission, SubmissionVideo
 from submissions.serializers.submissions import (
@@ -43,7 +43,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     def get_existing_submissions(self, request):
         intern = request.user
-        print(request.data)
         submission = get_submission_by_intern(
             intern.id, month=request.data.get("month")
         )
@@ -54,10 +53,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 data={"month": request.data.get("month"), "intern": intern.id}
             )
             serializer.is_valid(raise_exception=True)
-            submission_data = serializer.save()
-            submission = get_submission_by_id(submission_data.data.get("id"))
-            print("New submission created:", submission)
-
+            submission = serializer.save()
         return submission
 
     def upload_img(self, request):

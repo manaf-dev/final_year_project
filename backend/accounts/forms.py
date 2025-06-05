@@ -1,24 +1,24 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from accounts.models.users import CustomUser
+from accounts.models.users import UserAccount
 
 
-class CustomUserCreationForm(UserCreationForm):
+class UserAccountCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
-        model = CustomUser
+        model = UserAccount
         fields = UserCreationForm.Meta.fields
 
 
-class CustomUserChangeForm(UserChangeForm):
+class UserAccountChangeForm(UserChangeForm):
     class Meta(UserChangeForm):
-        model = CustomUser
+        model = UserAccount
         fields = UserChangeForm.Meta.fields
 
 
 class BulkAssignmentForm(forms.Form):
     supervisor = forms.ModelChoiceField(
-        queryset=CustomUser.objects.filter(account_type="supervisor"),
+        queryset=UserAccount.objects.filter(account_type="supervisor"),
         label="Select Supervisor",
         required=True,
     )

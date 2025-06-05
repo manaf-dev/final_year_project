@@ -1,12 +1,20 @@
 from django.urls import path, include
-
 from accounts.views.users import PasswordViewSet
-
-
-from accounts.views.users import CustomUserViewSet, CustomRegisterView, CustomLoginView
+from accounts.views.users import UserAccountViewSet, LoginView
 
 USERS_URLS = [
-    path("auth/login/", CustomLoginView.as_view()),
+    path("auth/login/", LoginView.as_view()),
+    path("auth/registration/", UserAccountViewSet.as_view({"post": "register"})),
+    path("users/", UserAccountViewSet.as_view({"get": "list"})),
+    path("user/<str:user_id>/info/", UserAccountViewSet.as_view({"get": "retrieve"})),
+    path("user/<str:user_id>/update/", UserAccountViewSet.as_view({"put": "update"})),
+    path(
+        "user/<str:user_id>/delete/", UserAccountViewSet.as_view({"delete": "destroy"})
+    ),
+    path(
+        "cohort/<str:year>/interns/",
+        UserAccountViewSet.as_view({"get": "get_cohort_interns"}),
+    ),
     path(
         "password/reset/",
         PasswordViewSet.as_view({"post": "request_token"}),
@@ -15,23 +23,10 @@ USERS_URLS = [
         "password/reset/confirm/<str:token>/",
         PasswordViewSet.as_view({"post": "reset_password"}),
     ),
-    path("auth/", include("dj_rest_auth.urls")),
-    path("auth/registration/", CustomRegisterView.as_view()),
-    path("users/", CustomUserViewSet.as_view({"get": "list"})),
-    path("user/<int:pk>/info/", CustomUserViewSet.as_view({"get": "retrieve"})),
-    path("user/<int:pk>/update/", CustomUserViewSet.as_view({"put": "update"})),
     path(
-        "user/<int:pk>/update-school/",
-        CustomUserViewSet.as_view({"put": "update_school"}),
+        "<str:user_id>/password/change/",
+        PasswordViewSet.as_view({"put": "change_password"}),
     ),
-    path("user/<int:pk>/delete/", CustomUserViewSet.as_view({"delete": "destroy"})),
-    path("supervisor/interns/", CustomUserViewSet.as_view({"get": "get_interns"})),
-    path(
-        "cohort/<str:year>/interns/",
-        CustomUserViewSet.as_view({"get": "get_cohort_interns"}),
-    ),
-    path(
-        "cohort/<str:year>/interns/count/",
-        CustomUserViewSet.as_view({"get": "get_cohort_interns_count"}),
-    ),
+    # path("auth/", include("dj_rest_auth.urls")),
+    # path("supervisor/interns/", UserAccountViewSet.as_view({"get": "get_interns"})),
 ]

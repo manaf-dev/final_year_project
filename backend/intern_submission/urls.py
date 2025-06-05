@@ -20,7 +20,6 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
 
 urlpatterns = [
     path("admin/", admin.site.urls),

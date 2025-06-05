@@ -1,12 +1,12 @@
 import base64
-from dj_rest_auth.models import TokenModel
+from accounts.models.tokens import Token as TokenModel
 from cryptography.fernet import Fernet
 from decouple import config
 
-from accounts.models.users import CustomUser
+from accounts.models.users import UserAccount
 
 
-def generate_token(user: CustomUser) -> str:
+def generate_token(user: UserAccount) -> str:
     """
     Generate a token for the user
     """
@@ -56,3 +56,15 @@ def get_password_reset_token(key: str):
         return None
     else:
         return token
+
+
+def validate_posted_data(data: dict, fields: list[str]):
+    """Validate against missing fields in posted data"""
+    err: bool = False
+    errors: dict = {}
+    for field in fields:
+        if not data.get(field):
+            err = True
+            errors.update({field: ["this field is required"]})
+
+    return err, errors

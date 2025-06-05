@@ -2,9 +2,8 @@ from django.core.mail import EmailMultiAlternatives, send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from decouple import config
-from dj_rest_auth.models import TokenModel
 
-from accounts.models.users import CustomUser
+from accounts.models.users import UserAccount
 from accounts.utils.general import generate_token, encrypt_token
 
 
@@ -13,7 +12,7 @@ PROTOCOL = config("PROTOCOL", default="http")
 DOMAIN = config("DOMAIN", default="localhost:5173")
 
 
-def password_reset_email(user: CustomUser, email_addr: str) -> bool:
+def password_reset_email(user: UserAccount, email_addr: str) -> bool:
     """
     Send password reset email to user
     """
@@ -41,7 +40,7 @@ def password_reset_email(user: CustomUser, email_addr: str) -> bool:
     return False
 
 
-def password_reset_success_email(user: CustomUser, email_addr: str) -> bool:
+def password_reset_success_email(user: UserAccount, email_addr: str) -> bool:
     """
     Send password reset success email to user
     """

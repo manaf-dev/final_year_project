@@ -1,9 +1,11 @@
+import uuid
 from django.db import models
 
 from .submissions import Submission
 
 
 class PortfolioImage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     submission = models.ForeignKey(
         Submission, related_name="portfolio_imgs", on_delete=models.CASCADE
     )
@@ -12,6 +14,7 @@ class PortfolioImage(models.Model):
 
 
 class PortfolioFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     FILE_TYPES = [
         ("teaching_philosophy", "Teaching Philosophy"),
         ("reflective_writing", "Reflective writing"),

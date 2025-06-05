@@ -39,18 +39,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",  # for dj-allauth
+    # "django.contrib.sites",  # for dj-allauth
     # third party apps
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
+    # "allauth",
+    # "allauth.account",
+    # "allauth.socialaccount",
+    # "dj_rest_auth",
+    # "dj_rest_auth.registration",
     # custom apps
     "accounts.apps.AccountsConfig",
     "submissions.apps.SubmissionsConfig",
@@ -66,7 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
+    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "intern_submission.urls"
@@ -162,11 +162,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-AUTH_USER_MODEL = "accounts.CustomUser"
+AUTH_USER_MODEL = "accounts.UserAccount"
 
-# CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS").split(",")
 CORS_ALLOW_CREDENTIALS = True
-# CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS").split(",")
 CORS_ALLOW_ALL_ORIGINS = True
 
 
@@ -193,24 +191,24 @@ SIMPLE_JWT = {
 }
 
 
-REST_AUTH = {
-    "SESSION_LOGIN": False,
-    "USE_JWT": True,
-    "JWT_AUTH_HTTPONLY": True,
-    "REGISTER_SERIALIZER": "accounts.serializers.users.CustomRegisterSerializer",
-    "OLD_PASSWORD_FIELD_ENABLED": True,
-    # "LOGOUT_ON_PASSWORD_CHANGE": True,
-}
+# REST_AUTH = {
+#     "SESSION_LOGIN": False,
+#     "USE_JWT": True,
+#     "JWT_AUTH_HTTPONLY": True,
+# "REGISTER_SERIALIZER": "accounts.serializers.users.CustomRegisterSerializer",
+# "OLD_PASSWORD_FIELD_ENABLED": True,
+# "LOGOUT_ON_PASSWORD_CHANGE": True,
+# }
 
-SITE_ID = 1
+# SITE_ID = 1
 
 # Configuration for Allauth settings
 # ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
+# ACCOUNT_USERNAME_REQUIRED = True
+# ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+# ACCOUNT_EMAIL_VERIFICATION = "none"
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_UNIQUE_EMAIL = True
 
 # Email configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

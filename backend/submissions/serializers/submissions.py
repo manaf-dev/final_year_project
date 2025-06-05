@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from accounts.models.users import CustomUser
+from accounts.models.users import UserAccount
 from submissions.models.submissions import Submission, SubmissionVideo
-from accounts.serializers.users import CustomUserSerializer
+from accounts.serializers.users import UserAccountSerializer
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
@@ -24,9 +24,9 @@ class SubmissionVideoSerializer(serializers.ModelSerializer):
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
-    # intern = CustomUserSerializer(read_only=True)
+    # intern = UserAccountSerializer(read_only=True)
     # intern_source = serializers.PrimaryKeyRelatedField(
-    #     source="intern", queryset=CustomUser.objects.all(), write_only=True
+    #     source="intern", queryset=UserAccount.objects.all(), write_only=True
     # )
 
     class Meta:
@@ -35,7 +35,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data["intern"] = CustomUserSerializer(instance.intern).data
+        data["intern"] = UserAccountSerializer(instance.intern).data
         try:
             if instance.video:
                 data["video"] = SubmissionVideoSerializer(instance.video).data
