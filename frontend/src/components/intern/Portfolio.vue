@@ -5,6 +5,7 @@
     import ImageModal from "../ImageModal.vue";
     import DocumentsDisplay from "../DocumentsDisplay.vue";
     import ImageDisplay from "../ImageDisplay.vue";
+    import VideoDisplay from "../VideoDisplay.vue";
     import Loader from "../loader.vue";
 
     const loading = ref(false);
@@ -86,6 +87,24 @@
                     <div v-else class="col-span-full">
                         <p class="text-gray-500 text-center">
                             No documents submitted yet
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video section -->
+             <div class="space-y-4" v-if="portfolios.video">
+                <h3 class="text-sm font-medium text-gray-900 mt-8">
+                    Portfolio Video
+                </h3>
+                <div class="grid grid-cols-1 gap-6">
+                    <VideoDisplay
+                        v-if="portfolios.video"
+                        :submission-video="portfolios.video"
+                        />
+                    <div v-else class="col-span-full">
+                        <p class="text-gray-500 text-center">
+                            No video submitted yet
                         </p>
                     </div>
                 </div>

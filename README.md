@@ -18,7 +18,6 @@ This project is a **Teaching-Internship Portfolio Submission System** designed f
 - **Django** (Python Web Framework)
 - **Django REST Framework** (API Development)
 - **SimpleJWT** (Authentication)
-- **Django Allauth** (User Management)
 - **PostgreSQL** (Database)
 
 
