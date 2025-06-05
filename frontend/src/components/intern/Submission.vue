@@ -4,14 +4,14 @@
     import { useAuthStore } from "@/stores/auth";
     import { onBeforeRouteUpdate } from "vue-router";
     import SubmissionDisplay from "../SubmissionDisplay.vue";
-    import Upload from "./Upload.vue";
+    import SubmissionModal from "./SubmissionModal.vue";
     import SubmissionLock from "./SubmissionLock.vue";
 
     const props = defineProps({ month: String });
     const authStore = useAuthStore();
-    const activeTab = ref("view");
     const submissions = ref({});
     const loadingSubmissions = ref(false);
+    const showSubmissionModal = ref(false);
 
     const currentDate = ref(new Date().toISOString().slice(0, 10));
 
@@ -61,76 +61,147 @@
 
     onBeforeRouteUpdate((to, from) => {
         submissions.value = {};
-        activeTab.value = "view";
         getSubmissions();
     });
 
-    const uploaded = () => {
-        activeTab.value = "view";
+    const handleSubmissionCompleted = () => {
+        showSubmissionModal.value = false;
         getSubmissions();
+    };
+
+    const openSubmissionModal = () => {
+        if (!submissions.value.graded) {
+            showSubmissionModal.value = true;
+        }
     };
 </script>
 
 <template>
     <div v-if="isMonthPeriod" class="container mx-auto p-4">
-        <div class="border-b border-gray-200">
-            <nav class="flex -mb-px">
-                <button
-                    @click="activeTab = 'view'"
-                    :class="[
-                        'py-4 px-6',
-                        activeTab === 'view'
-                            ? 'border-b-2 text-blue-600'
-                            : 'text-gray-500',
-                    ]"
-                >
-                    View Submissions
-                </button>
-                <button
-                    @click="activeTab = 'submit'"
-                    :class="[
-                        'py-4 px-6',
-                        activeTab === 'submit'
-                            ? 'border-b-2 text-blue-600'
-                            : 'text-gray-500',
-                    ]"
-                >
-                    Submit Work
-                </button>
-            </nav>
-        </div>
+        <!-- Main Content Container -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Enhanced Header -->
+            <div class="bg-gradient-to-r from-[#8c003b] to-[#a00048] text-white px-6 py-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold mb-2">
+                            Month {{ month }} Portfolio
+                        </h1>
+                        <p class="text-white/80 text-sm">
+                            View your submissions and track your progress
+                        </p>
+                    </div>
+                    
+                    <!-- Status Badge and Submit Button -->
+                    <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                        <!-- Grading Status -->
+                        <div :class="[
+                            'px-3 py-1.5 rounded-full text-sm font-medium',
+                            submissions.graded
+                                ? 'bg-green-100 text-green-800 border border-green-200'
+                                : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                        ]">
+                            <i :class="[
+                                'pi mr-1.5',
+                                submissions.graded ? 'pi-check-circle' : 'pi-clock'
+                            ]"></i>
+                            {{ submissions.graded ? `Graded (${submissions.grade}/10)` : 'Pending Review' }}
+                        </div>
 
-        <div v-if="activeTab === 'view'" class="mt-2 space-y-4">
-            <SubmissionDisplay
-                @submit-view="activeTab = 'submit'"
-                @refresh-page="getSubmissions"
-                :submissions="submissions"
-                :month="props.month"
-                :loading-submissions="loadingSubmissions"
-            />
-        </div>
-
-        <div v-if="activeTab === 'submit'" class="mt-2">
-            <div class="bg-white rounded-lg shadow">
-                <!-- Header -->
-                <div
-                    class="bg-[#8c003b] text-white rounded-lg shadow-lg px-6 py-4 flex justify-between items-center"
-                >
-                    <h1 class="text-xl font-medium">Upload Portfolio</h1>
-                </div>
-                <Upload
-                    v-if="!submissions.graded"
-                    :month="props.month"
-                    @submission-completed="uploaded"
-                />
-
-                <div v-else class="py-8">
-                    <p class="text-lg text-gray-500 text-center">
-                        Submission Completed
-                    </p>
+                        <!-- Submit Button -->
+                        <button
+                            v-if="!submissions.graded"
+                            @click="openSubmissionModal"
+                            class="inline-flex items-center px-4 py-2 bg-white text-[#8c003b] rounded-lg font-medium hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                            <i class="pi pi-plus mr-2"></i>
+                            New Submission
+                        </button>
+                        
+                        <!-- Completed Badge -->
+                        <div v-else class="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-lg font-medium">
+                            <i class="pi pi-check-circle mr-2"></i>
+                            Completed
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Quick Stats (if there are submissions) -->
+            <div v-if="Object.keys(submissions).length" class="border-b border-gray-200 px-6 py-4">
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <!-- Images Count -->
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">
+                            {{ submissions.images?.length || 0 }}
+                        </div>
+                        <div class="text-xs text-gray-500">Portfolio Images</div>
+                    </div>
+                    
+                    <!-- Month 4 specific stats -->
+                    <template v-if="month === '4'">
+                        <!-- Teaching Philosophy Count -->
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600">
+                                {{ submissions.files?.filter(f => f.file_type === 'philosophy').length || 0 }}
+                            </div>
+                            <div class="text-xs text-gray-500">Teaching Philosophy</div>
+                        </div>
+                        
+                        <!-- CV Count -->
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-yellow-600">
+                                {{ submissions.files?.filter(f => f.file_type === 'cv').length || 0 }}
+                            </div>
+                            <div class="text-xs text-gray-500">CV</div>
+                        </div>
+                        
+                        <!-- Reflective Teaching Count -->
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-orange-600">
+                                {{ submissions.files?.filter(f => f.file_type === 'reflective').length || 0 }}
+                            </div>
+                            <div class="text-xs text-gray-500">Reflective Teaching</div>
+                        </div>
+                        
+                        <!-- Video Status -->
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-600">
+                                <i :class="submissions.video ? 'pi pi-check' : 'pi pi-times'"></i>
+                            </div>
+                            <div class="text-xs text-gray-500">Teaching Video</div>
+                        </div>
+                    </template>
+                    
+                    <!-- Comments Count -->
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-600">
+                            {{ submissions.comments?.length || 0 }}
+                        </div>
+                        <div class="text-xs text-gray-500">Comments</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Submission Display -->
+            <div class="p-6">
+                <SubmissionDisplay
+                    @submit-view="openSubmissionModal"
+                    @refresh-page="getSubmissions"
+                    :submissions="submissions"
+                    :month="props.month"
+                    :loading-submissions="loadingSubmissions"
+                />
+            </div>
         </div>
+
+        <!-- Submission Modal -->
+        <SubmissionModal
+            :is-open="showSubmissionModal"
+            :month="props.month"
+            @close="showSubmissionModal = false"
+            @submitted="handleSubmissionCompleted"
+        />
     </div>
 
     <SubmissionLock v-else />

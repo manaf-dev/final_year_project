@@ -65,116 +65,200 @@
 <template>
     <DashboardLayout :title="'Profile'">
         <template #content>
-            <div class="bg-gray-100 min-h-screen py-8 px-6">
-                <!-- Profile Header -->
-                <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
-                    <!-- Header Section -->
-                    <div class="flex items-center space-x-4 mb-6">
-                        <div
-                            class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center"
-                        >
-                            <i class="pi pi-user text-4xl text-gray-500"></i>
-                        </div>
-                        <div>
-                            <h1
-                                class="text-2xl font-semibold text-gray-800 capitalize"
-                            >
-                                {{ profile.last_name }} {{ profile.first_name }}
-                            </h1>
-                            <p class="text-sm text-gray-500 capitalize">
-                                {{ profile.account_type }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Profile Details -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <h2 class="text-sm font-medium text-gray-700 mb-2">
-                                Email
-                            </h2>
-                            <p class="text-gray-800">{{ profile.email }}</p>
-                        </div>
-                        <div>
-                            <h2 class="text-sm font-medium text-gray-700 mb-2">
-                                {{ authStore.isIntern ? "Student" : "Staff" }}
-                                ID
-                            </h2>
-                            <p class="text-gray-800">{{ profile.username }}</p>
-                        </div>
-                        <div v-if="authStore.isIntern">
-                            <h2 class="text-sm font-medium text-gray-700 mb-2">
-                                Cohort
-                            </h2>
-                            <p class="text-gray-800">
-                                {{ profile.cohort.year }} Internship Cohort
-                            </p>
-                        </div>
-                        <div>
-                            <h2 class="text-sm font-medium text-gray-700 mb-2">
-                                Phone
-                            </h2>
-                            <p class="text-gray-800">{{ profile.phone }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Divider -->
-                    <hr class="my-6 border-gray-300" />
-
-                    <!-- Change Password Section -->
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                            Change Password
-                        </h2>
-                        <form
-                            @submit.prevent="handleChangePassword"
-                            class="space-y-4"
-                        >
-                            <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700"
-                                    >Current Password</label
-                                >
-                                <input
-                                    type="password"
-                                    v-model="passwordData.old_password"
-                                    class="mt-1 py-2 px-4 w-full border rounded-md shadow-sm text-gray-700 focus:ring-[#006938] focus:border-[#006938]"
-                                />
+            <div class="bg-gray-50 min-h-screen p-4">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Main Content Container -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <!-- Enhanced Header -->
+                        <div class="bg-gradient-to-r from-maroon via-green to-green text-white px-6 py-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                <div class="flex items-center space-x-6">
+                                    <!-- User Avatar with Initials -->
+                                    <div class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center">
+                                        <span class="text-2xl font-bold text-white uppercase">
+                                            {{ profile.first_name?.charAt(0) || '' }}{{ profile.last_name?.charAt(0) || '' }}
+                                        </span>
+                                    </div>
+                                    
+                                    <div>
+                                        <h1 class="text-3xl font-bold mb-2 capitalize">
+                                            {{ profile.last_name }} {{ profile.first_name }}
+                                        </h1>
+                                        <div class="flex items-center space-x-4">
+                                            <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 capitalize">
+                                                {{ profile.account_type }}
+                                            </span>
+                                            <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30">
+                                                <i class="pi pi-shield-check mr-1.5"></i>
+                                                Active User
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Profile Stats -->
+                                <div class="hidden md:block text-right mt-4 sm:mt-0">
+                                    <div class="text-2xl font-bold">{{ profile.username }}</div>
+                                    <div class="text-sm text-white/80">{{ authStore.isIntern ? "Student" : "Staff" }} ID</div>
+                                </div>
                             </div>
-                            <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700"
-                                    >New Password</label
-                                >
-                                <input
-                                    type="password"
-                                    v-model="passwordData.new_password1"
-                                    class="mt-1 py-2 px-4 w-full border rounded-md shadow-sm text-gray-700 focus:ring-[#006938] focus:border-[#006938]"
-                                />
+                            
+                            <!-- Decorative elements -->
+                            <div class="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10"></div>
+                            <div class="absolute -bottom-4 -left-4 w-24 h-24 rounded-full bg-white/5"></div>
+                        </div>
+
+                        <!-- Profile Details Section -->
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i class="pi pi-info-circle text-[#8c003b] mr-2"></i>
+                                Profile Information
+                            </h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Email Card -->
+                                <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                                            <i class="pi pi-envelope text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-700">Email Address</h3>
+                                            <p class="text-lg font-semibold text-gray-900">{{ profile.email }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ID Card -->
+                                <div class="bg-gradient-to-r from-[#8c003b]/10 to-[#8c003b]/20 p-4 rounded-xl border border-[#8c003b]/30">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-[#8c003b] rounded-lg flex items-center justify-center">
+                                            <i class="pi pi-id-card text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-700">{{ authStore.isIntern ? "Student" : "Staff" }} ID</h3>
+                                            <p class="text-lg font-semibold text-gray-900">{{ profile.username }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cohort Card (for interns) -->
+                                <div v-if="authStore.isIntern" class="bg-gradient-to-r from-[#006938]/10 to-[#006938]/20 p-4 rounded-xl border border-[#006938]/30">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-[#006938] rounded-lg flex items-center justify-center">
+                                            <i class="pi pi-users text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-700">Cohort</h3>
+                                            <p class="text-lg font-semibold text-gray-900">{{ profile.cohort.year }} Internship Cohort</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Phone Card -->
+                                <div class="bg-gradient-to-r from-[#ffc712]/10 to-[#ffc712]/20 p-4 rounded-xl border border-[#ffc712]/30">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-[#ffc712] rounded-lg flex items-center justify-center">
+                                            <i class="pi pi-phone text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-700">Phone Number</h3>
+                                            <p class="text-lg font-semibold text-gray-900">{{ profile.phone }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700"
-                                    >Confirm New Password</label
-                                >
-                                <input
-                                    type="password"
-                                    v-model="passwordData.new_password2"
-                                    class="mt-1 py-2 px-4 w-full border rounded-md shadow-sm text-gray-700 focus:ring-[#006938] focus:border-[#006938]"
-                                />
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-b border-gray-200"></div>
+
+                        <!-- Change Password Section -->
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i class="pi pi-key text-[#8c003b] mr-2"></i>
+                                Change Password
+                            </h2>
+                            
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
+                                <form @submit.prevent="handleChangePassword" class="space-y-6">
+                                    <!-- Current Password -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            <i class="pi pi-lock mr-1.5"></i>
+                                            Current Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            v-model="passwordData.old_password"
+                                            class="w-full py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-gray-700 focus:ring-2 focus:ring-[#006938] focus:border-[#006938] transition-all duration-200"
+                                            placeholder="Enter your current password"
+                                        />
+                                    </div>
+
+                                    <!-- New Password -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            <i class="pi pi-shield mr-1.5"></i>
+                                            New Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            v-model="passwordData.new_password1"
+                                            class="w-full py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-gray-700 focus:ring-2 focus:ring-[#006938] focus:border-[#006938] transition-all duration-200"
+                                            placeholder="Enter your new password"
+                                        />
+                                    </div>
+
+                                    <!-- Confirm New Password -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            <i class="pi pi-check-circle mr-1.5"></i>
+                                            Confirm New Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            v-model="passwordData.new_password2"
+                                            class="w-full py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-gray-700 focus:ring-2 focus:ring-[#006938] focus:border-[#006938] transition-all duration-200"
+                                            placeholder="Confirm your new password"
+                                        />
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <button
+                                        type="submit"
+                                        :disabled="loading"
+                                        class="w-full bg-gradient-to-r from-[#8c003b] to-[#a00449] hover:from-[#a00449] hover:to-[#8c003b] text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                    >
+                                        <i v-if="loading" class="pi pi-spin pi-spinner mr-2"></i>
+                                        <i v-else class="pi pi-refresh mr-2"></i>
+                                        {{ loading ? 'Updating Password...' : 'Update Password' }}
+                                    </button>
+                                </form>
+
+                                <!-- Password Requirements -->
+                                <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                    <h4 class="text-sm font-semibold text-blue-800 mb-2">
+                                        <i class="pi pi-info-circle mr-1.5"></i>
+                                        Password Requirements
+                                    </h4>
+                                    <ul class="text-sm text-blue-700 space-y-1">
+                                        <li class="flex items-center">
+                                            <i class="pi pi-check text-green-600 mr-2"></i>
+                                            At least 8 characters long
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="pi pi-check text-green-600 mr-2"></i>
+                                            Must match confirmation password
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="pi pi-check text-green-600 mr-2"></i>
+                                            Different from current password
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                            <button
-                                type="submit"
-                                :disabled="loading"
-                                class="w-full bg-maroon hover:bg-[#a00449] text-white font-medium py-2 px-4 rounded-md shadow transition disabled:opacity-50"
-                            >
-                                Update Password
-                                <i
-                                    v-if="loading"
-                                    class="pi pi-spin pi-spinner-dotted text-xl ml-4"
-                                ></i>
-                            </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

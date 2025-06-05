@@ -81,135 +81,229 @@
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50">
-        <!-- Top Stats Overview -->
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-            <!-- Greeting Section -->
+            <!-- Enhanced Greeting Section -->
             <div class="mb-8">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-2xl font-semibold text-gray-900">
-                            {{ getGreeting }}, {{ authStore.user.first_name }}!
-                            👋
-                        </h1>
-                        <p class="mt-1 text-sm text-gray-500">
-                            Here's what's happening with your portfolio
-                        </p>
+                <div class="bg-gradient-to-r from-maroon via-green to-green rounded-3xl p-8 text-white relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black/5"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-6">
+                                <!-- User Avatar -->
+                                <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-2xl font-bold">
+                                    {{ authStore.user.first_name?.charAt(0)?.toUpperCase() || 'U' }}
+                                </div>
+                                
+                                <div>
+                                    <h1 class="text-3xl font-bold mb-2">
+                                        {{ getGreeting }}, {{ authStore.user.first_name }}! 👋
+                                    </h1>
+                                    <p class="text-gray-100 text-lg">
+                                        Here's your portfolio overview and progress
+                                    </p>
+                                    <div class="mt-3 flex items-center space-x-4">
+                                        <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30">
+                                            Teaching Intern
+                                        </span>
+                                        <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30">
+                                            {{ new Date().getFullYear() }} Cohort
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Progress Ring -->
+                            <div class="hidden md:flex items-center space-x-4">
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">{{ Math.round((completedSubmissions / 4) * 100) }}%</div>
+                                    <div class="text-sm text-blue-100">Complete</div>
+                                </div>
+                                <div class="w-16 h-16 rounded-full border-4 border-white/30 flex items-center justify-center relative">
+                                    <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-white transform rotate-45" 
+                                         :style="`transform: rotate(${(completedSubmissions / 4) * 360}deg)`"></div>
+                                    <span class="text-sm font-bold">{{ completedSubmissions }}/4</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <!-- Decorative elements -->
+                    <div class="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10"></div>
+                    <div class="absolute -bottom-4 -left-4 w-24 h-24 rounded-full bg-white/5"></div>
                 </div>
             </div>
 
-            <!-- Stats Cards -->
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <!-- Total Submissions -->
-                <div
-                    class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow"
-                >
-                    <i class="pi pi-file text-5xl text-maroon"></i>
-                    <div>
-                        <h2 class="text-3xl font-bold text-maroon">
-                            {{ totalPortfolio }}
-                        </h2>
-                        <p class="text-gray-600">Total Portfolio</p>
+            <!-- Enhanced Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Portfolio -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-3xl font-bold text-maroon mb-1">
+                                    {{ totalPortfolio }}
+                                </div>
+                                <div class="text-gray-600 font-medium">Total Portfolio Items</div>
+                                <div class="text-sm text-gray-500 mt-1">Uploaded documents</div>
+                            </div>
+                            <div class="w-14 h-14 bg-gradient-to-br from-maroon to-red-600 rounded-2xl flex items-center justify-center">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-red-50 rounded-lg p-3">
+                            <div class="flex items-center text-sm text-maroon">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                Keep building your portfolio
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Pending Submissions -->
-                <div
-                    class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow"
-                >
-                    <i class="pi pi-check text-5xl text-green"></i>
-                    <div>
-                        <h2 class="text-3xl font-bold text-green">
-                            {{ completedSubmissions }}
-                        </h2>
-                        <p class="text-gray-600">Graded Submissions</p>
+                <!-- Graded Submissions -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-3xl font-bold text-green-600 mb-1">
+                                    {{ completedSubmissions }}
+                                </div>
+                                <div class="text-gray-600 font-medium">Graded Submissions</div>
+                                <div class="text-sm text-gray-500 mt-1">Reviewed by supervisor</div>
+                            </div>
+                            <div class="w-14 h-14 bg-gradient-to-br from-green to-green rounded-2xl flex items-center justify-center">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-green-50 rounded-lg p-3">
+                            <div class="flex items-center text-sm text-green">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                {{ completedSubmissions === 0 ? 'Start your first submission' : 'Great progress!' }}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Supervisor -->
-                <div
-                    class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow"
-                >
-                    <i class="pi pi-user text-5xl text-yellow"></i>
-                    <div>
-                        <h2 class="text-3xl font-bold text-yellow capitalize">
-                            {{ supervisor.title }}.
-                            {{ supervisor.last_name }}
-                            {{ supervisor.first_name }}
-                        </h2>
-                        <p class="text-gray-600">Supervisor</p>
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="text-lg font-bold text-yellow mb-1 capitalize truncate">
+                                    {{ supervisor?.title }}. {{ supervisor?.last_name }}
+                                </div>
+                                <div class="text-gray-600 font-medium">Your Supervisor</div>
+                                <div class="text-sm text-gray-500 mt-1 truncate">{{ supervisor?.department?.name }}</div>
+                            </div>
+                            <div class="w-14 h-14 bg-gradient-to-br from-yellow to-yellow rounded-2xl flex items-center justify-center">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-yellow-50 rounded-lg p-3">
+                            <router-link :to="{ name: 'intern-supervisor' }" class="flex items-center text-sm text-orange-500  hover:text-yellow-800 transition-colors">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                View supervisor details
+                            </router-link>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <!-- Card: Upload Portfolio -->
-                <div
-                    class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
-                >
-                    <i class="pi pi-upload text-maroon text-4xl mb-4"></i>
-                    <h2 class="text-xl font-semibold text-maroon">
-                        Upload Portfolio
-                    </h2>
-                    <p class="text-gray-600 mt-2">
-                        Upload your teaching philosophy, CV, and monthly reports
-                        here.
-                    </p>
-                    <router-link
-                        :to="{
-                            name: 'submissions-page',
-                            params: { month: 1 },
-                        }"
-                        class="mt-4 bg-maroon text-white px-4 py-2 w-fit rounded-lg hover:bg-[#a00048] flex items-center"
-                    >
-                        <i class="pi pi-upload mr-2"></i> Upload Now
-                    </router-link>
+            <!-- Enhanced Action Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Upload Portfolio Card -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-maroon to-red-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Upload Portfolio</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Upload your teaching philosophy, CV, reflective documents, and monthly portfolio images.
+                        </p>
+                        
+                        <router-link
+                            :to="{ name: 'submissions-page', params: { month: 1 } }"
+                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-maroon to-red-600 text-white font-medium rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            Upload Now
+                        </router-link>
+                        
+                    </div>
                 </div>
 
-                <!-- Card: View Feedback -->
-                <div
-                    class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
-                >
-                    <i class="pi pi-comment text-green text-4xl mb-4"></i>
-                    <h2 class="text-xl font-semibold text-green">
-                        View Feedback
-                    </h2>
-                    <p class="text-gray-600 mt-2">
-                        Check comments and grades from your supervisor on your
-                        submissions.
-                    </p>
-                    <router-link
-                        :to="{
-                            name: 'submissions-page',
-                            params: { month: currentSubmission },
-                        }"
-                        class="mt-4 bg-green text-white px-4 py-2 w-fit rounded-lg hover:bg-[#008f4f] flex items-center"
-                    >
-                        <i class="pi pi-eye mr-2"></i> View Feedback
-                    </router-link>
+                <!-- View Feedback Card -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green to-green rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">View Feedback</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Check detailed comments, grades, and constructive feedback from your supervisor.
+                        </p>
+                        
+                        <router-link
+                            :to="{ name: 'submissions-page', params: { month: currentSubmission } }"
+                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green to-green text-white font-medium rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            View Feedback
+                        </router-link>
+                        
+                    </div>
                 </div>
 
-                <!-- Card: Notifications -->
-                <div
-                    class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
-                >
-                    <i class="pi pi-bell text-yellow text-4xl mb-4"></i>
-                    <h2 class="text-xl font-semibold text-yellow">
-                        Notifications
-                    </h2>
-                    <p class="text-gray-600 mt-2">
-                        Stay updated with deadlines, feedback, and important
-                        announcements.
-                    </p>
-                    <router-link
-                        :to="{ name: 'notifications' }"
-                        class="mt-4 bg-yellow text-black px-4 py-2 rounded-lg hover:bg-[#ffd83e] flex items-center"
-                    >
-                        <i class="pi pi-bell mr-2"></i> View Notifications
-                    </router-link>
+                <!-- Notifications Card -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow to-yellow rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM12 7a4 4 0 00-4 4v6h8v-6a4 4 0 00-4-4zM8 7V6a4 4 0 118 0v1"></path>
+                            </svg>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Notifications</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Stay updated with deadlines, feedback notifications, and important announcements.
+                        </p>
+                        
+                        <router-link
+                            :to="{ name: 'notifications' }"
+                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow to-yellow text-white font-medium rounded-xl hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM12 7a4 4 0 00-4 4v6h8v-6a4 4 0 00-4-4zM8 7V6a4 4 0 118 0v1"></path>
+                            </svg>
+                            View Notifications
+                        </router-link>
+                        
+                    </div>
                 </div>
             </div>
         </div>
