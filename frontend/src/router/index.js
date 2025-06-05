@@ -4,23 +4,22 @@ import RegisterView from '@/views/auth/RegisterView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import EmailSentView from '@/views/auth/EmailSentView.vue'
 import ResetNewPassword from '@/views/auth/ResetNewPassword.vue'
-import SchoolDetailView from '@/views/auth/SchoolDetailView.vue'
 import InternDashboardView from '@/views/intern/InternDashboardView.vue'
 import MonthPortfolio from '@/views/intern/MonthPortfolioView.vue'
 import TotalPortfolio from '@/views/intern/TotalPortfolioView.vue'
 import SupervisorView from '@/views/intern/SupervisorView.vue'
-import SchoolView from '@/views/intern/SchoolView.vue'
 import SupervisorDashboardView from '@/views/supervisor/SupervisorDashboardView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import MonthSubmissions from '@/views/supervisor/MonthSubmissionsView.vue'
 import PastSubmissions from '@/views/supervisor/PastSubmissions.vue'
 import PortfolioDetailView from '@/views/supervisor/PortfolioDetailView.vue'
-import MentorDetailView from '@/views/auth/MentorDetailView.vue'
 import CohortList from '@/views/supervisor/CohortList.vue'
 import CohortDetail from '@/views/supervisor/CohortDetail.vue'
 import PastSubmissionsMonths from '@/views/supervisor/PastSubmissionsMonths.vue'
 import PastSubmissionsInterns from '@/views/supervisor/PastSubmissionsInterns.vue'
 import Notifications from '@/views/Notifications.vue'
+import ScoresView from '@/views/supervisor/ScoresView.vue'
+
 
 
 
@@ -89,13 +88,6 @@ const router = createRouter({
       component: SupervisorView,
       meta: { requiresAuth: true, internsOnly: true }
     },
-    // {
-    //   path: '/in/school',
-    //   name: 'intern-school',
-    //   component: SchoolView,
-    //   meta: { requiresAuth: true, internsOnly: true }
-    // },
-
     {
       path: '/sp/dashboard',
       name: 'supervisor-dashboard',
@@ -112,6 +104,12 @@ const router = createRouter({
       path: '/sp/submission/:intern/:month',
       name: 'submission-detail',
       component: PortfolioDetailView,
+      meta: { requiresAuth: true, supervisorsOnly: true }
+    },
+    {
+      path: '/sp/scores',
+      name: 'scores',
+      component: ScoresView,
       meta: { requiresAuth: true, supervisorsOnly: true }
     },
     {

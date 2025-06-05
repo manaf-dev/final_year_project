@@ -30,7 +30,7 @@
         <template #content>
             <div class="p-6 bg-gray-50 min-h-screen">
                 <BackButton />
-                <p class="text-gray-600 mt-4">Cohort Interns List</p>
+                <p class="text-gray-600 mt-4">Total Interns: {{ interns.interns_count }}</p>
                 <div v-if="loading" class="flex justify-center items-center">
                     <Loader />
                 </div>
@@ -51,7 +51,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="intern in interns"
+                                v-for="intern in interns.interns"
                                 :key="intern.id"
                                 class="hover:bg-gray-200 hover:bg-opacity-20 even:bg-gray-100"
                             >
