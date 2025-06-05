@@ -3,6 +3,7 @@ import { useToast } from 'vue-toastification';
 import apiClient from '../services/api';
 import router from '@/router';
 import TokenService from '@/services/TokenServices';
+import axios from 'axios';
 
 
 const toast = useToast();
@@ -30,7 +31,9 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async login(credentials) {
+            
             try {
+                // console.log('axios', apiClient.headers.common['Authorization'])
                 const response = await apiClient.post('accounts/auth/login/', credentials);
                 if (response.data) {
                     this.user = response.data.user || null;
@@ -69,7 +72,7 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.removeItem('user')
                 localStorage.removeItem('accessToken')
                 localStorage.removeItem('refreshToken')
-                delete apiClient.defaults.headers.common['Authorization']
+                delete apiClient.defaults.headers['Authorization']
                 router.push('/login')
             } catch (error) {
                 toast.error('Logout failed')
@@ -77,15 +80,23 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async refreshAccessToken() {
+            console.log('Refreshing access token...');
             try {
-                const response = await apiClient.post('accounts/auth/token/refresh/', {
+                const baseURL = import.meta.env.VITE_API_BASE_URL;
+                // console.log('axisos baseURL:', axios.baseURL);
+                const response = await axios.post(`${baseURL}accounts/auth/token/refresh/`, {
                     refresh: this.refreshToken
                 })
+                console.log('Refresh response:', response);
                 this.accessToken = response.data.access
+                this.refreshToken = response.data.refresh
                 localStorage.setItem('accessToken', this.accessToken)
-                apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
+                localStorage.setItem('refreshToken', this.refreshToken)
+                // apiClient.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
             } catch (error) {
-                console.error(error)
+                console.error('error refreshing access token:', error);
+                toast.error('Login session expired, please login again');
+                this.logout(); // Log the user out if refresh token is expired
             }
         },
 

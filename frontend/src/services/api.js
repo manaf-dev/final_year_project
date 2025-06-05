@@ -9,18 +9,20 @@ const apiClient = axios.create({
     },
 });
 
-apiClient.interceptors.request.use(
-    (config) => {
-        const accessToken = TokenService.getAccessToken();
-        if (accessToken) {
-            config.headers["Authorization"] = 'Bearer ' + accessToken;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
+// apiClient.interceptors.request.use(
+//     (config) => {
+//         const accessToken = TokenService.getAccessToken();
+//         console.log('Access Token:', accessToken);
+//         console.log('Config Headers:', config.headers);
+//         if (accessToken) {
+//             config.headers["Authorization"] = 'Bearer ' + accessToken;
+//         }
+//         return config;
+//     },
+//     (error) => {
+//         return Promise.reject(error);
+//     }
+// );
 
 apiClient.interceptors.response.use(
     (response) => response,
@@ -36,9 +38,7 @@ apiClient.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${authStore.accessToken}`;
                 return apiClient(originalRequest);
             } catch (refreshError) {
-                if (refreshError.response && refreshError.response.status === 401) {
-                    authStore.logout(); // Log the user out if refresh token is expired
-                }
+                
                 return Promise.reject(refreshError);
             }
         }

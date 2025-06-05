@@ -1,10 +1,12 @@
 from django.urls import path, include
 from accounts.views.users import PasswordViewSet
 from accounts.views.users import UserAccountViewSet, LoginView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 USERS_URLS = [
     path("auth/login/", LoginView.as_view()),
     path("auth/registration/", UserAccountViewSet.as_view({"post": "register"})),
+    path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("users/", UserAccountViewSet.as_view({"get": "list"})),
     path("user/<str:user_id>/info/", UserAccountViewSet.as_view({"get": "retrieve"})),
     path("user/<str:user_id>/update/", UserAccountViewSet.as_view({"put": "update"})),

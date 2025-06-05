@@ -33,7 +33,7 @@
     onMounted(async () => {
         loading.value = true;
         try {
-console.log('fetching....')
+            console.log('fetching....')
             await getSubmissionCounts();
         } catch (error) {
             console.error("error fetching data", error);
