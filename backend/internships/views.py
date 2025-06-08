@@ -15,8 +15,8 @@ class CohortViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @action(detail=False, methods=["get"])
-    def years(self, request):
-        cohorts = Cohort.objects.all().distinct()
+    def cohorts(self, request):
+        cohorts = Cohort.objects.all().distinct().order_by("-year")
         serializer = self.get_serializer(cohorts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

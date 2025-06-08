@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import RegisterView from '@/views/auth/RegisterView.vue'
-import LoginView from '@/views/auth/LoginView.vue'
-import EmailSentView from '@/views/auth/EmailSentView.vue'
-import ResetNewPassword from '@/views/auth/ResetNewPassword.vue'
 import InternDashboardView from '@/views/intern/InternDashboardView.vue'
 import MonthPortfolio from '@/views/intern/MonthPortfolioView.vue'
 import TotalPortfolio from '@/views/intern/TotalPortfolioView.vue'
@@ -30,13 +26,13 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: RegisterView,
+      component: () => import('@/views/auth/RegisterView.vue'),
       meta: { guest: true }
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView,
+      component: () => import('@/views/auth/LoginView.vue'),
       meta: { guest: true }
     },
     {
@@ -48,13 +44,13 @@ const router = createRouter({
     {
       path: '/reset/password/email-sent',
       name: 'email-sent',
-      component: EmailSentView,
+      component: () => import('@/views/auth/EmailSentView.vue'),
       meta: { guest: true }
     },
     {
       path: '/reset/password/new/:token',
       name: 'new-password',
-      component: ResetNewPassword,
+      component: () => import('@/views/auth/ResetNewPassword.vue'),
       meta: { guest: true }
     },
     {
@@ -153,6 +149,12 @@ const router = createRouter({
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue')
     },
+    {
+      path: '/server-error',
+      name: 'server-error',
+      component: () => import('@/views/ServerErrorView.vue'),
+      meta: { guest: true }
+    }
   ]
 })
 

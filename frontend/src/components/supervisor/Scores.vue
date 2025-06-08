@@ -1,3 +1,318 @@
+<script setup>
+/*
+ * Scores Component for Supervisor Dashboard
+ *
+ * Features:
+ * - Cohort selection and management
+ * - Comprehensive scores table with color-coded grades
+ * - Excel export functionality
+ * - Sample data for development testing
+ *
+ * Development Mode:
+ * - Automatically loads sample data when NODE_ENV is 'development'
+ * - Falls back to sample data if API calls fail
+ * - Includes realistic test data with various score scenarios
+ */
+
+import { ref, computed, onMounted } from "vue";
+import { useToast } from "vue-toastification";
+import apiClient from "@/services/api";
+import * as XLSX from "xlsx";
+import ScoreCell from "./ScoreCell.vue";
+
+const toast = useToast();
+
+// Reactive data
+const cohorts = ref([]);
+const selectedCohort = ref("");
+const scores = ref([]);
+const loading = ref(false);
+
+// Sample data for development testing
+// const sampleCohorts = [
+//   { id: 1, year: 2024 },
+//   { id: 2, year: 2023 },
+//   { id: 3, year: 2022 },
+// ];
+
+const sampleScores = [
+  {
+    id: 1,
+    intern: {
+      username: "INT2024001",
+      title: "Mr",
+      first_name: "John",
+      last_name: "Doe",
+      department: { name: "Computer Science" },
+    },
+    month_1: 85,
+    month_2: 78,
+    month_3: 92,
+    month_4: 88,
+  },
+  {
+    id: 2,
+    intern: {
+      username: "INT2024002",
+      title: "Ms",
+      first_name: "Jane",
+      last_name: "Smith",
+      department: { name: "Information Technology" },
+    },
+    month_1: 72,
+    month_2: 85,
+    month_3: 79,
+    month_4: 83,
+  },
+  {
+    id: 3,
+    intern: {
+      username: "INT2024003",
+      title: "Mr",
+      first_name: "Michael",
+      last_name: "Johnson",
+      department: { name: "Software Engineering" },
+    },
+    month_1: 95,
+    month_2: 91,
+    month_3: 88,
+    month_4: 94,
+  },
+  {
+    id: 4,
+    intern: {
+      username: "INT2024004",
+      title: "Ms",
+      first_name: "Sarah",
+      last_name: "Williams",
+      department: { name: "Data Science" },
+    },
+    month_1: 68,
+    month_2: 73,
+    month_3: 71,
+    month_4: 76,
+  },
+  {
+    id: 5,
+    intern: {
+      username: "INT2024005",
+      title: "Mr",
+      first_name: "David",
+      last_name: "Brown",
+      department: { name: "Cybersecurity" },
+    },
+    month_1: 82,
+    month_2: null,
+    month_3: 87,
+    month_4: null,
+  },
+  {
+    id: 6,
+    intern: {
+      username: "INT2024006",
+      title: "Ms",
+      first_name: "Emily",
+      last_name: "Davis",
+      department: { name: "Computer Science" },
+    },
+    month_1: 45,
+    month_2: 58,
+    month_3: 62,
+    month_4: 55,
+  },
+  {
+    id: 7,
+    intern: {
+      username: "INT2024007",
+      title: "Mr",
+      first_name: "James",
+      last_name: "Wilson",
+      department: { name: "Information Systems" },
+    },
+    month_1: null,
+    month_2: null,
+    month_3: null,
+    month_4: null,
+  },
+  {
+    id: 8,
+    intern: {
+      username: "INT2024008",
+      title: "Ms",
+      first_name: "Lisa",
+      last_name: "Garcia",
+      department: { name: "Web Development" },
+    },
+    month_1: 89,
+    month_2: 92,
+    month_3: 85,
+    month_4: 90,
+  },
+];
+
+// Computed properties
+const selectedCohortName = computed(() => {
+  const cohort = cohorts.value.find((c) => c.id === selectedCohort.value);
+  return cohort ? `${cohort.year} Internship Cohort` : "";
+});
+
+// Methods
+const loadCohorts = async () => {
+  try {
+    // For development, use sample data
+    // if (process.env.NODE_ENV === "development") {
+    //   cohorts.value = sampleCohorts;
+    //   return;
+    // }
+
+    // Production API call
+    const response = await apiClient.get("internships/cohorts/");
+    cohorts.value = response.data;
+  } catch (error) {
+    console.error("Error loading cohorts:", error);
+    toast.error("Failed to load cohorts");
+    // Fallback to sample data if API fails
+    cohorts.value = sampleCohorts;
+  }
+};
+
+const loadScores = async () => {
+  if (!selectedCohort.value) {
+    scores.value = [];
+    return;
+  }
+
+  loading.value = true;
+  try {
+    // For development, use sample data
+    // if (process.env.NODE_ENV === "development") {
+    //   // Simulate API delay
+    //   await new Promise((resolve) => setTimeout(resolve, 500));
+    //   scores.value = sampleScores;
+    //   loading.value = false;
+    //   return;
+    // }
+
+    // Production API call
+    const response = await apiClient.get(
+      `submissions/scores/cohort/${selectedCohort.value}/`
+    );
+    scores.value = response.data;
+  } catch (error) {
+    console.error("Error loading scores:", error);
+    toast.error(error.response.data.detail || 'Error loading cohort scores');
+    // Fallback to sample data if API fails
+    scores.value = [];
+  } finally {
+    loading.value = false;
+  }
+};
+
+const calculateAverage = (score) => {
+  const scores = [score.month_1, score.month_2, score.month_3, score.month_4];
+  const validScores = scores.filter((s) => s !== null && s !== undefined);
+
+  if (validScores.length === 0) return "N/A";
+
+  const average =
+    validScores.reduce((sum, s) => sum + s, 0) / validScores.length;
+  return Math.round(average);
+};
+
+const getInitials = (firstName, lastName) => {
+  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+};
+
+const getAverageColor = (average) => {
+  if (average === "N/A") return "text-gray-500";
+  if (average >= 80) return "text-green-600";
+  if (average >= 70) return "text-blue-600";
+  if (average >= 60) return "text-yellow-600";
+  return "text-red-600";
+};
+
+const getStatus = (average) => {
+  if (average === "N/A") return "Pending";
+  if (average >= 80) return "Excellent";
+  if (average >= 70) return "Good";
+  if (average >= 60) return "Average";
+  return "Needs Improvement";
+};
+
+const getStatusClass = (average) => {
+  if (average === "N/A") return "bg-gray-100 text-gray-800";
+  if (average >= 80) return "bg-green-100 text-green-800";
+  if (average >= 70) return "bg-blue-100 text-blue-800";
+  if (average >= 60) return "bg-yellow-100 text-yellow-800";
+  return "bg-red-100 text-red-800";
+};
+
+const exportToExcel = () => {
+  if (!scores.value.length) {
+    toast.warning("No data to export");
+    return;
+  }
+
+  try {
+    // Prepare data for Excel
+    const excelData = scores.value.map((score) => ({
+      "Student ID": score.intern.username,
+      Title: score.intern.title,
+      "First Name": score.intern.first_name,
+      "Last Name": score.intern.last_name,
+      Department: score.intern.department?.name || "N/A",
+      "Month 1": score.month_1 ?? "Not graded",
+      "Month 2": score.month_2 ?? "Not graded",
+      "Month 3": score.month_3 ?? "Not graded",
+      "Month 4": score.month_4 ?? "Not graded",
+      Average: calculateAverage(score),
+      Status: getStatus(calculateAverage(score)),
+    }));
+
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(excelData);
+
+    // Add some styling (column widths)
+    const colWidths = [
+      { width: 15 }, // Student ID
+      { width: 8 }, // Title
+      { width: 15 }, // First Name
+      { width: 15 }, // Last Name
+      { width: 25 }, // Department
+      { width: 10 }, // Month 1
+      { width: 10 }, // Month 2
+      { width: 10 }, // Month 3
+      { width: 10 }, // Month 4
+      { width: 10 }, // Average
+      { width: 18 }, // Status
+    ];
+    ws["!cols"] = colWidths;
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Intern Scores");
+
+    // Generate filename with cohort and date
+    const cohortName = selectedCohortName.value.replace(/\s+/g, "_");
+    const date = new Date().toISOString().split("T")[0];
+    const filename = `${cohortName}_Scores_${date}.xlsx`;
+
+    // Download file
+    XLSX.writeFile(wb, filename);
+    toast.success("Scores exported successfully!");
+  } catch (error) {
+    console.error("Error exporting to Excel:", error);
+    toast.error("Failed to export scores");
+  }
+};
+
+// Lifecycle
+onMounted(() => {
+  loadCohorts();
+});
+</script>
+
+
 <template>
   <div class="p-6">
     <!-- Header Section -->
@@ -224,316 +539,4 @@
   </div>
 </template>
 
-<script setup>
-/*
- * Scores Component for Supervisor Dashboard
- *
- * Features:
- * - Cohort selection and management
- * - Comprehensive scores table with color-coded grades
- * - Excel export functionality
- * - Sample data for development testing
- *
- * Development Mode:
- * - Automatically loads sample data when NODE_ENV is 'development'
- * - Falls back to sample data if API calls fail
- * - Includes realistic test data with various score scenarios
- */
 
-import { ref, computed, onMounted } from "vue";
-import { useToast } from "vue-toastification";
-import apiClient from "@/services/api";
-import * as XLSX from "xlsx";
-import ScoreCell from "./ScoreCell.vue";
-
-const toast = useToast();
-
-// Reactive data
-const cohorts = ref([]);
-const selectedCohort = ref("");
-const scores = ref([]);
-const loading = ref(false);
-
-// Sample data for development testing
-const sampleCohorts = [
-  { id: 1, year: 2024 },
-  { id: 2, year: 2023 },
-  { id: 3, year: 2022 },
-];
-
-const sampleScores = [
-  {
-    id: 1,
-    intern: {
-      username: "INT2024001",
-      title: "Mr",
-      first_name: "John",
-      last_name: "Doe",
-      department: { name: "Computer Science" },
-    },
-    month_1: 85,
-    month_2: 78,
-    month_3: 92,
-    month_4: 88,
-  },
-  {
-    id: 2,
-    intern: {
-      username: "INT2024002",
-      title: "Ms",
-      first_name: "Jane",
-      last_name: "Smith",
-      department: { name: "Information Technology" },
-    },
-    month_1: 72,
-    month_2: 85,
-    month_3: 79,
-    month_4: 83,
-  },
-  {
-    id: 3,
-    intern: {
-      username: "INT2024003",
-      title: "Mr",
-      first_name: "Michael",
-      last_name: "Johnson",
-      department: { name: "Software Engineering" },
-    },
-    month_1: 95,
-    month_2: 91,
-    month_3: 88,
-    month_4: 94,
-  },
-  {
-    id: 4,
-    intern: {
-      username: "INT2024004",
-      title: "Ms",
-      first_name: "Sarah",
-      last_name: "Williams",
-      department: { name: "Data Science" },
-    },
-    month_1: 68,
-    month_2: 73,
-    month_3: 71,
-    month_4: 76,
-  },
-  {
-    id: 5,
-    intern: {
-      username: "INT2024005",
-      title: "Mr",
-      first_name: "David",
-      last_name: "Brown",
-      department: { name: "Cybersecurity" },
-    },
-    month_1: 82,
-    month_2: null,
-    month_3: 87,
-    month_4: null,
-  },
-  {
-    id: 6,
-    intern: {
-      username: "INT2024006",
-      title: "Ms",
-      first_name: "Emily",
-      last_name: "Davis",
-      department: { name: "Computer Science" },
-    },
-    month_1: 45,
-    month_2: 58,
-    month_3: 62,
-    month_4: 55,
-  },
-  {
-    id: 7,
-    intern: {
-      username: "INT2024007",
-      title: "Mr",
-      first_name: "James",
-      last_name: "Wilson",
-      department: { name: "Information Systems" },
-    },
-    month_1: null,
-    month_2: null,
-    month_3: null,
-    month_4: null,
-  },
-  {
-    id: 8,
-    intern: {
-      username: "INT2024008",
-      title: "Ms",
-      first_name: "Lisa",
-      last_name: "Garcia",
-      department: { name: "Web Development" },
-    },
-    month_1: 89,
-    month_2: 92,
-    month_3: 85,
-    month_4: 90,
-  },
-];
-
-// Computed properties
-const selectedCohortName = computed(() => {
-  const cohort = cohorts.value.find((c) => c.id === selectedCohort.value);
-  return cohort ? `${cohort.year} Internship Cohort` : "";
-});
-
-// Methods
-const loadCohorts = async () => {
-  try {
-    // For development, use sample data
-    if (process.env.NODE_ENV === "development") {
-      cohorts.value = sampleCohorts;
-      return;
-    }
-
-    // Production API call
-    const response = await apiClient.get("internships/cohorts/");
-    cohorts.value = response.data;
-  } catch (error) {
-    console.error("Error loading cohorts:", error);
-    toast.error("Failed to load cohorts");
-    // Fallback to sample data if API fails
-    cohorts.value = sampleCohorts;
-  }
-};
-
-const loadScores = async () => {
-  if (!selectedCohort.value) {
-    scores.value = [];
-    return;
-  }
-
-  loading.value = true;
-  try {
-    // For development, use sample data
-    if (process.env.NODE_ENV === "development") {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      scores.value = sampleScores;
-      loading.value = false;
-      return;
-    }
-
-    // Production API call
-    const response = await apiClient.get(
-      `submissions/scores/cohort/${selectedCohort.value}/`
-    );
-    scores.value = response.data;
-  } catch (error) {
-    console.error("Error loading scores:", error);
-    toast.error("Failed to load scores");
-    // Fallback to sample data if API fails
-    scores.value = sampleScores;
-  } finally {
-    loading.value = false;
-  }
-};
-
-const calculateAverage = (score) => {
-  const scores = [score.month_1, score.month_2, score.month_3, score.month_4];
-  const validScores = scores.filter((s) => s !== null && s !== undefined);
-
-  if (validScores.length === 0) return "N/A";
-
-  const average =
-    validScores.reduce((sum, s) => sum + s, 0) / validScores.length;
-  return Math.round(average);
-};
-
-const getInitials = (firstName, lastName) => {
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-};
-
-const getAverageColor = (average) => {
-  if (average === "N/A") return "text-gray-500";
-  if (average >= 80) return "text-green-600";
-  if (average >= 70) return "text-blue-600";
-  if (average >= 60) return "text-yellow-600";
-  return "text-red-600";
-};
-
-const getStatus = (average) => {
-  if (average === "N/A") return "Pending";
-  if (average >= 80) return "Excellent";
-  if (average >= 70) return "Good";
-  if (average >= 60) return "Average";
-  return "Needs Improvement";
-};
-
-const getStatusClass = (average) => {
-  if (average === "N/A") return "bg-gray-100 text-gray-800";
-  if (average >= 80) return "bg-green-100 text-green-800";
-  if (average >= 70) return "bg-blue-100 text-blue-800";
-  if (average >= 60) return "bg-yellow-100 text-yellow-800";
-  return "bg-red-100 text-red-800";
-};
-
-const exportToExcel = () => {
-  if (!scores.value.length) {
-    toast.warning("No data to export");
-    return;
-  }
-
-  try {
-    // Prepare data for Excel
-    const excelData = scores.value.map((score) => ({
-      "Student ID": score.intern.username,
-      Title: score.intern.title,
-      "First Name": score.intern.first_name,
-      "Last Name": score.intern.last_name,
-      Department: score.intern.department?.name || "N/A",
-      "Month 1": score.month_1 ?? "Not graded",
-      "Month 2": score.month_2 ?? "Not graded",
-      "Month 3": score.month_3 ?? "Not graded",
-      "Month 4": score.month_4 ?? "Not graded",
-      Average: calculateAverage(score),
-      Status: getStatus(calculateAverage(score)),
-    }));
-
-    // Create workbook and worksheet
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(excelData);
-
-    // Add some styling (column widths)
-    const colWidths = [
-      { width: 15 }, // Student ID
-      { width: 8 }, // Title
-      { width: 15 }, // First Name
-      { width: 15 }, // Last Name
-      { width: 25 }, // Department
-      { width: 10 }, // Month 1
-      { width: 10 }, // Month 2
-      { width: 10 }, // Month 3
-      { width: 10 }, // Month 4
-      { width: 10 }, // Average
-      { width: 18 }, // Status
-    ];
-    ws["!cols"] = colWidths;
-
-    // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Intern Scores");
-
-    // Generate filename with cohort and date
-    const cohortName = selectedCohortName.value.replace(/\s+/g, "_");
-    const date = new Date().toISOString().split("T")[0];
-    const filename = `${cohortName}_Scores_${date}.xlsx`;
-
-    // Download file
-    XLSX.writeFile(wb, filename);
-    toast.success("Scores exported successfully!");
-  } catch (error) {
-    console.error("Error exporting to Excel:", error);
-    toast.error("Failed to export scores");
-  }
-};
-
-// Lifecycle
-onMounted(() => {
-  loadCohorts();
-});
-</script>

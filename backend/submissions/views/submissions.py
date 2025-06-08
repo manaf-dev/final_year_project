@@ -2,7 +2,11 @@ from ._base_imports import *
 from django.utils import timezone
 from django.db.models import Count, Q
 from accounts.models.users import UserAccount
-from accounts.selectors.users import get_interns_by_supervisor
+from accounts.selectors.users import (
+    get_interns_by_supervisor,
+    user_representation,
+    get_supervisor_interns_by_cohort,
+)
 from submissions.models.submissions import Submission, SubmissionVideo
 from submissions.serializers.submissions import (
     SubmissionSerializer,
@@ -19,8 +23,7 @@ from submissions.selectors.submissions import (
     filter_submissions_by_intern,
     get_submission_video_by_submission,
 )
-from accounts.selectors.users import get_user_by_id
-from internships.selectors import get_cohort_by_year
+from internships.selectors import get_cohort_by_id
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -237,3 +240,36 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             {"detail": "Error submitting video"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+    def get_cohort_scores(self, request, cohort_id):
+        supervisor = self.is_supervisor(request)
+        cohort = get_cohort_by_id(cohort_id)
+        if not cohort:
+            return Response(
+                {"detail": "Cohort not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        cohort_interns = get_supervisor_interns_by_cohort(supervisor.id, cohort.id)
+        if not cohort_interns:
+            return Response(
+                {"detail": "No interns scores for this cohort"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Group scores by intern, then by month
+        # [{'intern': {}, 'scores': {'1': 85, '2': 90, '3': 88}}]
+        scores = []
+        for intern in cohort_interns:
+            grades = {"id": intern.id, "intern": user_representation(intern)}
+            submissions = self.queryset.filter(intern=intern)
+            for month in range(1, 5):
+                for submission in submissions:
+                    if submission.month == str(month):
+                        grades[f"month_{month}"] = submission.grade
+                        break
+                    grades[f"month_{month}"] = None
+
+            scores.append(grades)
+
+        return Response(scores, status=status.HTTP_200_OK)
