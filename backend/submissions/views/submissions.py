@@ -23,7 +23,7 @@ from submissions.selectors.submissions import (
     filter_submissions_by_intern,
     get_submission_video_by_submission,
 )
-from internships.selectors import get_cohort_by_id
+from internships.selectors import get_cohort_by_id, get_cohort_by_year
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -266,9 +266,11 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             for month in range(1, 5):
                 for submission in submissions:
                     if submission.month == str(month):
-                        grades[f"month_{month}"] = submission.grade
+                        grades[f"month_{month}"] = (
+                            submission.grade if submission.graded else None
+                        )
                         break
-                    grades[f"month_{month}"] = None
+                    grades[f"month_{month}"] = -1
 
             scores.append(grades)
 

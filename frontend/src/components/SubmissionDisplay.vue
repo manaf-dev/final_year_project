@@ -189,37 +189,41 @@
                         </button>
                     </div>
                 </div>
+                
             </div>
 
             <!-- Comments Section -->
-            <div class="bg-gray-50 rounded-lg p-6">
-                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <i class="pi pi-comments text-orange-600 mr-2"></i>
-                    Supervisor Comments
-                </h4>
-                
-                <div v-if="submissions.comments?.length" class="space-y-3">
-                    <div 
-                        v-for="comment in submissions.comments" 
-                        :key="comment.id"
-                        class="bg-white border border-gray-200 rounded-lg p-4"
-                    >
-                        <div class="flex justify-between items-start mb-2">
-                            <span v-if="authStore.isIntern" class="font-medium text-gray-900">
-                                {{ comment.author.title }}. {{ comment.author.last_name }} {{ comment.author.first_name }}
-                            </span>
-                            <span v-else class="font-medium text-gray-900">You</span>
-                            <span class="text-sm text-gray-500">{{ formatDate(comment.updated_at) }}</span>
+                <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="pi pi-comments text-orange-600 mr-2"></i>
+                        Supervisor Comments
+                    </h4>
+                    
+                    <div v-if="submissions.comments?.length" class="space-y-3">
+                        <div 
+                            v-for="comment in submissions.comments" 
+                            :key="comment.id"
+                            class="bg-white border border-gray-200 rounded-lg p-4"
+                        >
+                            <div class="flex justify-between items-start mb-2">
+                                <span v-if="authStore.isIntern" class="font-medium text-gray-900">
+                                    {{ comment.author.title }}. {{ comment.author.last_name }} {{ comment.author.first_name }}
+                                </span>
+                                <span v-else class="font-medium text-gray-900">You</span>
+                                <span class="text-sm text-gray-500">{{ formatDate(comment.updated_at) }}</span>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed">{{ comment.content }}</p>
                         </div>
-                        <p class="text-gray-700 leading-relaxed">{{ comment.content }}</p>
+                    </div>
+    
+                    <div v-else class="text-center py-8">
+                        <i class="pi pi-comment text-3xl text-gray-400 mb-3"></i>
+                        <p v-if="authStore.isIntern" class="text-gray-500">No comments yet from your supervisor</p>
+                        <p v-else class="text-gray-500">You have not commented on this portfolio yet</p>
+                        <p class="text-gray-500">Comments will appear here once submitted</p>
                     </div>
                 </div>
 
-                <div v-else class="text-center py-8">
-                    <i class="pi pi-comment text-3xl text-gray-400 mb-3"></i>
-                    <p class="text-gray-500">No comments yet from your supervisor</p>
-                </div>
-            </div>
         </section>
     </div>
 </template>

@@ -8,7 +8,7 @@
 
     const get_notifications = async () => {
         try {
-            const response = await apiClient.get("notifications/");
+            const response = await apiClient.get("submissions/notifications/");
             notifications.value = response.data;
         } catch (error) {
             throw new Error("Error fetching notifications");

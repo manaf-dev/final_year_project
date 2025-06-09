@@ -208,43 +208,32 @@ const loadScores = async () => {
   }
 };
 
-const calculateAverage = (score) => {
+const calculateTotal = (score) => {
   const scores = [score.month_1, score.month_2, score.month_3, score.month_4];
   const validScores = scores.filter((s) => s !== null && s !== undefined);
 
   if (validScores.length === 0) return "N/A";
 
-  const average =
-    validScores.reduce((sum, s) => sum + s, 0) / validScores.length;
-  return Math.round(average);
+  const total = validScores.reduce((sum, s) => sum + s, 0);
+  return total;
 };
 
 const getInitials = (firstName, lastName) => {
   return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 };
 
-const getAverageColor = (average) => {
-  if (average === "N/A") return "text-gray-500";
-  if (average >= 80) return "text-green-600";
-  if (average >= 70) return "text-blue-600";
-  if (average >= 60) return "text-yellow-600";
+const getTotalColor = (total) => {
+  if (total === "N/A") return "text-gray-500";
+  if (total >= 60) return "text-green-600";
+  if (total >= 40) return "text-blue-600";
+  if (total >= 20) return "text-yellow-600";
   return "text-red-600";
 };
 
-const getStatus = (average) => {
-  if (average === "N/A") return "Pending";
-  if (average >= 80) return "Excellent";
-  if (average >= 70) return "Good";
-  if (average >= 60) return "Average";
-  return "Needs Improvement";
-};
-
-const getStatusClass = (average) => {
-  if (average === "N/A") return "bg-gray-100 text-gray-800";
-  if (average >= 80) return "bg-green-100 text-green-800";
-  if (average >= 70) return "bg-blue-100 text-blue-800";
-  if (average >= 60) return "bg-yellow-100 text-yellow-800";
-  return "bg-red-100 text-red-800";
+const monthScore = (score) => {
+  if (score === null || score === undefined) return "Not graded";
+  if (score === -1) return "Not submitted";
+  return score;
 };
 
 const exportToExcel = () => {
@@ -261,12 +250,11 @@ const exportToExcel = () => {
       "First Name": score.intern.first_name,
       "Last Name": score.intern.last_name,
       Department: score.intern.department?.name || "N/A",
-      "Month 1": score.month_1 ?? "Not graded",
-      "Month 2": score.month_2 ?? "Not graded",
-      "Month 3": score.month_3 ?? "Not graded",
-      "Month 4": score.month_4 ?? "Not graded",
-      Average: calculateAverage(score),
-      Status: getStatus(calculateAverage(score)),
+      "Month 1": monthScore(score.month_1),
+      "Month 2": monthScore(score.month_2),
+      "Month 3": monthScore(score.month_3),
+      "Month 4": monthScore(score.month_4),
+      Total: calculateTotal(score),
     }));
 
     // Create workbook and worksheet
@@ -284,8 +272,7 @@ const exportToExcel = () => {
       { width: 10 }, // Month 2
       { width: 10 }, // Month 3
       { width: 10 }, // Month 4
-      { width: 10 }, // Average
-      { width: 18 }, // Status
+      { width: 10 }, // Total
     ];
     ws["!cols"] = colWidths;
 
@@ -431,32 +418,27 @@ onMounted(() => {
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 1
+                Month 1 (10)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 2
+                Month 2 (10)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 3
+                Month 3 (10)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 4
+                Month 4 (50)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Average
-              </th>
-              <th
-                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Status
+                Total (80)
               </th>
             </tr>
           </thead>
@@ -512,24 +494,14 @@ onMounted(() => {
                 <ScoreCell :score="score.month_4" month="4" />
               </td>
 
-              <!-- Average Score -->
+              <!-- Total Score -->
               <td class="px-6 py-4 whitespace-nowrap text-center">
                 <div
                   class="text-sm font-semibold"
-                  :class="getAverageColor(calculateAverage(score))"
+                  :class="getTotalColor(calculateTotal(score))"
                 >
-                  {{ calculateAverage(score) }}%
+                  {{ calculateTotal(score) }}
                 </div>
-              </td>
-
-              <!-- Status -->
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <span
-                  :class="getStatusClass(calculateAverage(score))"
-                  class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                >
-                  {{ getStatus(calculateAverage(score)) }}
-                </span>
               </td>
             </tr>
           </tbody>
