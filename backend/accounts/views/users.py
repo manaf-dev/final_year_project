@@ -141,8 +141,7 @@ class LoginView(APIView):
 
         if not user:
             context = {
-                "detail": "Incorrect ID or email",
-                "errors": {"Username": [f"no account found for '{username_or_email}'"]},
+                "detail": "Incorrect credentials",
             }
             raise NotFound(context)
 
@@ -161,7 +160,9 @@ class LoginView(APIView):
                 return Response(context, status=status.HTTP_403_FORBIDDEN)
 
             # generate token for user
+
             token = RefreshToken.for_user(user)
+
             user_data = user_representation(user)
             context = {
                 "detail": "Login successful",
@@ -170,7 +171,7 @@ class LoginView(APIView):
             }
             return Response(context, status=status.HTTP_200_OK)
 
-        raise AuthenticationFailed("Invalid credentials")
+        raise NotFound("Invalid credentials")
 
 
 class PasswordViewSet(viewsets.ViewSet):
