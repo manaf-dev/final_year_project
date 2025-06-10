@@ -17,6 +17,7 @@ class UserAccount(AbstractUser):
         ("prof", "Prof."),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    other_names = models.CharField(max_length=100, null=True, blank=True)
     title = models.CharField(max_length=20, choices=TITLES, null=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     department = models.ForeignKey(
@@ -37,3 +38,21 @@ class UserAccount(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def get_full_name(self):
+        """
+        Returns the full name of the user.
+        """
+        return f"{self.title} {self.last_name} {self.first_name} {self.other_names}"
+
+    def minimal_info(self):
+        """Return a minimal information about account"""
+        return {
+            "id": self.id,
+            "email": self.email,
+            "title": self.title,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "other_names": self.other_names,
+            "account_type": self.account_type,
+        }

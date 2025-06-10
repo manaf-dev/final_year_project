@@ -1,5 +1,7 @@
 from accounts.models.users import UserAccount
-from accounts.serializers.users import UserAccountSerializer
+from accounts.serializers.users import (
+    UserAccountSerializer,
+)
 
 from accounts.selectors.departments import get_departments_by_id
 from internships.selectors import get_cohort_by_id
@@ -11,6 +13,11 @@ from accounts.models.tokens import Token as TokenModel
 
 def get_users():
     return UserAccount.objects.all()
+
+
+def get_supervisors():
+    supervisors = UserAccount.objects.filter(account_type="supervisor")
+    return [supervisor.minimal_info() for supervisor in supervisors]
 
 
 def get_user_by_id(user_id: str):
@@ -60,4 +67,9 @@ def get_supervisor_interns_by_cohort(supervisor: str, cohort: str):
 
 def user_representation(user: UserAccount, many: bool = False):
     serializer = UserAccountSerializer(user, many=many)
+    return serializer.data
+
+
+def minimal_user_representation(user: UserAccount, many: bool = False):
+    serializer = MinimalUserAccountSerializer(user, many=many)
     return serializer.data

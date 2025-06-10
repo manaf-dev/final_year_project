@@ -12,7 +12,8 @@ const titles = ref(["mr", "mrs", "miss", "dr", "prof"]);
 const loading = ref(false);
 const showPassword1 = ref(false);
 const showPassword2 = ref(false);
-const departments = ref({});
+const departments = ref([]);
+const supervisors = ref([]);
 
 
 const form = reactive({
@@ -22,8 +23,10 @@ const form = reactive({
   title: "",
   first_name: "",
   last_name: "",
+  other_names: "",
   phone: "",
   department: "",
+  supervisor: "",
 });
 const password2 = ref("");
 
@@ -78,25 +81,27 @@ onMounted(async () => {
   try {
     const dep_response = await apiClient.get("accounts/departments/");
     departments.value = dep_response.data;
+    const sup_response = await apiClient.get("accounts/users/supervisors/");
+    supervisors.value = sup_response.data;
   } catch (error) {
     console.log(error);
   }
 });
 
-const faculty = ref('Select Faculty');
-watch(
-    () => form.department,
-    (newDepartmentId) => {
-        if (!newDepartmentId) {
-            faculty.value = "Select Faculty";
-            return;
-        }
-        const selectedDepartment = Array.isArray(departments.value)
-            ? departments.value.find((dep) => dep.id === newDepartmentId)
-            : null;
-        faculty.value = selectedDepartment?.faculty?.name || "Unknown Faculty";
-    }
-);
+// const faculty = ref('Select Faculty');
+// watch(
+//     () => form.department,
+//     (newDepartmentId) => {
+//         if (!newDepartmentId) {
+//             faculty.value = "Select Faculty";
+//             return;
+//         }
+//         const selectedDepartment = Array.isArray(departments.value)
+//             ? departments.value.find((dep) => dep.id === newDepartmentId)
+//             : null;
+//         faculty.value = selectedDepartment?.faculty?.name || "Unknown Faculty";
+//     }
+// );
 </script>
 
 <template>
@@ -200,6 +205,21 @@ watch(
                     required
                   />
                 </div>
+                <div>
+                  <label
+                    for="other_names"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Other Names
+                  </label>
+                  <input
+                    v-model="form.other_names"
+                    type="text"
+                    id="other_names"
+                    placeholder="Enter your other names (if any)"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                  />
+                </div>
               </div>
             </div>
 
@@ -286,18 +306,26 @@ watch(
                 </div>
                 <div>
                   <label
-                    for="faculty"
+                    for="supervisor"
                     class="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Faculty <span class="text-red-500">*</span>
+                    Supervisor <span class="text-red-500">*</span>
                   </label>
                   <select
-                    id="faculty"
+                    v-model="form.supervisor"
+                    id="supervisor"
                     required
-                    disabled
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 capitalize"
                   >
-                    <option value="">{{faculty}}</option>
+                    <option value="">Select your supervisor</option>
+                    <option
+                      v-for="supervisor in supervisors"
+                      :key="supervisor.id"
+                      :value="supervisor.id"
+                      class="capitalize"
+                    >
+                       {{ supervisor.title }}. {{ supervisor.last_name }} {{ supervisor.first_name }} {{ supervisor?.other_names }}
+                    </option>
                   </select>
                 </div>
               </div>

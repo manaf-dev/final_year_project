@@ -51,9 +51,8 @@ export const useAuthStore = defineStore('auth', {
                         localStorage.setItem('user', JSON.stringify(this.user));
                     }
 
-                    if (response.data.detail) {
-                        toast.success(response.data.detail);
-                    }
+                    toast.success(response.data.detail || 'Login successful');
+                    
                 } else {
                     toast.error('Login failed');
                 }

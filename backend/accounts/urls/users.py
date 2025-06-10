@@ -5,9 +5,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 USERS_URLS = [
     path("auth/login/", LoginView.as_view()),
-    path("auth/registration/", UserAccountViewSet.as_view({"post": "register"})),
+    path("auth/registration/", UserAccountViewSet.as_view({"post": "register_intern"})),
     path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("users/", UserAccountViewSet.as_view({"get": "list"})),
+    path("users/supervisors/", UserAccountViewSet.as_view({"get": "list_supervisors"})),
     path("user/<str:user_id>/info/", UserAccountViewSet.as_view({"get": "retrieve"})),
     path("user/<str:user_id>/update/", UserAccountViewSet.as_view({"put": "update"})),
     path(

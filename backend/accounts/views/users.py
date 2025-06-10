@@ -21,7 +21,7 @@ class UserAccountViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_permissions(self):
-        if self.action in ["register"]:
+        if self.action in ["register_intern", "list_supervisors"]:
             self.permission_classes = [permissions.AllowAny]
 
         return super().get_permissions()
@@ -30,6 +30,14 @@ class UserAccountViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         context = user_representation(instance)
         return Response(context, status=status.HTTP_200_OK)
+
+    def list_supervisors(self, request):
+        """
+        List all supervisors in the system
+        """
+        supervisors = get_supervisors()
+        # context = user_representation(supervisors, many=True)
+        return Response(supervisors, status=status.HTTP_200_OK)
 
     def _is_supervisor(self, request):
         supervisor = request.user
@@ -59,7 +67,7 @@ class UserAccountViewSet(viewsets.ModelViewSet):
     #     context = {"cohort": cohort.year, "interns_count": interns_count}
     #     return Response(context, status=status.HTTP_200_OK)
 
-    def register(self, request):
+    def register_intern(self, request):
         data = request.data
         err, errors = validate_posted_data(
             data,
@@ -72,6 +80,7 @@ class UserAccountViewSet(viewsets.ModelViewSet):
                 "last_name",
                 "phone",
                 "department",
+                "supervisor",
             ],
         )
         if err:
@@ -80,18 +89,32 @@ class UserAccountViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if data.get("username") and not data.get("username").isnumeric():
+            context = {
+                "detail": "Invalid student ID",
+                "errors": {"username": ["Student ID must be numeric"]},
+            }
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)
+
         if UserAccount.objects.filter(email=data.get("email")).exists():
             context = {
-                "detail": "Email already exists",
+                "detail": "Student with this Email already exists",
                 "errors": {"email": [f"'{data.get('email')}' already registered"]},
             }
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         if UserAccount.objects.filter(username=data.get("username")).exists():
             context = {
-                "detail": "Student ID already exists",
+                "detail": "Student with this ID already exists",
                 "errors": {
                     "username": [f"'{data.get('student id')}' already registered"]
                 },
+            }
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)
+
+        if not UserAccount.objects.filter(id=data.get("supervisor")).exists():
+            context = {
+                "detail": "Supervisor not found",
+                "errors": {"supervisor": ["Supervisor does not exist"]},
             }
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
@@ -106,9 +129,7 @@ class UserAccountViewSet(viewsets.ModelViewSet):
         data["cohort"] = cohort.id
         data["level"] = "400"
         data["account_type"] = "intern"
-        data["supervisor"] = get_user_by_email(
-            "adasa@aamusted.edu.gh"
-        ).id  # Default supervisor
+        data["supervisor"] = data.get("supervisor")
 
         user_data, errors = create_user(data)
         if errors:
@@ -141,7 +162,7 @@ class LoginView(APIView):
 
         if not user:
             context = {
-                "detail": "Incorrect credentials",
+                "detail": "Invalid credentials",
             }
             raise NotFound(context)
 

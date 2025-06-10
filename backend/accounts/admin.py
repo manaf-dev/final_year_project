@@ -70,6 +70,7 @@ class UserAccountAdmin(UserAdmin):
             {
                 "fields": (
                     "title",
+                    "other_names",
                     "phone",
                     "department",
                     "account_type",
