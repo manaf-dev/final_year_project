@@ -6,9 +6,11 @@ import SubmissionDisplay from "../SubmissionDisplay.vue";
 import { useToast } from "vue-toastification";
 import Loader from "../loader.vue";
 import BackButton from "../BackButton.vue";
+import { useNotificationStore } from "@/stores/notifications";
 
 const route = useRoute();
 const toast = useToast();
+const notificationStore = useNotificationStore();
 
 const portfolio = ref({});
 const loadingSubmissions = ref(false);
@@ -68,6 +70,8 @@ const submitReview = async () => {
     );
     toast.success(response.data.detail);
     get_portfolio();
+    // Refresh notification count since a new notification was likely created
+    notificationStore.fetchUnreadCount();
   } catch (error) {
     toast.error(error.response?.data?.detail || "Error submitting review");
     console.error(error);

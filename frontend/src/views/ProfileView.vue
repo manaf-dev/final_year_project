@@ -103,9 +103,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Decorative elements -->
-                            <div class="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10"></div>
-                            <div class="absolute -bottom-4 -left-4 w-24 h-24 rounded-full bg-white/5"></div>
+                            
                         </div>
 
                         <!-- Profile Details Section -->

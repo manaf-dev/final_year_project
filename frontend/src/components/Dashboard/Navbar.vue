@@ -1,7 +1,18 @@
 <script setup>
     import ProfileDropdown from "./ProfileDropdown.vue";
     import NotificationMenu from "./NotificationMenu.vue";
+    import { useNotificationStore } from "@/stores/notifications";
+    import { onMounted } from "vue";
+    
     defineProps({ title: String });
+    
+    const notificationStore = useNotificationStore();
+    
+    onMounted(() => {
+        // Initialize notification store when navbar loads
+        notificationStore.fetchUnreadCount();
+        notificationStore.startAutoRefresh();
+    });
 </script>
 
 <template>

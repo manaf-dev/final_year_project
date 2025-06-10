@@ -47,3 +47,14 @@ class NotificationViewSet(viewsets.ModelViewSet):
         return Response(
             {"detail": "Notifications marked as read"}, status=status.HTTP_200_OK
         )
+
+    def get_unread_count(self, request):
+        user = request.user
+        if not user:
+            return Response(
+                {"detail": "User not authenticated"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        unread_count = self.queryset.filter(receiver=user, read=False).count()
+        return Response({"unread_count": unread_count}, status=status.HTTP_200_OK)

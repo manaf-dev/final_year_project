@@ -1,79 +1,35 @@
 <script setup>
     import DashboardLayout from "@/components/Dashboard/DashboardLayout.vue";
-    import { computed, ref } from "vue";
-    import apiClient from "@/services/api";
+    import { computed, onMounted } from "vue";
+    import { useNotificationStore } from "@/stores/notifications";
     import Loader from "@/components/loader.vue";
 
-    const notificationOpen = ref(false);
-    const notifications = ref([]);
-    const loading = ref(false);
-    const marking = ref(false);
-    const deleting = ref(false);
+    const notificationStore = useNotificationStore();
 
     const isAllRead = computed(() => {
-        if (!notifications.value.length) {
+        if (!notificationStore.notifications.length) {
             return false;
         } else {
-            return notifications.value.every(
+            return notificationStore.notifications.every(
                 (notification) => notification.read
             );
         }
     });
 
-    const get_notifications = async () => {
-        loading.value = true;
-        try {
-            const response = await apiClient.get("notifications/");
-            notifications.value = response.data;
-        } catch (error) {
-            console.log(error);
-        } finally {
-            loading.value = false;
-        }
-    };
-
-    get_notifications();
+    onMounted(() => {
+        notificationStore.fetchNotifications();
+    });
 
     const markAsRead = async (notification_id) => {
-        marking.value = true;
-        try {
-            const response = await apiClient.put(
-                `notification/mark-as-read/${notification_id}/`
-            );
-            get_notifications();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            marking.value = false;
-        }
+        await notificationStore.markAsRead(notification_id);
     };
 
     const deleteNotification = async (notification_id) => {
-        deleting.value = true;
-        try {
-            const response = await apiClient.delete(
-                `notification/delete/${notification_id}/`
-            );
-            get_notifications();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            deleting.value = false;
-        }
+        await notificationStore.deleteNotification(notification_id);
     };
 
     const markAllAsRead = async () => {
-        marking.value = true;
-        try {
-            const response = await apiClient.put(
-                `notification/mark-all-as-read/`
-            );
-            get_notifications();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            marking.value = false;
-        }
+        await notificationStore.markAllAsRead();
     };
 
     const formatDate = (dateStr) => {
@@ -108,9 +64,9 @@
                 </div>
 
                 <!-- Notifications List -->
-                <div v-if="!loading" class="mt-8 space-y-4">
+                <div v-if="!notificationStore.loading" class="mt-8 space-y-4">
                     <div
-                        v-for="(notification, index) in notifications"
+                        v-for="(notification, index) in notificationStore.notifications"
                         :key="index"
                         :class="[
                             'bg-white rounded-lg shadow p-4 flex items-start justify-between',
@@ -160,7 +116,7 @@
 
                     <!-- No Notifications -->
                     <div
-                        v-if="notifications.length === 0"
+                        v-if="notificationStore.notifications.length === 0"
                         class="text-center text-gray-500"
                     >
                         <i class="pi pi-info-circle text-4xl"></i>
@@ -171,7 +127,7 @@
                 <Loader v-else />
             </div>
             <div
-                v-if="marking || deleting"
+                v-if="notificationStore.loading"
                 class="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-lg z-20"
             >
                 <Loader />
