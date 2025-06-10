@@ -92,12 +92,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             file_serializer = PortfolioFileSerializer(data=file)
             file_serializer.is_valid(raise_exception=True)
             file_serializer.save()
-            return True, file_serializer.data
+            return file_serializer.data, True
         # except file_serializer.ValidationError as e:
         #     print("Error saving file:", e)
         #     return False, file_serializer.errors
         except Exception as e:
-            return False, str(e)
+            return str(e), False
 
     def upload_philosophy(self, request):
         submission = self.get_existing_submissions(request)
@@ -117,18 +117,18 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             "file": philosophy_file,
         }
 
-        file_save, errors = self.save_file(philosophy)
+        file, saved = self.save_file(philosophy)
 
-        if file_save:
+        if not saved:
             return Response(
-                {"detail": "Teaching Philosophy upload successful"},
-                status=status.HTTP_201_CREATED,
-            )
-        else:
-            return Response(
-                {"detail": "Error saving file", "errors": errors},
+                {"detail": "Error saving philosophy file", "errors": file},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        return Response(
+            {"detail": "Teaching Philosophy upload successful"},
+            status=status.HTTP_201_CREATED,
+        )
 
     def upload_cv(self, request):
         submission = self.get_existing_submissions(request)
@@ -147,10 +147,45 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             "file": cv_file,
         }
 
-        file_save = self.save_file(cv)
+        file, saved = self.save_file(cv)
+        if not saved:
+            return Response(
+                {"detail": "Error saving CV file", "errors": file},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response(
             {"detail": "CV upload successful"},
+            status=status.HTTP_201_CREATED,
+        )
+
+    def upload_reflective(self, request):
+        submission = self.get_existing_submissions(request)
+
+        reflective_file = request.data.getlist("file")[0]
+        print("Reflective:", reflective_file)
+
+        if not reflective_file:
+            return Response(
+                {"detail": "Reflective file not sent"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        reflective = {
+            "submission": submission.id,
+            "file_type": "reflective",
+            "file": reflective_file,
+        }
+
+        file, saved = self.save_file(reflective)
+
+        if not saved:
+            return Response(
+                {"detail": "Error saving reflective file", "errors": file},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(
+            {"detail": "Reflective Teaching Statement upload successful"},
             status=status.HTTP_201_CREATED,
         )
 

@@ -17,7 +17,7 @@ class PortfolioFile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     FILE_TYPES = [
         ("teaching_philosophy", "Teaching Philosophy"),
-        ("reflective_writing", "Reflective writing"),
+        ("reflective", "Reflective Teaching Statement"),
         ("cv", "Curriculum Vitae (CV)"),
     ]
 

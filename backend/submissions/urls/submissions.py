@@ -15,6 +15,10 @@ SUBMISSION_URLS = [
     ),
     path("upload/cv/", SubmissionViewSet.as_view({"post": "upload_cv"})),
     path(
+        "upload/reflective/",
+        SubmissionViewSet.as_view({"post": "upload_reflective"}),
+    ),
+    path(
         "submit/video/",
         SubmissionViewSet.as_view({"post": "submit_video"}),
     ),

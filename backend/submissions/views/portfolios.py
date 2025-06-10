@@ -1,3 +1,4 @@
+from re import sub
 from ._base_imports import *
 from itertools import chain
 from django.db.models import Q
@@ -9,7 +10,10 @@ from submissions.serializers.portfolios import (
     PortfolioImageSerializer,
 )
 from submissions.serializers.comments import CommentSerializer
-from submissions.serializers.submissions import SubmissionSerializer
+from submissions.serializers.submissions import (
+    SubmissionSerializer,
+    SubmissionVideoSerializer,
+)
 
 from submissions.selectors.submissions import (
     get_submission_by_intern,
@@ -22,6 +26,7 @@ from submissions.selectors.portfolios import (
     get_portfolio_file_by_id,
 )
 from submissions.selectors.comments import get_comments
+from submissions.models.submissions import SubmissionVideo
 
 
 class PortfolioViewset(viewsets.ModelViewSet):
@@ -164,6 +169,13 @@ class PortfolioList(viewsets.ModelViewSet):
         files_data = PortfolioFileSerializer(files, many=True).data
 
         context = {"images": images_data, "files": files_data}
+
+        if SubmissionVideo.objects.filter(submission__in=submissions).exists():
+            video = SubmissionVideo.objects.filter(submission__in=submissions).first()
+            context["video"] = SubmissionVideoSerializer(video).data
+        else:
+            context["video"] = None
+
         return Response(context, status=status.HTTP_200_OK)
 
     def total_portfolio_count(self, request):
