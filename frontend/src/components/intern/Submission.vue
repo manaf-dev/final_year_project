@@ -45,7 +45,7 @@
             loadingSubmissions.value = true;
             try {
                 const response = await apiClient.get(
-                    `portfolio/${authStore.user.username}/${props.month}/`
+                    `submissions/portfolio/${authStore.user.username}/${props.month}/`
                 );
                 // console.log(response.data);
                 submissions.value = response.data;

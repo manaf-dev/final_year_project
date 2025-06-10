@@ -1,3 +1,231 @@
+<script setup>
+import { ref, computed, watch } from "vue";
+import { useToast } from "vue-toastification";
+import apiClient from "@/services/api";
+
+const props = defineProps({
+  isOpen: {
+    type: Boolean,
+    default: false,
+  },
+  month: {
+    type: String,
+    required: true,
+  },
+});
+
+const emit = defineEmits(["close", "submitted"]);
+
+const toast = useToast();
+
+// Modal state
+const selectedType = ref("images");
+const submitting = ref(false);
+
+// File states
+const selectedImages = ref([]);
+const imagePreviews = ref([]);
+const philosophyFile = ref([]);
+const cvFile = ref([]);
+const reflectiveFile = ref([]);
+const videoUrl = ref("");
+
+// Computed properties
+const canSubmit = computed(() => {
+  switch (selectedType.value) {
+    case "images":
+      return selectedImages.value.length > 0;
+    case "philosophy":
+      return philosophyFile.value.length > 0;
+    case "cv":
+      return cvFile.value.length > 0;
+    case "reflective":
+      return reflectiveFile.value.length > 0;
+    case "video":
+      return videoUrl.value.trim().length > 0;
+    default:
+      return false;
+  }
+});
+
+// Image handling
+const handleImageChange = (event) => {
+  const files = Array.from(event.target.files);
+
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagePreviews.value.push(e.target.result);
+    };
+    reader.readAsDataURL(file);
+    selectedImages.value.push(file);
+  });
+};
+
+const removeImage = (index) => {
+  imagePreviews.value.splice(index, 1);
+  selectedImages.value.splice(index, 1);
+};
+
+// Philosophy file handling
+const handlePhilosophyChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    philosophyFile.value = [file];
+  }
+};
+
+const removePhilosophyFile = () => {
+  philosophyFile.value = [];
+};
+
+// CV file handling
+const handleCvChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    cvFile.value = [file];
+  }
+};
+
+const removeCvFile = () => {
+  cvFile.value = [];
+};
+
+// Reflective file handling
+const handleReflectiveChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    reflectiveFile.value = [file];
+  }
+};
+
+const removeReflectiveFile = () => {
+  reflectiveFile.value = [];
+};
+
+// Modal methods
+const closeModal = () => {
+  if (!submitting.value) {
+    resetForm();
+    emit("close");
+  }
+};
+
+const resetForm = () => {
+  selectedType.value = "images";
+  selectedImages.value = [];
+  imagePreviews.value = [];
+  philosophyFile.value = [];
+  cvFile.value = [];
+  reflectiveFile.value = [];
+  videoUrl.value = "";
+};
+
+// Submission methods
+const handleSubmit = async () => {
+  try {
+    switch (selectedType.value) {
+      case "images":
+        await handleImageSubmit();
+        break;
+      case "philosophy":
+        await handlePhilosophySubmit();
+        break;
+      case "cv":
+        await handleCvSubmit();
+        break;
+      case "reflective":
+        await handleReflectiveSubmit();
+        break;
+      case "video":
+        await handleVideoSubmit();
+        break;
+    }
+  } catch (error) {
+    console.error("Submission error:", error);
+  }
+};
+
+const handleFileSubmit = async (endpoint, files) => {
+  const formData = new FormData();
+  formData.append("month", props.month);
+  files.forEach((file) => {
+    formData.append("file", file);
+  });
+
+  submitting.value = true;
+  try {
+    const response = await apiClient.post(endpoint, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    toast.success(response.data.detail);
+    emit("submitted");
+    closeModal();
+  } catch (error) {
+    toast.error(error.response?.data?.detail || "Error uploading file");
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const handleImageSubmit = async () => {
+  await handleFileSubmit("submissions/upload/img/", selectedImages.value);
+};
+
+const handlePhilosophySubmit = async () => {
+  await handleFileSubmit(
+    "submissions/upload/philosophy/",
+    philosophyFile.value
+  );
+};
+
+const handleCvSubmit = async () => {
+  await handleFileSubmit("submissions/upload/cv/", cvFile.value);
+};
+
+const handleReflectiveSubmit = async () => {
+  await handleFileSubmit(
+    "submissions/upload/reflective/",
+    reflectiveFile.value
+  );
+};
+
+const handleVideoSubmit = async () => {
+  if (!videoUrl.value) {
+    toast.error("Please enter a valid video URL");
+    return;
+  }
+
+  submitting.value = true;
+  try {
+    const response = await apiClient.post("submissions/submit/video/", {
+      month: props.month,
+      video_url: videoUrl.value,
+    });
+
+    toast.success(response.data.detail);
+    emit("submitted");
+    closeModal();
+  } catch (error) {
+    toast.error(error.response?.data?.detail || "Error uploading video URL");
+  } finally {
+    submitting.value = false;
+  }
+};
+
+// Reset form when modal opens
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal) {
+      resetForm();
+    }
+  }
+);
+</script>
+
+
 <template>
   <teleport to="body">
     <div
@@ -507,229 +735,3 @@
   </teleport>
 </template>
 
-<script setup>
-import { ref, computed, watch } from "vue";
-import { useToast } from "vue-toastification";
-import apiClient from "@/services/api";
-
-const props = defineProps({
-  isOpen: {
-    type: Boolean,
-    default: false,
-  },
-  month: {
-    type: String,
-    required: true,
-  },
-});
-
-const emit = defineEmits(["close", "submitted"]);
-
-const toast = useToast();
-
-// Modal state
-const selectedType = ref("images");
-const submitting = ref(false);
-
-// File states
-const selectedImages = ref([]);
-const imagePreviews = ref([]);
-const philosophyFile = ref([]);
-const cvFile = ref([]);
-const reflectiveFile = ref([]);
-const videoUrl = ref("");
-
-// Computed properties
-const canSubmit = computed(() => {
-  switch (selectedType.value) {
-    case "images":
-      return selectedImages.value.length > 0;
-    case "philosophy":
-      return philosophyFile.value.length > 0;
-    case "cv":
-      return cvFile.value.length > 0;
-    case "reflective":
-      return reflectiveFile.value.length > 0;
-    case "video":
-      return videoUrl.value.trim().length > 0;
-    default:
-      return false;
-  }
-});
-
-// Image handling
-const handleImageChange = (event) => {
-  const files = Array.from(event.target.files);
-
-  files.forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreviews.value.push(e.target.result);
-    };
-    reader.readAsDataURL(file);
-    selectedImages.value.push(file);
-  });
-};
-
-const removeImage = (index) => {
-  imagePreviews.value.splice(index, 1);
-  selectedImages.value.splice(index, 1);
-};
-
-// Philosophy file handling
-const handlePhilosophyChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    philosophyFile.value = [file];
-  }
-};
-
-const removePhilosophyFile = () => {
-  philosophyFile.value = [];
-};
-
-// CV file handling
-const handleCvChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    cvFile.value = [file];
-  }
-};
-
-const removeCvFile = () => {
-  cvFile.value = [];
-};
-
-// Reflective file handling
-const handleReflectiveChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    reflectiveFile.value = [file];
-  }
-};
-
-const removeReflectiveFile = () => {
-  reflectiveFile.value = [];
-};
-
-// Modal methods
-const closeModal = () => {
-  if (!submitting.value) {
-    resetForm();
-    emit("close");
-  }
-};
-
-const resetForm = () => {
-  selectedType.value = "images";
-  selectedImages.value = [];
-  imagePreviews.value = [];
-  philosophyFile.value = [];
-  cvFile.value = [];
-  reflectiveFile.value = [];
-  videoUrl.value = "";
-};
-
-// Submission methods
-const handleSubmit = async () => {
-  try {
-    switch (selectedType.value) {
-      case "images":
-        await handleImageSubmit();
-        break;
-      case "philosophy":
-        await handlePhilosophySubmit();
-        break;
-      case "cv":
-        await handleCvSubmit();
-        break;
-      case "reflective":
-        await handleReflectiveSubmit();
-        break;
-      case "video":
-        await handleVideoSubmit();
-        break;
-    }
-  } catch (error) {
-    console.error("Submission error:", error);
-  }
-};
-
-const handleFileSubmit = async (endpoint, files) => {
-  const formData = new FormData();
-  formData.append("month", props.month);
-  files.forEach((file) => {
-    formData.append("file", file);
-  });
-
-  submitting.value = true;
-  try {
-    const response = await apiClient.post(endpoint, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    toast.success(response.data.detail);
-    emit("submitted");
-    closeModal();
-  } catch (error) {
-    toast.error(error.response?.data?.detail || "Error uploading file");
-  } finally {
-    submitting.value = false;
-  }
-};
-
-const handleImageSubmit = async () => {
-  await handleFileSubmit("submissions/upload/img/", selectedImages.value);
-};
-
-const handlePhilosophySubmit = async () => {
-  await handleFileSubmit(
-    "submissions/upload/philosophy/",
-    philosophyFile.value
-  );
-};
-
-const handleCvSubmit = async () => {
-  await handleFileSubmit("submissions/upload/cv/", cvFile.value);
-};
-
-const handleReflectiveSubmit = async () => {
-  await handleFileSubmit(
-    "submissions/upload/reflective/",
-    reflectiveFile.value
-  );
-};
-
-const handleVideoSubmit = async () => {
-  if (!videoUrl.value) {
-    toast.error("Please enter a valid video URL");
-    return;
-  }
-
-  submitting.value = true;
-  try {
-    const response = await apiClient.post("submissions/submit/video/", {
-      month: props.month,
-      video_url: videoUrl.value,
-    });
-
-    toast.success(response.data.detail);
-    emit("submitted");
-    closeModal();
-  } catch (error) {
-    toast.error(error.response?.data?.detail || "Error uploading video URL");
-  } finally {
-    submitting.value = false;
-  }
-};
-
-// Reset form when modal opens
-watch(
-  () => props.isOpen,
-  (newVal) => {
-    if (newVal) {
-      resetForm();
-    }
-  }
-);
-</script>

@@ -116,7 +116,7 @@
                     </div>
 
                     <div v-if="submissions.files?.filter(f => f.file_type === 'philosophy').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'philosophy')" />
+                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'philosophy')" :show-delete="authStore.isIntern && !submissions.graded" />
                     </div>
 
                     <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -144,7 +144,7 @@
                     </div>
 
                     <div v-if="submissions.files?.filter(f => f.file_type === 'cv').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'cv')" />
+                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'cv')" :show-delete="authStore.isIntern && !submissions.graded" />
                     </div>
 
                     <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -172,7 +172,7 @@
                     </div>
 
                     <div v-if="submissions.files?.filter(f => f.file_type === 'reflective').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'reflective')" />
+                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'reflective')" :show-delete="authStore.isIntern && !submissions.graded" />
                     </div>
 
                     <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">

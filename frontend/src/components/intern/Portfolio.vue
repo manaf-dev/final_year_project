@@ -25,7 +25,7 @@
         // console.log("loading....", loading.value);
         try {
             // console.log("fetching....");
-            const response = await apiClient.get("portfolio/all/");
+            const response = await apiClient.get("submissions/portfolio/all/");
             portfolios.value = response.data;
         } catch (error) {
             throw new Error("Error fetching portfolios");
@@ -158,7 +158,7 @@
                                 </div>
                                 <div>
                                     <h2 class="text-xl font-bold text-gray-900">Portfolio Documents</h2>
-                                    <p class="text-sm text-gray-600">Teaching philosophy, reflections, and reports</p>
+                                    <p class="text-sm text-gray-600">Teaching philosophy, reflections, and CV</p>
                                 </div>
                             </div>
                             <div class="text-right">
@@ -172,6 +172,7 @@
                         <div v-if="portfolios.files?.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             <DocumentsDisplay
                                 :submission-files="portfolios.files"
+                                :show-delete="false"
                                 @refresh-page="fetchPortfolios"
                             />
                         </div>

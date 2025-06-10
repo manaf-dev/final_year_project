@@ -6,6 +6,7 @@
 
     const props = defineProps({
         submissionFiles: { type: Array, required: true },
+        showDelete: { type: Boolean, default: true },
     });
 
     const emit = defineEmits(["refreshPage"]);
@@ -44,6 +45,18 @@
             isOpen.value = false;
         }
     };
+
+    const documentName = (file) => {
+        if (file.file_type === "cv") {
+            return "CV";
+        } else if (file.file_type === "teaching_philosophy") {
+            return "Teaching Philosophy";
+        } else if (file.file_type === 'reflective') {
+            return "Reflective Teaching Statement";
+        } else {
+            return "Document";
+        }
+    }
 </script>
 
 <template v-if="props.submissionFiles.length">
@@ -63,7 +76,7 @@
                 class="text-sm text-gray-600 text-center truncate px-2"
                 title="document"
             >
-                {{ file.file_type === "cv" ? "CV" : "Teaching Philosophy" }}
+                {{ documentName(file) }}
             </p>
             <div class="flex align-center justify-around">
                 <a
@@ -78,6 +91,7 @@
                     ></i>
                 </a>
                 <button
+                    v-if="props.showDelete"
                     @click="openModal(file)"
                     class="w-2/5 flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
                 >
