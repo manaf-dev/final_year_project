@@ -46,133 +46,141 @@
 
 <template>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 pb-8">
-    <div class="flex flex-col mt-2">
-        <div
-            class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-        >
-            <div
-                class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg"
-            >
-                <table class="min-w-full">
-                    <thead>
-                        <tr>
-                            <th
-                                class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                            >
-                                Name
-                            </th>
-                            <th
-                                class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                            >
-                                Contact
-                            </th>
-                            <th
-                                class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                            >
-                                Status
-                            </th>
-                            <th
-                                class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                            >
-                                Grade
-                            </th>
-                            <th
-                                class="px-6 py-3 border-b border-gray-200 bg-gray-50"
-                            ></th>
-                        </tr>
-                    </thead>
+        <div class="flex flex-col mt-6">
+            <div class="overflow-hidden bg-white shadow-xl rounded-xl border border-gray-200">
+                <div class="bg-maroon px-6 py-4">
+                    <h3 class="text-lg font-semibold text-white">Month Submissions</h3>
+                    <p class="text-white text-opacity-80 text-sm mt-1">Review and grade intern submissions</p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Intern Details
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Contact
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Grade
+                                </th>
+                                <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
 
-                    <tbody class="bg-white" v-if="!loading">
-                        <tr
-                            v-for="submission in month_submissions"
-                            :key="submission.id"
-                        >
-                            <td
-                                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
+                        <tbody class="bg-white divide-y divide-gray-200" v-if="!loading">
+                            <tr
+                                v-for="submission in month_submissions"
+                                :key="submission.id"
+                                class="hover:bg-gray-50 transition-colors duration-150"
                             >
-                                <div class="flex items-center">
-                                    <div class="mr-4">
-                                        <div
-                                            class="text-sm font-medium leading-5 text-gray-900"
-                                        >
-                                            {{ submission.intern.username }}
-                                        </div>
-                                        <div
-                                            class="text-sm leading-5 text-gray-500"
-                                        >
-                                            {{ submission.intern.last_name }}
-                                            {{ submission.intern.first_name }}
-                                            {{ submission.intern.other_names }}
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-900">
+                                                {{ submission.intern.username }}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                {{ submission.intern.last_name }}
+                                                {{ submission.intern.first_name }}
+                                                {{ submission.intern.other_names }}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
+                                </td>
 
-                            <td
-                                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
-                            >
-                                <div class="text-sm leading-5 text-gray-900">
-                                    {{ submission.intern.phone }}
-                                </div>
-                                <div class="text-sm leading-5 text-gray-500">
-                                    {{ submission.intern.email }}
-                                </div>
-                            </td>
+                                <td class="px-6 py-4">
+                                    <div class="space-y-1">
+                                        <div class="text-sm text-gray-900">
+                                            {{ submission.intern.phone }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            {{ submission.intern.email }}
+                                        </div>
+                                    </div>
+                                </td>
 
-                            <td
-                                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
-                            >
-                                <span
-                                    :class="[
-                                        'inline-flex px-2 text-xs font-semibold leading-5 rounded-full',
-                                        submission.graded
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-yellow-100 text-yellow-800',
-                                    ]"
-                                    >{{
-                                        submission.graded
-                                            ? "Graded"
-                                            : "Not graded"
-                                    }}</span
-                                >
-                            </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        :class="[
+                                            'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
+                                            submission.graded
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-yellow-100 text-yellow-800',
+                                        ]"
+                                    >
+                                        <span
+                                            :class="[
+                                                'w-2 h-2 rounded-full mr-2',
+                                                submission.graded
+                                                    ? 'bg-green'
+                                                    : 'bg-yellow',
+                                            ]"
+                                        ></span>
+                                        {{ submission.graded ? "Graded" : "Not graded" }}
+                                    </span>
+                                </td>
 
-                            <td
-                                class="px-6 py-4 text-sm leading-5 text-gray-500 whitespace-no-wrap border-b border-gray-200"
-                            >
-                                {{ submission.grade }}/10
-                            </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div
+                                            class="text-md font-bold mr-2 "
+                                        >
+                                            {{ submission.grade || '--' }}
+                                        </div>
+                                        <span class="text-sm text-gray-500">{{ month === '4' ? '/50' : '/10' }}</span>
+                                    </div>
+                                </td>
 
-                            <td
-                                class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-gray-200"
-                            >
-                                <RouterLink
-                                    :to="{
-                                        name: 'submission-detail',
-                                        params: {
-                                            intern: submission.intern.username,
-                                            month: month,
-                                        },
-                                    }"
-                                    class="text-indigo-600 hover:text-indigo-900"
-                                    >View</RouterLink
-                                >
-                            </td>
-                        </tr>
-                        <tr v-if="!month_submissions.length">
-                            <td
-                                class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
-                                colspan="5"
-                            >
-                                No Submission made for this month.
-                            </td>
-                        </tr>
-                    </tbody>
+                                <td class="px-6 py-4 text-right">
+                                    <RouterLink
+                                        :to="{
+                                            name: 'submission-detail',
+                                            params: {
+                                                intern: submission.intern.username,
+                                                month: month,
+                                            },
+                                        }"
+                                        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-maroon hover:bg-maroon hover:opacity-90 transition-all duration-150 shadow-sm hover:shadow-md"
+                                    >
+                                        Review
+                                    </RouterLink>
+                                </td>
+                            </tr>
+                            
+                            <tr v-if="!month_submissions.length">
+                                <td colspan="5" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                            <span class="text-2xl text-gray-400">📄</span>
+                                        </div>
+                                        <h3 class="text-lg font-medium text-gray-900 mb-1">No submissions yet</h3>
+                                        <p class="text-gray-500">No submissions have been made for this month.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
 
-                    <Loader v-if="loading" />
-                </table>
+                        <tbody v-if="loading">
+                            <tr>
+                                <td colspan="5" class="px-6 py-12">
+                                    <div class="flex justify-center">
+                                        <Loader />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </template>

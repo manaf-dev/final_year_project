@@ -24,45 +24,81 @@
     <DashboardLayout :title="'Past Submissions'">
         <template #content>
             <div class="p-6 bg-gray-50 min-h-screen">
-                <p class="text-gray-600 mt-4">Cohorts</p>
-                <div v-if="loading" class="flex justify-center items-center">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Past Submissions</h2>
+                    <p class="text-gray-600">Browse and review submissions from previous cohorts</p>
+                </div>
+
+                <div v-if="loading" class="flex justify-center items-center py-12">
                     <Loader />
                 </div>
-                <div v-else>
-                    <table
-                        class="table-auto w-full border-collapse bg-white shadow-md rounded-lg"
-                    >
-                        <thead>
-                            <tr class="bg-maroon text-white">
-                                <th class="border px-4 py-2 text-left">Year</th>
-                                <th class="border px-4 py-2 text-left">
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="cohort in cohorts"
-                                :key="cohort.id"
-                                class="hover:bg-gray-200 hover:bg-opacity-20 even:bg-gray-100"
-                            >
-                                <td class="border px-4 py-2">
-                                    {{ cohort.year }} Internship Cohort
-                                </td>
-                                <td class="border px-4 py-2 text-center">
-                                    <router-link
-                                        :to="{
-                                            name: 'past-submissions-months',
-                                            params: { year: cohort.year },
-                                        }"
-                                        class="text-green hover:underline"
-                                    >
-                                        View
-                                    </router-link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                
+                <div v-else class="bg-white shadow-xl rounded-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-maroon px-6 py-4">
+                        <h3 class="text-lg font-semibold text-white">
+                            Available Cohorts
+                        </h3>
+                        <p class="text-white text-opacity-80 text-sm mt-1">Select a cohort to view submissions</p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Cohort Year
+                                    </th>
+                                    <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr
+                                    v-for="cohort in cohorts"
+                                    :key="cohort.id"
+                                    class="hover:bg-gray-50 transition-colors duration-150"
+                                >
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">
+                                                    {{ cohort.year }} Internship Cohort
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    Academic Year {{ cohort.year }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <router-link
+                                            :to="{
+                                                name: 'past-submissions-months',
+                                                params: { year: cohort.year },
+                                            }"
+                                            class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-green hover:bg-green hover:opacity-90 transition-all duration-150 shadow-sm hover:shadow-md"
+                                        >
+                                            View Months
+                                        </router-link>
+                                    </td>
+                                </tr>
+                                
+                                <tr v-if="!cohorts.length">
+                                    <td colspan="2" class="px-6 py-12 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                                <span class="text-2xl text-gray-400">📚</span>
+                                            </div>
+                                            <h3 class="text-lg font-medium text-gray-900 mb-1">No cohorts available</h3>
+                                            <p class="text-gray-500">There are no past cohorts to display at this time.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </template>
