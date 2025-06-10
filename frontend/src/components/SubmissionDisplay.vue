@@ -76,33 +76,7 @@
                 </div>
             </div>
 
-            <!-- Teaching Video Section (Month 4) -->
-            <div v-if="month === '4'" class="mb-8">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                        <i class="pi pi-video text-purple-600 mr-2"></i>
-                        Teaching Video
-                    </h3>
-                </div>
-
-                <div v-if="submissions.video" class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                    <VideoDisplay :submission-video="submissions.video" />
-                </div>
-
-                <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                    <i class="pi pi-video text-4xl text-gray-400 mb-3"></i>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">No teaching video submitted</h3>
-                    <p class="text-gray-500 mb-4">Submit a teaching video URL</p>
-                    <button 
-                        v-if="authStore.isIntern && !submissions.graded" 
-                        class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                        @click="$emit('submitView')"
-                    >
-                        <i class="pi pi-plus mr-2"></i>
-                        Submit Video
-                    </button>
-                </div>
-            </div>
+            
 
             <!-- Documents Section (Month 4) -->
             <div v-if="month === '4'" class="mb-8 space-y-6">
@@ -116,7 +90,7 @@
                     </div>
 
                     <div v-if="submissions.files?.filter(f => f.file_type === 'philosophy').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'philosophy')" :show-delete="authStore.isIntern && !submissions.graded" />
+                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'philosophy')" :show-delete="authStore.isIntern && !submissions.graded" @refresh-page="$emit('refreshPage')" />
                     </div>
 
                     <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -144,7 +118,7 @@
                     </div>
 
                     <div v-if="submissions.files?.filter(f => f.file_type === 'cv').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'cv')" :show-delete="authStore.isIntern && !submissions.graded" />
+                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'cv')" :show-delete="authStore.isIntern && !submissions.graded" @refresh-page="$emit('refreshPage')" />
                     </div>
 
                     <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -172,7 +146,7 @@
                     </div>
 
                     <div v-if="submissions.files?.filter(f => f.file_type === 'reflective').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'reflective')" :show-delete="authStore.isIntern && !submissions.graded" />
+                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'reflective')" :show-delete="authStore.isIntern && !submissions.graded" @refresh-page="$emit('refreshPage')" />
                     </div>
 
                     <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -189,6 +163,34 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Teaching Video Section (Month 4) -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="pi pi-video text-purple-600 mr-2"></i>
+                        Teaching Video
+                    </h3>
+                </div>
+
+                <div v-if="submissions.video" class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <VideoDisplay :submission-video="submissions.video" />
+                </div>
+
+                <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                    <i class="pi pi-video text-4xl text-gray-400 mb-3"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No teaching video submitted</h3>
+                    <p class="text-gray-500 mb-4">Submit a teaching video URL</p>
+                    <button 
+                        v-if="authStore.isIntern && !submissions.graded" 
+                        class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        @click="$emit('submitView')"
+                    >
+                        <i class="pi pi-plus mr-2"></i>
+                        Submit Video
+                    </button>
+                </div>
+            </div>
                 
             </div>
 

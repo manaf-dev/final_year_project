@@ -33,7 +33,7 @@
 
         try {
             const response = await apiClient.delete(
-                `portfolio/file/delete/${file_id}/`
+                `submissions/portfolio/file/${file_id}/delete/`
             );
             toast.success(response.data.detail || "Deleted Successfully");
             emit("refreshPage");

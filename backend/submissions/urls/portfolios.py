@@ -14,11 +14,11 @@ PORTFOLIO_URLS = [
         "portfolio/count-all/", PortfolioList.as_view({"get": "total_portfolio_count"})
     ),
     path(
-        "portfolio/img/delete/<int:portfolio_id>/",
+        "portfolio/img/<str:portfolio_id>/delete/",
         PortfolioViewset.as_view({"delete": "delete_portfolio_img"}),
     ),
     path(
-        "portfolio/file/delete/<int:portfolio_id>/",
+        "portfolio/file/<str:portfolio_id>/delete/",
         PortfolioViewset.as_view({"delete": "delete_portfolio_file"}),
     ),
 ]

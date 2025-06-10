@@ -1,3 +1,33 @@
+<script setup>
+    import { ref } from "vue";
+    import {
+        TransitionRoot,
+        TransitionChild,
+        Dialog,
+        DialogPanel,
+        DialogTitle,
+    } from "@headlessui/vue";
+
+    const emits = defineEmits(["confirmDelete", "cancelDelete"]);
+    const props = defineProps({ isOpen: Boolean });
+
+    const closeModal = (action) => {
+        isOpen.value = false;
+
+        // if (action === "confirm") {
+        //     emits("confirmDelete");
+        // } else {
+        //     emits("cancelDelete");
+        // }
+    };
+
+    function openModal() {
+        isOpen.value = true;
+    }
+</script>
+
+
+
 <template>
     <TransitionRoot appear :show="props.isOpen" as="template">
         <Dialog as="div" @close="$emit('cancelDelete')" class="relative z-10">
@@ -66,30 +96,3 @@
     </TransitionRoot>
 </template>
 
-<script setup>
-    import { ref } from "vue";
-    import {
-        TransitionRoot,
-        TransitionChild,
-        Dialog,
-        DialogPanel,
-        DialogTitle,
-    } from "@headlessui/vue";
-
-    const emits = defineEmits(["confirmDelete", "cancelDelete"]);
-    const props = defineProps({ isOpen: Boolean });
-
-    const closeModal = (action) => {
-        isOpen.value = false;
-
-        // if (action === "confirm") {
-        //     emits("confirmDelete");
-        // } else {
-        //     emits("cancelDelete");
-        // }
-    };
-
-    function openModal() {
-        isOpen.value = true;
-    }
-</script>

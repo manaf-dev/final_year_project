@@ -52,7 +52,7 @@
         // console.log("headers", apiClient.defaults.headers);
         try {
             const response = await apiClient.delete(
-                `portfolio/img/delete/${img_id}/`
+                `submissions/portfolio/img/${img_id}/delete/`
             );
             toast.success(response.data.detail || "Deleted Successfully");
             emit("refreshPage");
