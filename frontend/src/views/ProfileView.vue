@@ -39,9 +39,9 @@
         if (validatePasswordData() === false) return;
         loading.value = true;
         try {
-            const response = await apiClient.post(
+            const response = await apiClient.put(
                 "accounts/auth/password/change/",
-                passwordData
+                {current_password: passwordData.old_password, password: passwordData.new_password1}
             );
             toast.success(response.data.detail);
             authStore.logout();

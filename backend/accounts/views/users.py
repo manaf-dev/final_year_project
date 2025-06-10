@@ -10,6 +10,7 @@ from accounts.utils.general import (
     get_password_reset_token,
     decrypt_token,
     validate_posted_data,
+    get_user_from_jwttoken,
 )
 from internships.selectors import get_cohort_by_year
 
@@ -236,8 +237,13 @@ class PasswordViewSet(viewsets.ViewSet):
         context = {"detail": "password reset successful"}
         return Response(context, status=status.HTTP_200_OK)
 
-    def change_password(self, request, user_id):
+    def change_password(self, request):
         """Change password for a user account"""
+        user = get_user_from_jwttoken(request)
+        if not user:
+            context = {"detail": "Authorization header is required"}
+            raise AuthenticationFailed(context)
+
         err, errors = validate_posted_data(
             request.data, ["current_password", "password"]
         )
@@ -249,16 +255,6 @@ class PasswordViewSet(viewsets.ViewSet):
 
         current_password = request.data.get("current_password")
         password = request.data.get("password")
-
-        user = get_user_by_id(user_id)
-        if not user:
-            context = {
-                "detail": "user not found",
-                "errors": {
-                    "email": [f"invalid pk'{user_id}' - object does not exist "]
-                },
-            }
-            raise NotFound(context)
 
         if not user.check_password(current_password):
             context = {"detail": "incorrect current password"}

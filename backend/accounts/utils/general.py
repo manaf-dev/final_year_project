@@ -1,4 +1,7 @@
 import base64
+from django.http import HttpRequest
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 from accounts.models.tokens import Token as TokenModel
 from cryptography.fernet import Fernet
 from decouple import config
@@ -68,3 +71,15 @@ def validate_posted_data(data: dict, fields: list[str]):
             errors.update({field: ["this field is required"]})
 
     return err, errors
+
+
+def get_user_from_jwttoken(request: HttpRequest) -> UserAccount:
+    "Return a user object when a valid jwt token is set in the request header"
+    jwt = JWTAuthentication()
+    try:
+        user = jwt.get_user(
+            jwt.get_validated_token((jwt.get_raw_token(jwt.get_header(request))))
+        )
+    except Exception as e:
+        raise AuthenticationFailed(detail="Authorization header is required")
+    return user

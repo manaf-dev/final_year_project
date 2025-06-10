@@ -26,7 +26,7 @@ USERS_URLS = [
         PasswordViewSet.as_view({"post": "reset_password"}),
     ),
     path(
-        "<str:user_id>/password/change/",
+        "auth/password/change/",
         PasswordViewSet.as_view({"put": "change_password"}),
     ),
     # path("auth/", include("dj_rest_auth.urls")),
