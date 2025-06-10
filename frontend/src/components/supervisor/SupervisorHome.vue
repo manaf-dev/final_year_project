@@ -108,11 +108,7 @@
                                 <div class="text-gray-600 font-medium">Assigned Interns</div>
                                 <div class="text-sm text-gray-500 mt-1">Currently supervising</div>
                             </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-maroon to-red-700 rounded-2xl flex items-center justify-center">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                                </svg>
-                            </div>
+                            
                         </div>
                         
                     </div>
@@ -129,11 +125,7 @@
                                 <div class="text-gray-600 font-medium">Total Submissions</div>
                                 <div class="text-sm text-gray-500 mt-1">All time submissions</div>
                             </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-green to-green rounded-2xl flex items-center justify-center">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                                </svg>
-                            </div>
+                            
                         </div>
                         
                     </div>
@@ -150,11 +142,7 @@
                                 <div class="text-gray-600 font-medium">Graded Submissions</div>
                                 <div class="text-sm text-gray-500 mt-1">Completed reviews</div>
                             </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-yellow to-orange-500  rounded-2xl flex items-center justify-center">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
+                            
                         </div>
                         
                     </div>
@@ -166,11 +154,7 @@
                 <!-- View Cohorts Card -->
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
                     <div class="p-8">
-                        <div class="w-16 h-16 bg-gradient-to-br from-maroon to-red-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                            </svg>
-                        </div>
+                        
                         
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Manage Cohorts</h3>
                         <p class="text-gray-600 mb-6 leading-relaxed">
@@ -195,11 +179,7 @@
                 <!-- Grading Submissions Card -->
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
                     <div class="p-8">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green to-green rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
-                        </div>
+                        
                         
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Grade Submissions</h3>
                         <p class="text-gray-600 mb-6 leading-relaxed">
@@ -223,11 +203,6 @@
                 <!-- Notifications Card -->
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
                     <div class="p-8">
-                        <div class="w-16 h-16 bg-gradient-to-br from-yellow to-yellow rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM12 7a4 4 0 00-4 4v6h8v-6a4 4 0 00-4-4zM8 7V6a4 4 0 118 0v1"></path>
-                            </svg>
-                        </div>
                         
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Notifications</h3>
                         <p class="text-gray-600 mb-6 leading-relaxed">

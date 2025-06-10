@@ -131,11 +131,7 @@
                                 <div class="text-gray-600 font-medium">Total Portfolio Items</div>
                                 <div class="text-sm text-gray-500 mt-1">Uploaded images/documents</div>
                             </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-maroon to-red-600 rounded-2xl flex items-center justify-center">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                            </div>
+
                         </div>
                         <div class="mt-4 bg-red-50 rounded-lg p-3">
                             <div class="flex items-center text-sm text-maroon">
@@ -153,17 +149,13 @@
                     <div class="p-6">
                         <div class="flex items-center justify-between">
                             <div>
-                                <div class="text-3xl font-bold text-green-600 mb-1">
+                                <div class="text-3xl font-bold text-green mb-1">
                                     {{ submissions.graded_submissions }}
                                 </div>
                                 <div class="text-gray-600 font-medium">Graded Submissions</div>
                                 <div class="text-sm text-gray-500 mt-1">Reviewed by supervisor</div>
                             </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-green to-green rounded-2xl flex items-center justify-center">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
+
                         </div>
                         <div class="mt-4 bg-green-50 rounded-lg p-3">
                             <div class="flex items-center text-sm text-green">
@@ -181,17 +173,13 @@
                     <div class="p-6">
                         <div class="flex items-center justify-between">
                             <div class="flex-1">
-                                <div class="text-lg font-bold text-yellow mb-1 capitalize truncate">
+                                <div class="text-lg font-bold text-yellow mb-1 capitalize">
                                     {{ supervisor?.title }}. {{ supervisor?.last_name }}
                                 </div>
                                 <div class="text-gray-600 font-medium">Your Supervisor</div>
-                                <div class="text-sm text-gray-500 mt-1 truncate">{{ supervisor?.department?.name }}</div>
+                                <div class="text-sm text-gray-500 mt-1">{{ supervisor?.department?.name }}</div>
                             </div>
-                            <div class="w-14 h-14 bg-gradient-to-br from-yellow to-yellow rounded-2xl flex items-center justify-center">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </div>
+
                         </div>
                         <div class="mt-4 bg-yellow-50 rounded-lg p-3">
                             <router-link :to="{ name: 'intern-supervisor' }" class="flex items-center text-sm text-orange-500  hover:text-yellow-800 transition-colors">
