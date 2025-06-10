@@ -82,7 +82,7 @@
                                     
                                     <div>
                                         <h1 class="text-3xl font-bold mb-2 capitalize">
-                                            {{ profile.last_name }} {{ profile.first_name }}
+                                            {{ profile.last_name }} {{ profile.first_name }} {{ profile.other_names }}
                                         </h1>
                                         <div class="flex items-center space-x-4">
                                             <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 capitalize">

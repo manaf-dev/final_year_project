@@ -61,6 +61,7 @@
                                 <td class="border px-4 py-2">
                                     {{ intern.last_name }}
                                     {{ intern.first_name }}
+                                    {{ intern.other_names }}
                                 </td>
                                 <td class="border px-4 py-2">
                                     {{ intern.phone }}

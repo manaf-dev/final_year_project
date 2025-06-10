@@ -48,7 +48,7 @@
                                 <!-- Info -->
                                 <div class="flex-1">
                                     <h1 class="text-3xl font-bold mb-2 capitalize">
-                                        {{ supervisor?.title }}. {{ supervisor?.first_name }} {{ supervisor?.last_name }}
+                                        {{ supervisor?.title }}. {{ supervisor?.last_name }} {{ supervisor?.first_name }} {{ supervisor.other_names }}
                                     </h1>
                                     <p class="text-gray-100 text-lg">
                                         {{ supervisor?.department?.name }}
@@ -95,7 +95,7 @@
                                     <div class="flex-1">
                                         <label class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
                                         <p class="text-lg font-semibold text-gray-900 capitalize">
-                                            {{ supervisor?.title }}. {{ supervisor?.last_name }} {{ supervisor?.first_name }}
+                                            {{ supervisor?.title }}. {{ supervisor?.last_name }} {{ supervisor?.first_name }} {{ supervisor.other_names }}
                                         </p>
                                     </div>
                                 </div>

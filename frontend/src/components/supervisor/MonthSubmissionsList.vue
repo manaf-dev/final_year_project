@@ -45,8 +45,8 @@
 </script>
 
 <template>
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-    <div class="flex flex-col mt-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 pb-8">
+    <div class="flex flex-col mt-2">
         <div
             class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
         >
@@ -102,6 +102,7 @@
                                         >
                                             {{ submission.intern.last_name }}
                                             {{ submission.intern.first_name }}
+                                            {{ submission.intern.other_names }}
                                         </div>
                                     </div>
                                 </div>
