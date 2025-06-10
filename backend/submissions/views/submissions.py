@@ -24,6 +24,7 @@ from submissions.selectors.submissions import (
     get_submission_video_by_submission,
 )
 from internships.selectors import get_cohort_by_id, get_cohort_by_year
+from submissions.models.portfolios import PortfolioImage, PortfolioFile
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -33,16 +34,21 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     def get_intern_submissions(self, request):
         intern = request.user
-        submissions = filter_submissions_by_intern(intern.id).order_by("month")
-        try:
-            submissions_data = self.get_serializer(submissions, many=True).data
-            return Response(submissions_data, status=status.HTTP_200_OK)
-        except Exception as e:
-            print("Error fetching intern submissions:", e)
+        if intern.account_type != "intern":
             return Response(
-                {"detail": "Error fetching intern submissions"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                {"detail": "You cannot perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
             )
+
+        submissions = filter_submissions_by_intern(intern.id)
+        context = {"graded_submissions": submissions.filter(graded=True).count()}
+
+        images = PortfolioImage.objects.filter(submission__in=submissions).count()
+        files = PortfolioFile.objects.filter(submission__in=submissions).count()
+        video = SubmissionVideo.objects.filter(submission__in=submissions).count()
+        context["portfolio_count"] = images + files + video
+
+        return Response(context, status=status.HTTP_200_OK)
 
     def get_existing_submissions(self, request):
         intern = request.user

@@ -17,23 +17,8 @@
         try {
             const response = await apiClient.get("submissions/intern/");
             submissions.value = response.data;
-            // console.log("getting submissions...");
-            submissions.value.forEach((submission) => {
-                if (submission.graded) {
-                    completedSubmissions.value += 1;
-                }
-            });
         } catch (error) {
             throw new Error("Error fetching submissions");
-        }
-    };
-
-    const getPortfolioCount = async () => {
-        try {
-            const response = await apiClient.get("portfolio/count-all/");
-            totalPortfolio.value += response.data.portfolio_count;
-        } catch (error) {
-            throw new Error("Error fetching portfolio count");
         }
     };
 
@@ -54,7 +39,6 @@
         loading.value = true;
         try {
             await getSubmissions();
-            await getPortfolioCount();
             // await getRecents();
         } catch (error) {
             throw new Error("Error fetching data");
@@ -71,13 +55,13 @@
         return "Good evening";
     });
 
-    const currentSubmission = computed(() => {
-        if (completedSubmissions.value === 0) {
-            return completedSubmissions.value + 1;
-        } else {
-            return completedSubmissions.value;
-        }
-    });
+    // const currentSubmission = computed(() => {
+    //     if (completedSubmissions.value === 0) {
+    //         return completedSubmissions.value + 1;
+    //     } else {
+    //         return submissions.graded_submissions.value;
+    //     }
+    // });
 </script>
 
 <template>
@@ -116,13 +100,13 @@
                             <!-- Quick Progress Ring -->
                             <div class="hidden md:flex items-center space-x-4">
                                 <div class="text-right">
-                                    <div class="text-2xl font-bold">{{ Math.round((completedSubmissions / 4) * 100) }}%</div>
+                                    <div class="text-2xl font-bold">{{ Math.round((submissions.graded_submissions / 4) * 100) }}%</div>
                                     <div class="text-sm text-blue-100">Complete</div>
                                 </div>
                                 <div class="w-16 h-16 rounded-full border-4 border-white/30 flex items-center justify-center relative">
                                     <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-white transform rotate-45" 
-                                         :style="`transform: rotate(${(completedSubmissions / 4) * 360}deg)`"></div>
-                                    <span class="text-sm font-bold">{{ completedSubmissions }}/4</span>
+                                         :style="`transform: rotate(${(submissions.graded_submissions / 4) * 360}deg)`"></div>
+                                    <span class="text-sm font-bold">{{ submissions.graded_submissions }}/4</span>
                                 </div>
                             </div>
                         </div>
@@ -142,10 +126,10 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <div class="text-3xl font-bold text-maroon mb-1">
-                                    {{ totalPortfolio }}
+                                    {{ submissions.portfolio_count }}
                                 </div>
                                 <div class="text-gray-600 font-medium">Total Portfolio Items</div>
-                                <div class="text-sm text-gray-500 mt-1">Uploaded documents</div>
+                                <div class="text-sm text-gray-500 mt-1">Uploaded images/documents</div>
                             </div>
                             <div class="w-14 h-14 bg-gradient-to-br from-maroon to-red-600 rounded-2xl flex items-center justify-center">
                                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +154,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <div class="text-3xl font-bold text-green-600 mb-1">
-                                    {{ completedSubmissions }}
+                                    {{ submissions.graded_submissions }}
                                 </div>
                                 <div class="text-gray-600 font-medium">Graded Submissions</div>
                                 <div class="text-sm text-gray-500 mt-1">Reviewed by supervisor</div>
@@ -186,7 +170,7 @@
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                {{ completedSubmissions === 0 ? 'Start your first submission' : 'Great progress!' }}
+                                {{ submissions.graded_submissions === 0 ? 'Start your first submission' : 'Great progress!' }}
                             </div>
                         </div>
                     </div>
@@ -266,7 +250,7 @@
                         </p>
                         
                         <router-link
-                            :to="{ name: 'submissions-page', params: { month: currentSubmission } }"
+                            :to="{ name: 'submissions-page', params: { month: 1 } }"
                             class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green to-green text-white font-medium rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                         >
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
