@@ -12,6 +12,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  selectedType: {
+    type: String,
+    default: "images",
+  },
 });
 
 const emit = defineEmits(["close", "submitted"]);
@@ -19,7 +23,7 @@ const emit = defineEmits(["close", "submitted"]);
 const toast = useToast();
 
 // Modal state
-const selectedType = ref("images");
+const selectedType = ref(props.selectedType);
 const submitting = ref(false);
 
 // File states
@@ -112,7 +116,7 @@ const closeModal = () => {
 };
 
 const resetForm = () => {
-  selectedType.value = "images";
+  // Don't reset selectedType here - let it be set by the watcher
   selectedImages.value = [];
   imagePreviews.value = [];
   philosophyFile.value = [];
@@ -220,6 +224,18 @@ watch(
   (newVal) => {
     if (newVal) {
       resetForm();
+      // Set the selectedType from props when modal opens
+      selectedType.value = props.selectedType || "images";
+    }
+  }
+);
+
+// Also watch for changes in selectedType prop
+watch(
+  () => props.selectedType,
+  (newVal) => {
+    if (props.isOpen && newVal) {
+      selectedType.value = newVal;
     }
   }
 );

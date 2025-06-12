@@ -106,17 +106,7 @@ const openConfirmModal = () => {
                 </div>
             </template>
 
-            <!-- Delete -->
-            <div v-if="showDelete" class="mt-4">
-                <button
-                    @click="openConfirmModal"
-                    class="px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
-                >
-                    <i class="pi pi-trash" style="font-size: 1.4rem"></i>
-                </button>
-            </div>
-
-            <!-- video url -->
+            <!-- Video URL -->
             <div class="p-4 ml-8 text-sm text-gray-600">
                 <span class="font-semibold">Video URL: </span>
                 <a
@@ -126,6 +116,16 @@ const openConfirmModal = () => {
                 >
                     {{ submissionVideo.video_url }}
                 </a>
+            </div>
+
+            <!-- Delete -->
+            <div v-if="showDelete" class="mt-4">
+                <button
+                    @click="openConfirmModal"
+                    class="px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
+                >
+                    <i class="pi pi-trash" style="font-size: 1.4rem"></i>
+                </button>
             </div>
         </div>
     </div>

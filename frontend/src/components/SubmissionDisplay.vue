@@ -68,7 +68,7 @@
                     <button 
                         v-if="authStore.isIntern && !submissions.graded" 
                         class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                        @click="$emit('submitView')"
+                        @click="$emit('submitView', 'images')"
                     >
                         <i class="pi pi-plus mr-2"></i>
                         Submit Images
@@ -100,7 +100,7 @@
                         <button 
                             v-if="authStore.isIntern && !submissions.graded" 
                             class="inline-flex items-center px-3 py-2 bg-green text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
-                            @click="$emit('submitView')"
+                            @click="$emit('submitView', 'philosophy')"
                         >
                             <i class="pi pi-plus mr-2"></i>
                             Submit Teaching Philosophy
@@ -128,7 +128,7 @@
                         <button 
                             v-if="authStore.isIntern && !submissions.graded" 
                             class="inline-flex items-center px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
-                            @click="$emit('submitView')"
+                            @click="$emit('submitView', 'cv')"
                         >
                             <i class="pi pi-plus mr-2"></i>
                             Submit CV
@@ -156,7 +156,7 @@
                         <button 
                             v-if="authStore.isIntern && !submissions.graded" 
                             class="inline-flex items-center px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
-                            @click="$emit('submitView')"
+                            @click="$emit('submitView', 'reflective')"
                         >
                             <i class="pi pi-plus mr-2"></i>
                             Submit Reflective Teaching
@@ -184,7 +184,7 @@
                     <button 
                         v-if="authStore.isIntern && !submissions.graded" 
                         class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                        @click="$emit('submitView')"
+                        @click="$emit('submitView', 'video')"
                     >
                         <i class="pi pi-plus mr-2"></i>
                         Submit Video
@@ -208,7 +208,7 @@
                             class="bg-white border border-gray-200 rounded-lg p-4"
                         >
                             <div class="flex justify-between items-start mb-2">
-                                <span v-if="authStore.isIntern" class="font-medium text-gray-900">
+                                <span v-if="authStore.isIntern" class="font-medium text-gray-900 capitalize">
                                     {{ comment.author.title }}. {{ comment.author.last_name }} {{ comment.author.first_name }}
                                 </span>
                                 <span v-else class="font-medium text-gray-900">You</span>

@@ -69,8 +69,10 @@
         getSubmissions();
     };
 
-    const openSubmissionModal = () => {
+    const selectedType = ref("images");
+    const openSubmissionModal = (type) => {
         if (!submissions.value.graded) {
+            selectedType.value = type || "images";
             showSubmissionModal.value = true;
         }
     };
@@ -111,7 +113,7 @@
                         <!-- Submit Button -->
                         <button
                             v-if="!submissions.graded"
-                            @click="openSubmissionModal"
+                            @click="openSubmissionModal('images')"
                             class="inline-flex items-center px-4 py-2 bg-white text-[#8c003b] rounded-lg font-medium hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
                         >
                             <i class="pi pi-plus mr-2"></i>
@@ -199,6 +201,7 @@
         <SubmissionModal
             :is-open="showSubmissionModal"
             :month="props.month"
+            :selected-type="selectedType"
             @close="showSubmissionModal = false"
             @submitted="handleSubmissionCompleted"
         />
