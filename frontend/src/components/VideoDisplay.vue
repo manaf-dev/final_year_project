@@ -1,13 +1,26 @@
 <script setup>
 import { ref, computed } from "vue";
+import apiClient from "@/services/api";
+import { useToast } from "vue-toastification";
+import ConfirmModal from "./ConfirmModal.vue";
 
 const props = defineProps({
     submissionVideo: {
         type: Object,
         required: true,
     },
+    showDelete: {
+        type: Boolean,
+        default: false,
+    },
 });
 
+const emits = defineEmits(["refresh"]);
+
+const toast = useToast();
+const deleting = ref(false);
+const isOpen = ref(false);
+const selectedVideo = ref(null);
 const videoError = ref(false);
 
 // Helper to check if the URL is a YouTube link
@@ -29,6 +42,28 @@ const youTubeEmbedUrl = computed(() => {
     }
     return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
 });
+
+const deleteVideo = async (video_id) => {
+    if (deleting.value) return;
+
+    deleting.value = true;
+    try {
+        await apiClient.delete(`/submissions/video/${props.submissionVideo.id}/delete/`);
+        toast.success("Video deleted successfully.");
+        emits("refresh");
+    } catch (error) {
+        console.error("Error deleting video:", error);
+        toast.error("Failed to delete video.");
+    } finally {
+        deleting.value = false;
+    }
+};
+const openConfirmModal = () => {
+    selectedVideo.value = props.submissionVideo;
+    isOpen.value = true;
+};
+
+
 </script>
 
 <template>
@@ -70,6 +105,35 @@ const youTubeEmbedUrl = computed(() => {
                     </span>
                 </div>
             </template>
+
+            <!-- Delete -->
+            <div v-if="showDelete" class="mt-4">
+                <button
+                    @click="openConfirmModal"
+                    class="px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
+                >
+                    <i class="pi pi-trash" style="font-size: 1.4rem"></i>
+                </button>
+            </div>
+
+            <!-- video url -->
+            <div class="p-4 ml-8 text-sm text-gray-600">
+                <span class="font-semibold">Video URL: </span>
+                <a
+                    :href="submissionVideo.video_url"
+                    target="_blank"
+                    class="underline text-blue-600"
+                >
+                    {{ submissionVideo.video_url }}
+                </a>
+            </div>
         </div>
     </div>
+
+    <ConfirmModal
+        v-if="showDelete"
+        :is-open="isOpen"
+        @confirmDelete="deleteVideo(selectedVideo.id)"
+        @cancelDelete="isOpen = false"
+    />
 </template>

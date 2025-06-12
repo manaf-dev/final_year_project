@@ -23,6 +23,10 @@ SUBMISSION_URLS = [
         SubmissionViewSet.as_view({"post": "submit_video"}),
     ),
     path(
+        "video/<str:video_id>/delete/",
+        SubmissionViewSet.as_view({"delete": "delete_video"}),
+    ),
+    path(
         "cohort/<str:year>/<int:month>/",
         SubmissionViewSet.as_view({"get": "get_cohort_month_submissions"}),
     ),

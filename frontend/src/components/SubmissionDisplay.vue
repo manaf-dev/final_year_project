@@ -174,7 +174,7 @@
                 </div>
 
                 <div v-if="submissions.video" class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                    <VideoDisplay :submission-video="submissions.video" />
+                    <VideoDisplay :submission-video="submissions.video" :show-delete="authStore.isIntern && !submissions.graded" @refresh="$emit('refreshPage')" />
                 </div>
 
                 <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">

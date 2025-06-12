@@ -21,6 +21,7 @@ from submissions.selectors.submissions import (
     get_submission_by_intern,
     get_submission_by_id,
     filter_submissions_by_intern,
+    get_submission_video_by_id,
     get_submission_video_by_submission,
 )
 from internships.selectors import get_cohort_by_id, get_cohort_by_year
@@ -316,3 +317,17 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             scores.append(grades)
 
         return Response(scores, status=status.HTTP_200_OK)
+
+    def delete_video(self, request, video_id):
+        submission_video = get_submission_video_by_id(video_id)
+        if not submission_video:
+            return Response(
+                {"detail": "Video not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        submission_video.delete()
+        return Response(
+            {"detail": "Video deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT,
+        )
