@@ -99,7 +99,7 @@
                         <p class="text-gray-500 mb-3 text-sm">Upload your teaching philosophy document</p>
                         <button 
                             v-if="authStore.isIntern && !submissions.graded" 
-                            class="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                            class="inline-flex items-center px-3 py-2 bg-green text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
                             @click="$emit('submitView')"
                         >
                             <i class="pi pi-plus mr-2"></i>
@@ -127,7 +127,7 @@
                         <p class="text-gray-500 mb-3 text-sm">Upload your updated CV in PDF format</p>
                         <button 
                             v-if="authStore.isIntern && !submissions.graded" 
-                            class="inline-flex items-center px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
+                            class="inline-flex items-center px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
                             @click="$emit('submitView')"
                         >
                             <i class="pi pi-plus mr-2"></i>

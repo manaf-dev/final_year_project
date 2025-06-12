@@ -322,7 +322,6 @@ onMounted(async () => {
                       v-for="supervisor in supervisors"
                       :key="supervisor.id"
                       :value="supervisor.id"
-                      class="capitalize"
                     >
                        {{ supervisor.title }}. {{ supervisor.last_name }} {{ supervisor.first_name }} {{ supervisor?.other_names }}
                     </option>
