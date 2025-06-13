@@ -13,7 +13,7 @@ class PortfolioImage(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Image {self.id} for Submission {self.submission.id} by {self.submission.user.username}"
+        return f"Image {self.id} for Submission {self.submission.id} by {self.submission.intern.username}"
 
 
 class PortfolioFile(models.Model):
@@ -32,4 +32,4 @@ class PortfolioFile(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"File {self.id} ({self.file_type}) for Submission {self.submission.id} by {self.submission.user.username}"
+        return f"File {self.id} ({self.file_type}) for Submission {self.submission.id} by {self.submission.intern.username}"
