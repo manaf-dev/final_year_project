@@ -12,6 +12,9 @@ class PortfolioImage(models.Model):
     image = models.ImageField(upload_to="portfolio_imgs/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Image {self.id} for Submission {self.submission.id} by {self.submission.user.username}"
+
 
 class PortfolioFile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -27,3 +30,6 @@ class PortfolioFile(models.Model):
     file_type = models.CharField(max_length=50, choices=FILE_TYPES, default="file")
     file = models.FileField(upload_to="documents/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"File {self.id} ({self.file_type}) for Submission {self.submission.id} by {self.submission.user.username}"
