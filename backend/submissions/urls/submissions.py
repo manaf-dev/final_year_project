@@ -8,15 +8,14 @@ SUBMISSION_URLS = [
         "intern/",
         SubmissionViewSet.as_view({"get": "get_intern_submissions"}),
     ),
-    path("upload/img/", SubmissionViewSet.as_view({"post": "upload_img"})),
+    path("upload/images/", SubmissionViewSet.as_view({"post": "upload_img"})),
     path(
-        "upload/philosophy/",
-        SubmissionViewSet.as_view({"post": "upload_philosophy"}),
+        "upload/document/",
+        SubmissionViewSet.as_view({"post": "upload_document"}),
     ),
-    path("upload/cv/", SubmissionViewSet.as_view({"post": "upload_cv"})),
     path(
-        "upload/reflective/",
-        SubmissionViewSet.as_view({"post": "upload_reflective"}),
+        "document/check/",
+        SubmissionViewSet.as_view({"get": "check_document_exists"}),
     ),
     path(
         "submit/video/",

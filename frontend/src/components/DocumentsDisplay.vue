@@ -80,7 +80,7 @@
             </p>
             <div class="flex align-center justify-around">
                 <a
-                    :href="`http://localhost:8000/${file.file}`"
+                    :href="file.file"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="w-2/5 flex items-center justify-center gap-1 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"

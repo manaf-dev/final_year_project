@@ -60,12 +60,14 @@ class PortfolioViewset(viewsets.ModelViewSet):
         context = SubmissionSerializer(submission).data
 
         if portfolio_imgs:
-            portfolio_imgs_data = self.get_serializer(portfolio_imgs, many=True).data
+            portfolio_imgs_data = self.get_serializer(
+                portfolio_imgs, many=True, context={"request": request}
+            ).data
             context["images"] = portfolio_imgs_data
 
         if portfolio_files:
             portfolio_files_data = PortfolioFileSerializer(
-                portfolio_files, many=True
+                portfolio_files, many=True, context={"request": request}
             ).data
             context["files"] = portfolio_files_data
 
@@ -165,8 +167,12 @@ class PortfolioList(viewsets.ModelViewSet):
                 {"detail": "No portfolio images or files Submitted."},
                 status=status.HTTP_200_OK,
             )
-        images_data = self.get_serializer(images, many=True).data
-        files_data = PortfolioFileSerializer(files, many=True).data
+        images_data = self.get_serializer(
+            images, many=True, context={"request": request}
+        ).data
+        files_data = PortfolioFileSerializer(
+            files, many=True, context={"request": request}
+        ).data
 
         context = {"images": images_data, "files": files_data}
 

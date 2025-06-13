@@ -89,8 +89,8 @@
                         </h3>
                     </div>
 
-                    <div v-if="submissions.files?.filter(f => f.file_type === 'philosophy').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'philosophy')" :show-delete="authStore.isIntern && !submissions.graded" @refresh-page="$emit('refreshPage')" />
+                    <div v-if="submissions.files?.filter(f => f.file_type === 'teaching_philosophy').length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <DocumentsDisplay :submission-files="submissions.files.filter(f => f.file_type === 'teaching_philosophy')" :show-delete="authStore.isIntern && !submissions.graded" @refresh-page="$emit('refreshPage')" />
                     </div>
 
                     <div v-else class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">

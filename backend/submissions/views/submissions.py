@@ -24,6 +24,9 @@ from submissions.selectors.submissions import (
     get_submission_video_by_id,
     get_submission_video_by_submission,
 )
+from submissions.selectors.portfolios import (
+    get_portfolio_file_by_submission_and_type,
+)
 from internships.selectors import get_cohort_by_id, get_cohort_by_year
 from submissions.models.portfolios import PortfolioImage, PortfolioFile
 
@@ -93,108 +96,138 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    def save_file(self, file):
+    def upload_document(self, request):
+        """
+        Unified method to upload portfolio documents (CV, Philosophy, Reflective)
+        Supports both new uploads and updates of existing documents
+        """
+        # Get document type from request data
+        document_type = request.data.get("type")
+        if not document_type:
+            return Response(
+                {"detail": "Document type is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Validate document type
+        valid_types = ["cv", "teaching_philosophy", "reflective"]
+        if document_type not in valid_types:
+            return Response(
+                {
+                    "detail": f"Invalid document type. Must be one of: {', '.join(valid_types)}"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Get or create submission
+        submission = self.get_existing_submissions(request)
+
+        # Get uploaded file
+        uploaded_files = request.FILES.getlist("file")
+        if not uploaded_files:
+            return Response(
+                {"detail": "No file provided"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        document_file = uploaded_files[0]
+
+        # Check if document of this type already exists for this submission
+        existing_document = get_portfolio_file_by_submission_and_type(
+            submission.id, document_type
+        )
+
+        # Prepare document data
+        document_data = {
+            "submission": submission.id,
+            "file_type": document_type,
+            "file": document_file,
+        }
+
+        # Get user-friendly type names for response messages
+        type_names = {
+            "cv": "CV",
+            "teaching_philosophy": "Teaching Philosophy",
+            "reflective": "Reflective Teaching Statement",
+        }
+        type_name = type_names.get(document_type, document_type.title())
 
         try:
-            file_serializer = PortfolioFileSerializer(data=file)
-            file_serializer.is_valid(raise_exception=True)
-            file_serializer.save()
-            return file_serializer.data, True
-        # except file_serializer.ValidationError as e:
-        #     print("Error saving file:", e)
-        #     return False, file_serializer.errors
+            if existing_document:
+                # Update existing document
+                file_serializer = PortfolioFileSerializer(
+                    existing_document, data=document_data, partial=True
+                )
+                file_serializer.is_valid(raise_exception=True)
+                file_serializer.save()
+
+                return Response(
+                    {"detail": f"{type_name} updated successfully"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                # Create new document
+                file_serializer = PortfolioFileSerializer(data=document_data)
+                file_serializer.is_valid(raise_exception=True)
+                file_serializer.save()
+
+                return Response(
+                    {"detail": f"{type_name} uploaded successfully"},
+                    status=status.HTTP_201_CREATED,
+                )
+
         except Exception as e:
-            return str(e), False
-
-    def upload_philosophy(self, request):
-        submission = self.get_existing_submissions(request)
-
-        philosophy_file = request.data.getlist("file")[0]
-        print("Philosophy:", philosophy_file)
-
-        if not philosophy_file:
             return Response(
-                {"detail": "Philosophy file not sent"},
+                {"detail": f"Error saving {type_name.lower()}", "error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        philosophy = {
-            "submission": submission.id,
-            "file_type": "teaching_philosophy",
-            "file": philosophy_file,
-        }
-
-        file, saved = self.save_file(philosophy)
-
-        if not saved:
+    def check_document_exists(self, request):
+        """
+        Check if a specific document type exists for a submission
+        """
+        intern = request.user
+        if intern.account_type != "intern":
             return Response(
-                {"detail": "Error saving philosophy file", "errors": file},
+                {"detail": "You cannot perform this action"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        month = request.query_params.get("month")
+        document_type = request.query_params.get("type")
+
+        if not month or not document_type:
+            return Response(
+                {"detail": "Month and document type are required"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        return Response(
-            {"detail": "Teaching Philosophy upload successful"},
-            status=status.HTTP_201_CREATED,
+        # Get submission for this month
+        submission = get_submission_by_intern(intern.id, month=month)
+        if not submission:
+            return Response(
+                {"exists": False, "document": None},
+                status=status.HTTP_200_OK,
+            )
+
+        # Check if document exists
+        existing_document = get_portfolio_file_by_submission_and_type(
+            submission.id, document_type
         )
 
-    def upload_cv(self, request):
-        submission = self.get_existing_submissions(request)
+        if existing_document:
+            from submissions.serializers.portfolios import PortfolioFileSerializer
 
-        cv_file = request.data.getlist("file")[0]
-        print("CV:", cv_file)
-
-        if not cv_file:
+            serializer = PortfolioFileSerializer(existing_document)
             return Response(
-                {"detail": "CV file not sent"}, status=status.HTTP_400_BAD_REQUEST
+                {"exists": True, "document": serializer.data},
+                status=status.HTTP_200_OK,
             )
-
-        cv = {
-            "submission": submission.id,
-            "file_type": "cv",
-            "file": cv_file,
-        }
-
-        file, saved = self.save_file(cv)
-        if not saved:
+        else:
             return Response(
-                {"detail": "Error saving CV file", "errors": file},
-                status=status.HTTP_400_BAD_REQUEST,
+                {"exists": False, "document": None},
+                status=status.HTTP_200_OK,
             )
-
-        return Response(
-            {"detail": "CV upload successful"},
-            status=status.HTTP_201_CREATED,
-        )
-
-    def upload_reflective(self, request):
-        submission = self.get_existing_submissions(request)
-
-        reflective_file = request.data.getlist("file")[0]
-        print("Reflective:", reflective_file)
-
-        if not reflective_file:
-            return Response(
-                {"detail": "Reflective file not sent"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        reflective = {
-            "submission": submission.id,
-            "file_type": "reflective",
-            "file": reflective_file,
-        }
-
-        file, saved = self.save_file(reflective)
-
-        if not saved:
-            return Response(
-                {"detail": "Error saving reflective file", "errors": file},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response(
-            {"detail": "Reflective Teaching Statement upload successful"},
-            status=status.HTTP_201_CREATED,
-        )
 
     def is_supervisor(self, request):
         supervisor = request.user

@@ -17,6 +17,17 @@ def get_portfolio_files_by_submission(submission_id):
         return None
 
 
+def get_portfolio_file_by_submission_and_type(submission_id, file_type):
+    """Get existing portfolio file by submission and file type"""
+    try:
+        file = PortfolioFile.objects.filter(
+            submission=submission_id, file_type=file_type
+        ).first()
+        return file
+    except:
+        return None
+
+
 def get_portfolio_images_by_id(portfolio_id):
     try:
         image = PortfolioImage.objects.get(id=portfolio_id)

@@ -34,6 +34,13 @@ const cvFile = ref([]);
 const reflectiveFile = ref([]);
 const videoUrl = ref("");
 
+// Existing document states
+const existingDocuments = ref({
+  cv: null,
+  teaching_philosophy: null,
+  reflective: null
+});
+
 // Computed properties
 const canSubmit = computed(() => {
   switch (selectedType.value) {
@@ -123,6 +130,30 @@ const resetForm = () => {
   cvFile.value = [];
   reflectiveFile.value = [];
   videoUrl.value = "";
+  existingDocuments.value = {
+    cv: null,
+    teaching_philosophy: null,
+    reflective: null
+  };
+};
+
+// Check for existing documents
+const checkExistingDocuments = async () => {
+  const documentTypes = ['cv', 'teaching_philosophy', 'reflective'];
+  
+  for (const type of documentTypes) {
+    try {
+      const response = await apiClient.get(
+        `submissions/document/check/?month=${props.month}&type=${type}`
+      );
+      if (response.data.exists) {
+        existingDocuments.value[type] = response.data.document;
+      }
+    } catch (error) {
+      // Ignore errors - document probably doesn't exist
+      console.log(`No existing ${type} document found`);
+    }
+  }
 };
 
 // Submission methods
@@ -150,16 +181,38 @@ const handleSubmit = async () => {
   }
 };
 
-const handleFileSubmit = async (endpoint, files) => {
-  const formData = new FormData();
-  formData.append("month", props.month);
-  files.forEach((file) => {
-    formData.append("file", file);
-  });
+const handleFileSubmit = async (files, documentType) => {
+  if (submitting.value) return;
 
   submitting.value = true;
   try {
-    const response = await apiClient.post(endpoint, formData, {
+    // Only show confirmation if document exists (we already checked on modal open)
+    if (existingDocuments.value[documentType]) {
+      const typeNames = {
+        cv: "CV",
+        teaching_philosophy: "Teaching Philosophy",
+        reflective: "Reflective Teaching Statement"
+      };
+      
+      const typeName = typeNames[documentType] || documentType;
+      const confirmUpdate = confirm(`${typeName} already exists for this month. Do you want to replace it?`);
+      
+      if (!confirmUpdate) {
+        submitting.value = false;
+        return;
+      }
+    }
+
+    const formData = new FormData();
+    formData.append("month", props.month);
+    formData.append("type", documentType);
+    
+    // Add files to FormData
+    files.forEach((file) => {
+      formData.append("file", file);
+    });
+
+    const response = await apiClient.post('submissions/upload/document/', formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
@@ -174,25 +227,40 @@ const handleFileSubmit = async (endpoint, files) => {
 };
 
 const handleImageSubmit = async () => {
-  await handleFileSubmit("submissions/upload/img/", selectedImages.value);
+  if (submitting.value) return;
+
+  submitting.value = true;
+  try {
+    const formData = new FormData();
+    formData.append("month", props.month);
+    selectedImages.value.forEach((file) => {
+      formData.append("file", file);
+    });
+
+    const response = await apiClient.post("submissions/upload/images/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    toast.success(response.data.detail);
+    emit("submitted");
+    closeModal();
+  } catch (error) {
+    toast.error(error.response?.data?.detail || "Error uploading images");
+  } finally {
+    submitting.value = false;
+  }
 };
 
 const handlePhilosophySubmit = async () => {
-  await handleFileSubmit(
-    "submissions/upload/philosophy/",
-    philosophyFile.value
-  );
+  await handleFileSubmit(philosophyFile.value, "teaching_philosophy");
 };
 
 const handleCvSubmit = async () => {
-  await handleFileSubmit("submissions/upload/cv/", cvFile.value);
+  await handleFileSubmit(cvFile.value, "cv");
 };
 
 const handleReflectiveSubmit = async () => {
-  await handleFileSubmit(
-    "submissions/upload/reflective/",
-    reflectiveFile.value
-  );
+  await handleFileSubmit(reflectiveFile.value, "reflective");
 };
 
 const handleVideoSubmit = async () => {
@@ -226,6 +294,8 @@ watch(
       resetForm();
       // Set the selectedType from props when modal opens
       selectedType.value = props.selectedType || "images";
+      // Check for existing documents
+      checkExistingDocuments();
     }
   }
 );
@@ -330,16 +400,18 @@ watch(
                       <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-900">
                           Teaching Philosophy
+                          <span v-if="existingDocuments.teaching_philosophy" class="inline-flex items-center px-2 py-1 ml-2 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                            Uploaded
+                          </span>
                         </h3>
                         <p class="text-sm text-gray-500">
                           Upload your teaching philosophy document
+                          <span v-if="existingDocuments.teaching_philosophy" class="text-green-600">(Replace existing)</span>
                         </p>
                       </div>
-                      <div
-                        v-if="selectedType === 'philosophy'"
-                        class="flex-shrink-0"
-                      >
-                        <i class="pi pi-check-circle text-green-600"></i>
+                      <div class="flex-shrink-0">
+                        <i v-if="selectedType === 'philosophy'" class="pi pi-check-circle text-green-600"></i>
+                        <i v-else-if="existingDocuments.teaching_philosophy" class="pi pi-check text-green-500"></i>
                       </div>
                     </div>
                   </div>
@@ -361,13 +433,18 @@ watch(
                       <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-900">
                           Curriculum Vitae (CV)
+                          <span v-if="existingDocuments.cv" class="inline-flex items-center px-2 py-1 ml-2 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
+                            Uploaded
+                          </span>
                         </h3>
                         <p class="text-sm text-gray-500">
                           Upload your updated CV in PDF format
+                          <span v-if="existingDocuments.cv" class="text-yellow-600">(Replace existing)</span>
                         </p>
                       </div>
-                      <div v-if="selectedType === 'cv'" class="flex-shrink-0">
-                        <i class="pi pi-check-circle text-yellow-600"></i>
+                      <div class="flex-shrink-0">
+                        <i v-if="selectedType === 'cv'" class="pi pi-check-circle text-yellow-600"></i>
+                        <i v-else-if="existingDocuments.cv" class="pi pi-check text-yellow-500"></i>
                       </div>
                     </div>
                   </div>
@@ -389,16 +466,18 @@ watch(
                       <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-900">
                           Reflective Teaching
+                          <span v-if="existingDocuments.reflective" class="inline-flex items-center px-2 py-1 ml-2 text-xs font-medium text-orange-800 bg-orange-100 rounded-full">
+                            Uploaded
+                          </span>
                         </h3>
                         <p class="text-sm text-gray-500">
                           Upload your reflective teaching document
+                          <span v-if="existingDocuments.reflective" class="text-orange-600">(Replace existing)</span>
                         </p>
                       </div>
-                      <div
-                        v-if="selectedType === 'reflective'"
-                        class="flex-shrink-0"
-                      >
-                        <i class="pi pi-check-circle text-orange-600"></i>
+                      <div class="flex-shrink-0">
+                        <i v-if="selectedType === 'reflective'" class="pi pi-check-circle text-orange-600"></i>
+                        <i v-else-if="existingDocuments.reflective" class="pi pi-check text-orange-500"></i>
                       </div>
                     </div>
                   </div>
