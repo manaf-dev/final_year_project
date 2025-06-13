@@ -246,7 +246,6 @@ const exportToExcel = () => {
     // Prepare data for Excel
     const excelData = scores.value.map((score) => ({
       "Student ID": score.intern.username,
-      Title: score.intern.title,
       "First Name": score.intern.first_name,
       "Last Name": score.intern.last_name,
       Department: score.intern.department?.name || "N/A",
@@ -264,7 +263,6 @@ const exportToExcel = () => {
     // Add some styling (column widths)
     const colWidths = [
       { width: 15 }, // Student ID
-      { width: 8 }, // Title
       { width: 15 }, // First Name
       { width: 15 }, // Last Name
       { width: 25 }, // Department
