@@ -449,23 +449,9 @@ onMounted(() => {
               <!-- Intern Details -->
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
-                  <div class="flex-shrink-0 h-10 w-10">
-                    <div
-                      class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center"
-                    >
-                      <span class="text-sm font-medium text-green-800">
-                        {{
-                          getInitials(
-                            score.intern.first_name,
-                            score.intern.last_name
-                          )
-                        }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="ml-4">
+                  
+                  <div>
                     <div class="text-sm font-medium text-gray-900">
-                      {{ score.intern.title }}. {{ score.intern.first_name }}
                       {{ score.intern.last_name }}
                     </div>
                     <div class="text-sm text-gray-500">
