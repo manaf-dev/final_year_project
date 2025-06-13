@@ -97,33 +97,36 @@
                     <!-- Status Badge and Submit Button -->
                     <div class="flex items-center space-x-4 mt-4 sm:mt-0">
                         <!-- Grading Status -->
-                        <div :class="[
-                            'px-3 py-1.5 rounded-full text-sm font-medium',
-                            submissions.graded
-                                ? 'bg-green-100 text-green-800 border border-green-200'
-                                : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                        ]">
-                            <i :class="[
-                                'pi mr-1.5',
-                                submissions.graded ? 'pi-check-circle' : 'pi-clock'
-                            ]"></i>
-                            {{ submissions.graded ? `Graded (${submissions.grade}/10)` : 'Pending Review' }}
-                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0 w-full">
+                            <!-- Grading Status -->
+                            <div :class="[
+                                'px-3 py-1.5 rounded-full text-sm font-medium w-full sm:w-auto text-center',
+                                submissions.graded
+                                    ? 'bg-green-100 text-green-800 border border-green-200'
+                                    : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                            ]">
+                                <i :class="[
+                                    'pi mr-1.5',
+                                    submissions.graded ? 'pi-check-circle' : 'pi-clock'
+                                ]"></i>
+                                {{ submissions.graded ? `Graded (${submissions.grade}/10)` : 'Pending Review' }}
+                            </div>
 
-                        <!-- Submit Button -->
-                        <button
-                            v-if="!submissions.graded"
-                            @click="openSubmissionModal('images')"
-                            class="inline-flex items-center px-4 py-2 bg-white text-[#8c003b] rounded-lg font-medium hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
-                        >
-                            <i class="pi pi-plus mr-2"></i>
-                            New Submission
-                        </button>
-                        
-                        <!-- Completed Badge -->
-                        <div v-else class="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-lg font-medium">
-                            <i class="pi pi-check-circle mr-2"></i>
-                            Completed
+                            <!-- Submit Button -->
+                            <button
+                                v-if="!submissions.graded"
+                                @click="openSubmissionModal('images')"
+                                class="inline-flex items-center justify-center px-4 py-2 bg-white text-[#8c003b] rounded-lg font-medium hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md w-full sm:w-auto"
+                            >
+                                <i class="pi pi-plus mr-2"></i>
+                                New Submission
+                            </button>
+                            
+                            <!-- Completed Badge -->
+                            <div v-else class="inline-flex items-center justify-center px-4 py-2 bg-white/20 text-white rounded-lg font-medium w-full sm:w-auto">
+                                <i class="pi pi-check-circle mr-2"></i>
+                                Completed
+                            </div>
                         </div>
                     </div>
                 </div>
