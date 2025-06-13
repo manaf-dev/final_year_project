@@ -452,6 +452,7 @@ onMounted(() => {
                   
                   <div>
                     <div class="text-sm font-medium text-gray-900">
+                      {{ score.intern.first_name }}
                       {{ score.intern.last_name }}
                     </div>
                     <div class="text-sm text-gray-500">
