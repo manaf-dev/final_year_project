@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from "vue";
+    import { ref, computed } from "vue";
     import { useToast } from "vue-toastification";
     import { useAuthStore } from "@/stores/auth";
     import ImageModal from "./ImageModal.vue";
@@ -7,7 +7,7 @@
     import Loader from "./loader.vue";
     import apiClient from "@/services/api";
 
-    defineProps({
+    const props = defineProps({
         images: { type: Object, required: true, default: () => ({}) },
         showDelete: { type: Boolean, default: true },
     });
@@ -19,9 +19,17 @@
     const selectedImage = ref({});
     const isConfirmOpen = ref(false);
     const isImageOpen = ref(false);
+    const currentImageIndex = ref(0);
 
-    const openImageModal = (item) => {
+    // Computed property for image array
+    const imageArray = computed(() => {
+        if (!props.images?.data) return [];
+        return props.images.data.map(item => item.image);
+    });
+
+    const openImageModal = (item, index) => {
         selectedImage.value = item;
+        currentImageIndex.value = index;
         isImageOpen.value = true;
     };
 
@@ -29,7 +37,15 @@
         isImageOpen.value = false;
         setTimeout(() => {
             selectedImage.value = null;
+            currentImageIndex.value = 0;
         }, 200);
+    };
+
+    const navigateImage = (newIndex) => {
+        if (newIndex >= 0 && newIndex < props.images.data.length) {
+            currentImageIndex.value = newIndex;
+            selectedImage.value = props.images.data[newIndex];
+        }
     };
 
     const openConfirmModal = (image) => {
@@ -99,8 +115,11 @@
 
     <ImageModal
         :image="selectedImage?.image"
+        :images="imageArray"
+        :current-index="currentImageIndex"
         :is-modal-open="isImageOpen"
         @close-modal="closeImageModal"
+        @navigate="navigateImage"
     />
 
     <ConfirmModal
