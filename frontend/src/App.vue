@@ -1,13 +1,13 @@
 <script setup>
     import { onMounted } from "vue";
     import { RouterLink, RouterView } from "vue-router";
-    import { useAuthStore } from "./stores/auth";
+    // import { useAuthStore } from "./stores/auth";
 
-    const authStore = useAuthStore();
+    // const authStore = useAuthStore();
 
-    onMounted(() => {
-        authStore.initializeAuth();
-    });
+    // onMounted(() => {
+    //     authStore.initializeAuth();
+    // });
 </script>
 
 <template>
