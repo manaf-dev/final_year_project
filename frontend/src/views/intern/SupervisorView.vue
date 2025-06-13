@@ -38,12 +38,6 @@
                         <div class="absolute inset-0 bg-black/10"></div>
                         <div class="relative z-10">
                             <div class="flex items-center space-x-6">
-                                <!-- Avatar -->
-                                <div class="flex-shrink-0">
-                                    <div class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-2xl font-bold text-white">
-                                        {{ supervisorInitials }}
-                                    </div>
-                                </div>
                                 
                                 <!-- Info -->
                                 <div class="flex-1">

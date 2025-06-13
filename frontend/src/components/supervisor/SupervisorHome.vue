@@ -53,10 +53,6 @@
                     <div class="relative z-10">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-6">
-                                <!-- Supervisor Avatar -->
-                                <div class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-2xl font-bold">
-                                    {{ (authStore.user.first_name?.charAt(0) + authStore.user.last_name?.charAt(0))?.toUpperCase() || 'S' }}
-                                </div>
                                 
                                 <div>
                                     <h1 class="text-3xl font-bold mb-2 capitalize">

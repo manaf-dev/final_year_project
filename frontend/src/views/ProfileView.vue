@@ -73,12 +73,6 @@
                         <div class="bg-gradient-to-r from-maroon via-green to-green text-white px-6 py-8">
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                                 <div class="flex items-center space-x-6">
-                                    <!-- User Avatar with Initials -->
-                                    <div class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center">
-                                        <span class="text-2xl font-bold text-white uppercase">
-                                            {{ profile.first_name?.charAt(0) || '' }}{{ profile.last_name?.charAt(0) || '' }}
-                                        </span>
-                                    </div>
                                     
                                     <div>
                                         <h1 class="text-3xl font-bold mb-2 capitalize">
@@ -122,7 +116,7 @@
                                         </div>
                                         <div>
                                             <h3 class="text-sm font-medium text-gray-700">Email Address</h3>
-                                            <p class="text-lg font-semibold text-gray-900">{{ profile.email }}</p>
+                                            <p class="text-lg font-semibold text-gray-900 break-all">{{ profile.email }}</p>
                                         </div>
                                     </div>
                                 </div>
