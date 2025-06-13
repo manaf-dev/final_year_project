@@ -22,156 +22,27 @@ import ScoreCell from "./ScoreCell.vue";
 
 const toast = useToast();
 
-// Reactive data
 const cohorts = ref([]);
 const selectedCohort = ref("");
 const scores = ref([]);
 const loading = ref(false);
 
-// Sample data for development testing
-// const sampleCohorts = [
-//   { id: 1, year: 2024 },
-//   { id: 2, year: 2023 },
-//   { id: 3, year: 2022 },
-// ];
 
-const sampleScores = [
-  {
-    id: 1,
-    intern: {
-      username: "INT2024001",
-      title: "Mr",
-      first_name: "John",
-      last_name: "Doe",
-      department: { name: "Computer Science" },
-    },
-    month_1: 85,
-    month_2: 78,
-    month_3: 92,
-    month_4: 88,
-  },
-  {
-    id: 2,
-    intern: {
-      username: "INT2024002",
-      title: "Ms",
-      first_name: "Jane",
-      last_name: "Smith",
-      department: { name: "Information Technology" },
-    },
-    month_1: 72,
-    month_2: 85,
-    month_3: 79,
-    month_4: 83,
-  },
-  {
-    id: 3,
-    intern: {
-      username: "INT2024003",
-      title: "Mr",
-      first_name: "Michael",
-      last_name: "Johnson",
-      department: { name: "Software Engineering" },
-    },
-    month_1: 95,
-    month_2: 91,
-    month_3: 88,
-    month_4: 94,
-  },
-  {
-    id: 4,
-    intern: {
-      username: "INT2024004",
-      title: "Ms",
-      first_name: "Sarah",
-      last_name: "Williams",
-      department: { name: "Data Science" },
-    },
-    month_1: 68,
-    month_2: 73,
-    month_3: 71,
-    month_4: 76,
-  },
-  {
-    id: 5,
-    intern: {
-      username: "INT2024005",
-      title: "Mr",
-      first_name: "David",
-      last_name: "Brown",
-      department: { name: "Cybersecurity" },
-    },
-    month_1: 82,
-    month_2: null,
-    month_3: 87,
-    month_4: null,
-  },
-  {
-    id: 6,
-    intern: {
-      username: "INT2024006",
-      title: "Ms",
-      first_name: "Emily",
-      last_name: "Davis",
-      department: { name: "Computer Science" },
-    },
-    month_1: 45,
-    month_2: 58,
-    month_3: 62,
-    month_4: 55,
-  },
-  {
-    id: 7,
-    intern: {
-      username: "INT2024007",
-      title: "Mr",
-      first_name: "James",
-      last_name: "Wilson",
-      department: { name: "Information Systems" },
-    },
-    month_1: null,
-    month_2: null,
-    month_3: null,
-    month_4: null,
-  },
-  {
-    id: 8,
-    intern: {
-      username: "INT2024008",
-      title: "Ms",
-      first_name: "Lisa",
-      last_name: "Garcia",
-      department: { name: "Web Development" },
-    },
-    month_1: 89,
-    month_2: 92,
-    month_3: 85,
-    month_4: 90,
-  },
-];
 
-// Computed properties
 const selectedCohortName = computed(() => {
   const cohort = cohorts.value.find((c) => c.id === selectedCohort.value);
   return cohort ? `${cohort.year} Internship Cohort` : "";
 });
 
-// Methods
+
 const loadCohorts = async () => {
   try {
-    // For development, use sample data
-    // if (process.env.NODE_ENV === "development") {
-    //   cohorts.value = sampleCohorts;
-    //   return;
-    // }
-
-    // Production API call
+    
     const response = await apiClient.get("internships/cohorts/");
     cohorts.value = response.data;
   } catch (error) {
     console.error("Error loading cohorts:", error);
     toast.error("Failed to load cohorts");
-    // Fallback to sample data if API fails
     cohorts.value = sampleCohorts;
   }
 };
@@ -184,16 +55,6 @@ const loadScores = async () => {
 
   loading.value = true;
   try {
-    // For development, use sample data
-    // if (process.env.NODE_ENV === "development") {
-    //   // Simulate API delay
-    //   await new Promise((resolve) => setTimeout(resolve, 500));
-    //   scores.value = sampleScores;
-    //   loading.value = false;
-    //   return;
-    // }
-
-    // Production API call
     const response = await apiClient.get(
       `submissions/scores/cohort/${selectedCohort.value}/`
     );
@@ -201,7 +62,7 @@ const loadScores = async () => {
   } catch (error) {
     console.error("Error loading scores:", error);
     toast.error(error.response.data.detail || 'Error loading cohort scores');
-    // Fallback to sample data if API fails
+   
     scores.value = [];
   } finally {
     loading.value = false;
@@ -218,9 +79,6 @@ const calculateTotal = (score) => {
   return total;
 };
 
-const getInitials = (firstName, lastName) => {
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-};
 
 const getTotalColor = (total) => {
   if (total === "N/A") return "text-gray-500";
