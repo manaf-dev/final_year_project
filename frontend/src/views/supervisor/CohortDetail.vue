@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted } from "vue";
+    import { ref, onMounted, computed } from "vue";
     import { useRoute } from "vue-router";
     import apiClient from "@/services/api";
     import Loader from "@/components/loader.vue";
@@ -9,6 +9,7 @@
     const route = useRoute();
     const interns = ref([]);
     const loading = ref(false);
+    const searchQuery = ref("");
 
     onMounted(async () => {
         loading.value = true;
@@ -23,6 +24,20 @@
             loading.value = false;
         }
     });
+
+    const filteredInterns = computed(() => {
+        if (!interns.value.interns) return [];
+        const q = searchQuery.value.trim().toLowerCase();
+        if (!q) return interns.value.interns;
+        return interns.value.interns.filter((intern) => {
+            const fullName = `${intern.last_name} ${intern.first_name} ${intern.other_names || ''}`.toLowerCase();
+            return (
+                (intern.username && intern.username.toLowerCase().includes(q)) ||
+                fullName.includes(q) ||
+                (intern.phone && intern.phone.toLowerCase().includes(q))
+            );
+        });
+    });
 </script>
 
 <template>
@@ -32,8 +47,7 @@
                 <div class="mb-6">
                     <BackButton />
                 </div>
-                
-                <div class="mb-8">
+                <div class="mb-4">
                     <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ route.params.year }} Cohort Details</h2>
                     <div class="flex items-center text-gray-600">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,11 +56,18 @@
                         <span>Total Interns: <span class="font-semibold text-gray-900">{{ interns.interns_count || 0 }}</span></span>
                     </div>
                 </div>
-
+                <!-- Search Input -->
+                <div class="mb-4 flex justify-end">
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        placeholder="Search by name, student ID, or contact..."
+                        class="w-full sm:w-80 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-maroon focus:border-maroon outline-none transition"
+                    />
+                </div>
                 <div v-if="loading" class="flex justify-center items-center py-12">
                     <Loader />
                 </div>
-                
                 <div v-else class="bg-white shadow-xl rounded-xl border border-gray-200 overflow-hidden">
                     <div class="bg-maroon px-6 py-4">
                         <h3 class="text-lg font-semibold text-white">
@@ -54,7 +75,6 @@
                         </h3>
                         <p class="text-white text-opacity-80 text-sm mt-1">Complete list of registered interns</p>
                     </div>
-
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -72,13 +92,12 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr
-                                    v-for="intern in interns.interns"
+                                    v-for="intern in filteredInterns"
                                     :key="intern.id"
                                     class="hover:bg-gray-50 transition-colors duration-150"
                                 >
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                            
                                             <div>
                                                 <div class="text-sm font-semibold text-gray-900">
                                                     {{ intern.username }}
@@ -104,15 +123,14 @@
                                         </div>
                                     </td>
                                 </tr>
-                                
-                                <tr v-if="!interns.interns || !interns.interns.length">
+                                <tr v-if="filteredInterns.length === 0">
                                     <td colspan="3" class="px-6 py-12 text-center">
                                         <div class="flex flex-col items-center">
                                             <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                                                 <span class="text-2xl text-gray-400">👥</span>
                                             </div>
-                                            <h3 class="text-lg font-medium text-gray-900 mb-1">No interns registered</h3>
-                                            <p class="text-gray-500">This cohort doesn't have any registered interns yet.</p>
+                                            <h3 class="text-lg font-medium text-gray-900 mb-1">No interns found</h3>
+                                            <p class="text-gray-500">No results match your search.</p>
                                         </div>
                                     </td>
                                 </tr>

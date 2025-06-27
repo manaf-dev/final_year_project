@@ -1,18 +1,4 @@
 <script setup>
-/*
- * Scores Component for Supervisor Dashboard
- *
- * Features:
- * - Cohort selection and management
- * - Comprehensive scores table with color-coded grades
- * - Excel export functionality
- * - Sample data for development testing
- *
- * Development Mode:
- * - Automatically loads sample data when NODE_ENV is 'development'
- * - Falls back to sample data if API calls fail
- * - Includes realistic test data with various score scenarios
- */
 
 import { ref, computed, onMounted } from "vue";
 import { useToast } from "vue-toastification";
@@ -26,14 +12,30 @@ const cohorts = ref([]);
 const selectedCohort = ref("");
 const scores = ref([]);
 const loading = ref(false);
-
-
+const searchQuery = ref("");
 
 const selectedCohortName = computed(() => {
   const cohort = cohorts.value.find((c) => c.id === selectedCohort.value);
   return cohort ? `${cohort.year} Internship Cohort` : "";
 });
 
+const filteredScores = computed(() => {
+  if (!searchQuery.value.trim()) return scores.value;
+  const q = searchQuery.value.trim().toLowerCase();
+  return scores.value.filter((score) => {
+    const intern = score.intern;
+    const fullName = `${intern.first_name} ${intern.last_name}`.toLowerCase();
+    const username = (intern.username || '').toLowerCase();
+    const department = (intern.department?.name || '').toLowerCase();
+    const phone = (intern.phone || '').toLowerCase();
+    return (
+      fullName.includes(q) ||
+      username.includes(q) ||
+      department.includes(q) ||
+      phone.includes(q)
+    );
+  });
+});
 
 const loadCohorts = async () => {
   try {
@@ -207,6 +209,15 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <!-- Search Input -->
+      <div class="mt-6 flex justify-end">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search by name, student ID, department, or contact..."
+          class="w-full sm:w-80 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
+        />
+      </div>
     </div>
 
     <!-- Loading State -->
@@ -251,8 +262,8 @@ onMounted(() => {
       <div class="p-4 border-b border-gray-200 bg-gray-50">
         <div class="flex justify-between items-center">
           <h3 class="text-lg font-semibold text-gray-800">
-            {{ selectedCohortName }} - {{ scores.length }} Intern{{
-              scores.length !== 1 ? "s" : ""
+            {{ selectedCohortName }} - {{ filteredScores.length }} Intern{{
+              filteredScores.length !== 1 ? "s" : ""
             }}
           </h3>
           <div class="text-sm text-gray-600">
@@ -300,14 +311,13 @@ onMounted(() => {
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr
-              v-for="score in scores"
+              v-for="score in filteredScores"
               :key="score.id"
               class="hover:bg-gray-50"
             >
               <!-- Intern Details -->
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
-                  
                   <div>
                     <div class="text-sm font-medium text-gray-900">
                       {{ score.intern.first_name }}
@@ -345,6 +355,11 @@ onMounted(() => {
                 >
                   {{ calculateTotal(score) }}
                 </div>
+              </td>
+            </tr>
+            <tr v-if="filteredScores.length === 0">
+              <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                No results match your search.
               </td>
             </tr>
           </tbody>
