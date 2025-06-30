@@ -76,11 +76,9 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         submission = self.get_existing_submissions(request)
 
         portfolio_imgs = request.FILES.getlist("file")
-        print("Portfolio images:", portfolio_imgs)
         portfolio_images_data = [
             {"image": img, "submission": submission.id} for img in portfolio_imgs
         ]
-        print("Portfolio images data:", portfolio_images_data)
         portfolio_serializer = PortfolioImageSerializer(
             data=portfolio_images_data, many=True
         )
@@ -246,7 +244,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         interns = get_interns_by_supervisor(supervisor.id)
         cohort_interns = interns.filter(cohort=cohort)
-        print("cohort_interns", cohort_interns)
+
         interns_submissions = self.queryset.filter(
             month=month, intern__in=cohort_interns
         ).order_by("created_at")
