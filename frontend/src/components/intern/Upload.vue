@@ -26,9 +26,20 @@ const videoUrl = ref("");
 // Image handling
 const handleImageChange = (event) => {
     const files = Array.from(event.target.files);
-
-    // Create previews
-    files.forEach((file) => {
+    let filesToAdd = files;
+    const availableSlots = 5 - selectedImages.value.length;
+    console.log("Available slots:", availableSlots);
+    if (availableSlots <= 0) {
+        toast.info("Only 5 images are allowed for this month.");
+        return;
+    }
+    console.log("Files to add:", filesToAdd);
+    if (files.length > availableSlots) {
+        filesToAdd = files.slice(0, availableSlots);
+        toast.info("Only 5 images are allowed for this month.");
+    }
+    console.log("Files to add after limit check:", filesToAdd);
+    filesToAdd.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {
             imagePreviews.value.push(e.target.result);

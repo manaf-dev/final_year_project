@@ -61,7 +61,12 @@ const canSubmit = computed(() => {
 
 // Image handling
 const handleImageChange = (event) => {
-  const files = Array.from(event.target.files);
+  let files = Array.from(event.target.files);
+  // put a limit on the nuber of images that can be selected for upload to 5, sotake the first 5
+  if (files.length > 5) {
+    files = files.slice(0, 5);
+    toast.info("Only 5 images are allowed for this month.");
+  }
 
   files.forEach((file) => {
     const reader = new FileReader();

@@ -3,10 +3,12 @@
     import { computed, ref, onMounted, watch } from "vue";
     import { useAuthStore } from "@/stores/auth";
     import { onBeforeRouteUpdate } from "vue-router";
+    import { useToast } from "vue-toastification";
     import SubmissionDisplay from "../SubmissionDisplay.vue";
     import SubmissionModal from "./SubmissionModal.vue";
     import SubmissionLock from "./SubmissionLock.vue";
 
+    const toast = useToast();
     const props = defineProps({ month: String });
     const authStore = useAuthStore();
     const submissions = ref({});
@@ -71,6 +73,11 @@
 
     const selectedType = ref("images");
     const openSubmissionModal = (type) => {
+        if (submissions.value.images?.length >= 5 && type === "images") {
+            toast.info("You have reached the maximum number of images for this month.");
+            return;
+        }
+        
         if (!submissions.value.graded) {
             selectedType.value = type || "images";
             showSubmissionModal.value = true;
@@ -148,7 +155,7 @@
                         <!-- Teaching Philosophy Count -->
                         <div class="text-center">
                             <div class="text-2xl font-bold text-green-600">
-                                {{ submissions.files?.filter(f => f.file_type === 'philosophy').length || 0 }}
+                                {{ submissions.files?.filter(f => f.file_type === 'teaching_philosophy').length || 0 }}
                             </div>
                             <div class="text-xs text-gray-500">Teaching Philosophy</div>
                         </div>

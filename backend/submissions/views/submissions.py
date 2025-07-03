@@ -1,3 +1,4 @@
+from multiprocessing import context
 from ._base_imports import *
 from django.utils import timezone
 from django.db.models import Count, Q
@@ -218,7 +219,9 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         if existing_document:
             from submissions.serializers.portfolios import PortfolioFileSerializer
 
-            serializer = PortfolioFileSerializer(existing_document)
+            serializer = PortfolioFileSerializer(
+                existing_document, context={"request": request}
+            )
             return Response(
                 {"exists": True, "document": serializer.data},
                 status=status.HTTP_200_OK,
