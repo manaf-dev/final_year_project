@@ -26,8 +26,15 @@ class UserAccountViewSet(viewsets.ModelViewSet):
 
         return super().get_permissions()
 
-    def retrieve(self, request, pk=None):
-        instance = self.get_object()
+    def retrieve(self, request, user_id):
+        instance = get_user_by_id(user_id)
+        if not instance:
+            context = {
+                "detail": "User not found",
+                "errors": {"user": ["User does not exist"]},
+            }
+            raise NotFound(context)
+
         context = user_representation(instance)
         return Response(context, status=status.HTTP_200_OK)
 
