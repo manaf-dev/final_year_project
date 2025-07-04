@@ -76,7 +76,7 @@
                             <div class="hidden md:block">
                                 <div class="text-right">
                                     <div class="text-2xl font-bold">{{ submissionCounts.graded_submissions_count || 0 }}</div>
-                                    <div class="text-sm text-gray-100">Graded This Month</div>
+                                    <div class="text-sm text-gray-100">Graded This Year</div>
                                     <div class="text-sm text-gray-200 mt-1">
                                         {{ submissionCounts.submissions_count || 0 }} Total Submissions
                                     </div>
@@ -119,7 +119,7 @@
                                     {{ submissionCounts.submissions_count || 0 }}
                                 </div>
                                 <div class="text-gray-600 font-medium">Total Submissions</div>
-                                <div class="text-sm text-gray-500 mt-1">All time submissions</div>
+                                <div class="text-sm text-gray-500 mt-1">For this cohort</div>
                             </div>
                             
                         </div>
