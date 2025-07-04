@@ -59,7 +59,10 @@
         }
     };
 
-    onMounted(getSubmissions);
+    onMounted(async () => {
+        await getSubmissions();
+        canSubmit.value; // Trigger initial computed value
+    });
 
     onBeforeRouteUpdate((to, from) => {
         submissions.value = {};
