@@ -87,12 +87,13 @@
     const canSubmit = computed(() => {
         if (submissions.value.graded) {
             return 'completed';
-        } else if (submissions.value && !submissions.value.intern?.cohort?.active) {
+        } else if (submissions.value.intern && !submissions.value.intern?.cohort?.active) {
             return 'locked';
         } else {
             return 'open';
         }
     })
+    console.log("active")
 </script>
 
 <template>
