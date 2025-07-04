@@ -24,7 +24,7 @@ export const useAuthStore = defineStore('auth', {
                 // Import apiClient dynamically to avoid circular dependency
                 const { default: apiClient } = await import('../services/api');
                 const response = await apiClient.get(`accounts/user/${this.user.id}/info/`)
-                localStorage.setItem('user', JSON.stringify(response.data.user))
+                localStorage.setItem('user', JSON.stringify(response.data))
             } catch (error) {
                 console.error(error)
             }
