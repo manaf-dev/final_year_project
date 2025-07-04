@@ -1,3 +1,4 @@
+from enum import auto
 from pyexpat import model
 from django.db import models
 from datetime import datetime, timedelta
@@ -6,8 +7,8 @@ from django.utils import timezone
 
 class Cohort(models.Model):
     year = models.CharField(max_length=20, unique=True)
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=datetime.now() + timedelta(days=120))
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField(null=True, blank=True)
     active = models.BooleanField(default=True)
     status = models.CharField(
         max_length=20,
