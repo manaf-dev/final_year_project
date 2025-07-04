@@ -8,7 +8,7 @@
     if (authStore.isAuthenticated) {
         setInterval(() => {
             authStore.getUserInfo();
-        }, 1000 * 60 * 3); // Refresh every 3 minutes
+        }, 1000 * 60 * 2); // Refresh every 3 minutes
     }
 
 </script>
