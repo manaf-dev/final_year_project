@@ -6,7 +6,9 @@
     const authStore = useAuthStore();
 
     if (authStore.isAuthenticated) {
-        authStore.getUserInfo();
+        setInterval(() => {
+            authStore.getUserInfo();
+        }, 1000 * 60 * 3); // Refresh every 3 minutes
     }
 
 </script>
