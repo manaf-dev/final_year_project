@@ -83,6 +83,16 @@
             showSubmissionModal.value = true;
         }
     };
+
+    const canSubmit = computed(() => {
+        if (submissions.value.graded) {
+            return 'completed';
+        } else if (submissions.value && !submissions.value.intern?.cohort?.active) {
+            return 'locked';
+        } else {
+            return 'open';
+        }
+    })
 </script>
 
 <template>
@@ -120,14 +130,14 @@
                             </div>
 
                             <!-- Locked Badge -->
-                            <div v-if="!submissions.intern?.cohort?.active && !submissions.graded" class="inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-600 rounded-lg font-medium w-full sm:w-auto">
+                            <div v-if="canSubmit === 'locked'" class="inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-600 rounded-lg font-medium w-full sm:w-auto">
                                 <i class="pi pi-lock mr-2"></i>
                                 Locked
                             </div>
                             
                             <!-- Submit Button -->
                             <button
-                                v-else-if="!submissions.graded"
+                                v-else-if="canSubmit === 'open'"
                                 @click="openSubmissionModal('images')"
                                 class="inline-flex items-center justify-center px-4 py-2 bg-white text-[#8c003b] rounded-lg font-medium hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md w-full sm:w-auto"
                             >
