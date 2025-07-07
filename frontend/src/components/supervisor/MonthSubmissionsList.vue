@@ -4,6 +4,7 @@
     import { computed, onMounted, ref, watch } from "vue";
     import { onBeforeRouteUpdate, useRoute } from "vue-router";
     import Loader from "../loader.vue";
+import { subscribe } from "node:diagnostics_channel";
 
     const authStore = useAuthStore();
     const props = defineProps({
@@ -49,8 +50,8 @@
         <div class="flex flex-col mt-6">
             <div class="overflow-hidden bg-white shadow-xl rounded-xl border border-gray-200">
                 <div class="bg-maroon px-6 py-4">
-                    <h3 class="text-lg font-semibold text-white">Month Submissions</h3>
-                    <p class="text-white text-opacity-80 text-sm mt-1">Review and grade intern submissions</p>
+                    <h3 class="text-lg font-semibold text-white">Month {{ props.month }} Submissions</h3>
+                    <p class="text-white text-opacity-80 text-sm mt-1">Review and grade intern submissions  ({{ month_submissions.length }} Submitted)</p>
                 </div>
                 
                 <div class="overflow-x-auto">
