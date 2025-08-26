@@ -47,7 +47,7 @@ class UserAccountAdmin(UserAdmin):
     model = UserAccount
     list_display = ("username", "email", "account_type", "supervisor", "cohort")
     list_filter = ("account_type", "cohort", "department")
-    search_fields = ("username", "email", "department_name")
+    search_fields = ("username", "email")
     actions = [assign_interns_to_supervisor]
 
     def get_queryset(self, request):
