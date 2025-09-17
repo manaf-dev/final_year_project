@@ -3,7 +3,7 @@ from ._base_imports import *
 from itertools import chain
 from django.db.models import Q
 
-from accounts.selectors.users import get_user_by_username
+from accounts.selectors.users import get_user_by_id, get_user_by_username
 from submissions.models.portfolios import PortfolioFile, PortfolioImage
 from submissions.serializers.portfolios import (
     PortfolioFileSerializer,
@@ -34,12 +34,12 @@ class PortfolioViewset(viewsets.ModelViewSet):
     serializer_class = PortfolioImageSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_month_portfolio(self, request, username, month):
+    def get_month_portfolio(self, request, user_id, month):
         """
         Get portfolio images and files for a specific month
         """
 
-        intern = get_user_by_username(username)
+        intern = get_user_by_id(user_id)
         if not intern:
             return Response(
                 {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
@@ -75,6 +75,37 @@ class PortfolioViewset(viewsets.ModelViewSet):
         if comments:
             comments_data = CommentSerializer(comments, many=True).data
             context["comments"] = comments_data
+
+        # Add new grading system data
+        try:
+            from submissions.selectors.grades import get_intern_grade_by_id
+            from submissions.serializers.grades import InternGradeSerializer
+
+            intern_grade = get_intern_grade_by_id(user_id)
+            if intern_grade:
+                grade_data = InternGradeSerializer(intern_grade).data
+                context["new_grades"] = grade_data
+
+                # Convert month to string for comparison
+                month_str = str(month)
+                if month_str == "1":
+                    context["new_grade"] = intern_grade.portfolio_month_1
+                elif month_str == "2":
+                    context["new_grade"] = intern_grade.portfolio_month_2
+                elif month_str == "3":
+                    context["new_grade"] = intern_grade.portfolio_month_3
+                elif month_str == "4":
+                    context["new_grade"] = intern_grade.portfolio_month_4
+                    context["teaching_philosophy_score"] = (
+                        intern_grade.teaching_philosophy_score
+                    )
+                    context["reflective_practice_score"] = (
+                        intern_grade.reflective_practice_score
+                    )
+        except Exception as e:
+            # If no grades exist yet, that's fine
+            print(f"No grades found for intern {user_id}: {e}")
+            pass
 
         return Response(context, status=status.HTTP_200_OK)
 
