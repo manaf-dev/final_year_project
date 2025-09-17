@@ -37,4 +37,25 @@ SUBMISSION_URLS = [
         "scores/cohort/<str:cohort_id>/",
         SubmissionViewSet.as_view({"get": "get_cohort_scores"}),
     ),
+    # New grading system URLs
+    path(
+        "grades/cohort/<str:cohort_id>/",
+        SubmissionViewSet.as_view({"get": "get_new_cohort_scores"}),
+    ),
+    path(
+        "grades/intern/<str:intern_id>/",
+        SubmissionViewSet.as_view({"get": "get_intern_grades"}),
+    ),
+    path(
+        "grades/portfolio/update/",
+        SubmissionViewSet.as_view({"post": "update_portfolio_score"}),
+    ),
+    path(
+        "grades/teaching-philosophy/update/",
+        SubmissionViewSet.as_view({"post": "update_teaching_philosophy_score"}),
+    ),
+    path(
+        "grades/reflective-practice/update/",
+        SubmissionViewSet.as_view({"post": "update_reflective_practice_score"}),
+    ),
 ]

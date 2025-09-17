@@ -4,7 +4,6 @@
     import { computed, onMounted, ref, watch } from "vue";
     import { onBeforeRouteUpdate, useRoute } from "vue-router";
     import Loader from "../loader.vue";
-import { subscribe } from "node:diagnostics_channel";
 
     const authStore = useAuthStore();
     const props = defineProps({
@@ -113,7 +112,7 @@ import { subscribe } from "node:diagnostics_channel";
                                     <span
                                         :class="[
                                             'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
-                                            submission.graded
+                                            submission.is_graded_new_system || submission.graded
                                                 ? 'bg-green-100 text-green-800'
                                                 : 'bg-yellow-100 text-yellow-800',
                                         ]"
@@ -121,23 +120,24 @@ import { subscribe } from "node:diagnostics_channel";
                                         <span
                                             :class="[
                                                 'w-2 h-2 rounded-full mr-2',
-                                                submission.graded
-                                                    ? 'bg-green'
-                                                    : 'bg-yellow',
+                                                submission.is_graded_new_system || submission.graded
+                                                    ? 'bg-green-500'
+                                                    : 'bg-yellow-500',
                                             ]"
                                         ></span>
-                                        {{ submission.graded ? "Graded" : "Not graded" }}
+                                        {{ submission.is_graded_new_system || submission.graded ? "Graded" : "Not graded" }}
                                     </span>
                                 </td>
 
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
-                                        <div
-                                            class="text-md font-bold mr-2 "
-                                        >
-                                            {{ submission.grade || '--' }}
+                                        <div class="text-md font-bold mr-2">
+                                            {{ submission.current_grade !== null ? submission.current_grade : (submission.grade || '--') }}
                                         </div>
-                                        <span class="text-sm text-gray-500">{{ month === '4' ? '/50' : '/10' }}</span>
+                                        <span class="text-sm text-gray-500">{{ month === '4' ? '/240' : '/20' }}</span>
+                                    </div>
+                                    <div v-if="month === '4' && submission.month_4_total" class="text-xs text-gray-500 mt-1">
+                                        Total: {{ submission.month_4_total }}/240
                                     </div>
                                 </td>
 
@@ -146,7 +146,7 @@ import { subscribe } from "node:diagnostics_channel";
                                         :to="{
                                             name: 'submission-detail',
                                             params: {
-                                                intern: submission.intern.username,
+                                                intern: submission.intern.id,
                                                 month: month,
                                             },
                                         }"

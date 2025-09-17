@@ -15,6 +15,7 @@ import PastSubmissionsMonths from '@/views/supervisor/PastSubmissionsMonths.vue'
 import PastSubmissionsInterns from '@/views/supervisor/PastSubmissionsInterns.vue'
 import Notifications from '@/views/Notifications.vue'
 import ScoresView from '@/views/supervisor/ScoresView.vue'
+import ComprehensiveGradingView from '@/views/supervisor/ComprehensiveGradingView.vue'
 
 
 
@@ -106,6 +107,12 @@ const router = createRouter({
       path: '/sp/scores',
       name: 'scores',
       component: ScoresView,
+      meta: { requiresAuth: true, supervisorsOnly: true }
+    },
+    {
+      path: '/sp/grading/:intern',
+      name: 'comprehensive-grading',
+      component: ComprehensiveGradingView,
       meta: { requiresAuth: true, supervisorsOnly: true }
     },
     {

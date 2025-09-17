@@ -1,8 +1,6 @@
-from multiprocessing import context
-from ._base_imports import *
-from django.utils import timezone
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
 from django.db.models import Count, Q
-from accounts.models.users import UserAccount
 from accounts.selectors.users import (
     get_interns_by_supervisor,
     user_representation,
@@ -367,3 +365,146 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             {"detail": "Video deleted successfully"},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+    def get_new_cohort_scores(self, request, cohort_id):
+        """Get cohort scores using the new grading system"""
+        supervisor = self.is_supervisor(request)
+        cohort = get_cohort_by_id(cohort_id)
+        if not cohort:
+            return Response(
+                {"detail": "Cohort not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        from submissions.selectors.grades import get_cohort_intern_grades
+        from submissions.serializers.grades import InternGradeSerializer
+
+        grades = get_cohort_intern_grades(cohort_id)
+        serializer = InternGradeSerializer(grades, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_intern_grades(self, request, intern_id):
+        """Get grades for a specific intern"""
+        supervisor = self.is_supervisor(request)
+
+        from submissions.selectors.grades import get_intern_grade_by_id
+        from submissions.serializers.grades import InternGradeSerializer
+
+        try:
+            grade = get_intern_grade_by_id(intern_id)
+            if grade:
+                serializer = InternGradeSerializer(grade)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                # Return empty grade structure if no grades exist yet
+                from accounts.selectors.users import get_user_by_id
+
+                intern = get_user_by_id(intern_id)
+                if not intern:
+                    return Response(
+                        {"detail": "Intern not found"},
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+
+                return Response(
+                    {
+                        "intern": intern_id,
+                        "month_1_score": None,
+                        "month_2_score": None,
+                        "month_3_score": None,
+                        "month_4_score": None,
+                        "teaching_philosophy_score": None,
+                        "reflective_practice_score": None,
+                        "portfolio_total": 0,
+                        "overall_total": 0,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    def update_portfolio_score(self, request):
+        """Update portfolio score for a specific month"""
+        supervisor = self.is_supervisor(request)
+
+        from submissions.serializers.grades import UpdatePortfolioScoreSerializer
+        from submissions.selectors.grades import update_portfolio_score
+
+        serializer = UpdatePortfolioScoreSerializer(data=request.data)
+        if serializer.is_valid():
+            success = update_portfolio_score(
+                intern_id=serializer.validated_data["intern_id"],
+                month=serializer.validated_data["month"],
+                score=serializer.validated_data["score"],
+                graded_by=supervisor,
+            )
+            if success:
+                return Response(
+                    {"detail": "Portfolio score updated successfully"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"detail": "Failed to update portfolio score"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update_teaching_philosophy_score(self, request):
+        """Update teaching philosophy score"""
+        supervisor = self.is_supervisor(request)
+
+        from submissions.serializers.grades import (
+            UpdateTeachingPhilosophyScoreSerializer,
+        )
+        from submissions.selectors.grades import update_teaching_philosophy_score
+
+        serializer = UpdateTeachingPhilosophyScoreSerializer(data=request.data)
+        if serializer.is_valid():
+            success = update_teaching_philosophy_score(
+                intern_id=serializer.validated_data["intern_id"],
+                score=serializer.validated_data["score"],
+                graded_by=supervisor,
+            )
+            if success:
+                return Response(
+                    {"detail": "Teaching philosophy score updated successfully"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"detail": "Failed to update teaching philosophy score"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update_reflective_practice_score(self, request):
+        """Update reflective practice score"""
+        supervisor = self.is_supervisor(request)
+
+        from submissions.serializers.grades import (
+            UpdateReflectivePracticeScoreSerializer,
+        )
+        from submissions.selectors.grades import update_reflective_practice_score
+
+        serializer = UpdateReflectivePracticeScoreSerializer(data=request.data)
+        if serializer.is_valid():
+            success = update_reflective_practice_score(
+                intern_id=serializer.validated_data["intern_id"],
+                score=serializer.validated_data["score"],
+                graded_by=supervisor,
+            )
+            if success:
+                return Response(
+                    {"detail": "Reflective practice score updated successfully"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"detail": "Failed to update reflective practice score"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

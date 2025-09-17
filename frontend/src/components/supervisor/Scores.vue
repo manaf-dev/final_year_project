@@ -4,7 +4,6 @@ import { ref, computed, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 import apiClient from "@/services/api";
 import * as XLSX from "xlsx";
-import ScoreCell from "./ScoreCell.vue";
 
 const toast = useToast();
 
@@ -25,12 +24,12 @@ const filteredScores = computed(() => {
   return scores.value.filter((score) => {
     const intern = score.intern;
     const fullName = `${intern.first_name} ${intern.last_name}`.toLowerCase();
-    const username = (intern.username || '').toLowerCase();
+    const regNumber = (intern.username || '').toLowerCase();
     const department = (intern.department?.name || '').toLowerCase();
     const phone = (intern.phone || '').toLowerCase();
     return (
       fullName.includes(q) ||
-      username.includes(q) ||
+      regNumber.includes(q) ||
       department.includes(q) ||
       phone.includes(q)
     );
@@ -57,13 +56,14 @@ const loadScores = async () => {
 
   loading.value = true;
   try {
+    // Use the new grading endpoint
     const response = await apiClient.get(
-      `submissions/scores/cohort/${selectedCohort.value}/`
+      `submissions/grades/cohort/${selectedCohort.value}/`
     );
     scores.value = response.data;
   } catch (error) {
     console.error("Error loading scores:", error);
-    toast.error(error.response.data.detail || 'Error loading cohort scores');
+    toast.error(error.response?.data?.detail || 'Error loading cohort scores');
    
     scores.value = [];
   } finally {
@@ -71,28 +71,28 @@ const loadScores = async () => {
   }
 };
 
-const calculateTotal = (score) => {
-  const scores = [score.month_1, score.month_2, score.month_3, score.month_4];
-  const validScores = scores.filter((s) => s !== null && s !== undefined);
-
-  if (validScores.length === 0) return "N/A";
-
-  const total = validScores.reduce((sum, s) => sum + s, 0);
-  return total;
+const calculateTotal = (grade) => {
+  // New calculation based on the three components
+  const portfolio = grade.portfolio_total || 0;
+  const philosophy = grade.teaching_philosophy_score || 0;
+  const reflective = grade.reflective_practice_score || 0;
+  
+  if (portfolio === 0 && philosophy === 0 && reflective === 0) return "N/A";
+  
+  return portfolio + philosophy + reflective;
 };
 
 
 const getTotalColor = (total) => {
   if (total === "N/A") return "text-gray-500";
-  if (total >= 60) return "text-green-600";
-  if (total >= 40) return "text-blue-600";
-  if (total >= 20) return "text-yellow-600";
+  if (total >= 240) return "text-green-600"; // 80% of 300
+  if (total >= 180) return "text-blue-600";  // 60% of 300
+  if (total >= 120) return "text-yellow-600"; // 40% of 300
   return "text-red-600";
 };
 
-const monthScore = (score) => {
+const formatScore = (score) => {
   if (score === null || score === undefined) return "Not graded";
-  if (score === -1) return "Not submitted";
   return score;
 };
 
@@ -103,51 +103,49 @@ const exportToExcel = () => {
   }
 
   try {
-    // Prepare data for Excel
-    const excelData = scores.value.map((score) => ({
-      "Student ID": score.intern.username,
-      "First Name": score.intern.first_name,
-      "Last Name": score.intern.last_name,
-      Department: score.intern.department?.name || "N/A",
-      "Month 1": monthScore(score.month_1),
-      "Month 2": monthScore(score.month_2),
-      "Month 3": monthScore(score.month_3),
-      "Month 4": monthScore(score.month_4),
-      Total: calculateTotal(score),
+    // Prepare data for Excel with new structure
+    const excelData = scores.value.map((grade) => ({
+      "Student ID": grade.intern.username,
+      "First Name": grade.intern.first_name,
+      "Last Name": grade.intern.last_name,
+      Department: grade.intern.department?.name || "N/A",
+      "Portfolio (/100)": grade.portfolio_total || 0,
+      "Teaching Philosophy (/100)": grade.teaching_philosophy_score || "Not graded",
+      "Reflective Practice (/100)": grade.reflective_practice_score || "Not graded",
+      "Total (/300)": calculateTotal(grade),
     }));
 
     // Create workbook and worksheet
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(excelData);
 
-    // Add some styling (column widths)
+    // Add some styling (column widths) for new structure
     const colWidths = [
       { width: 15 }, // Student ID
       { width: 15 }, // First Name
       { width: 15 }, // Last Name
       { width: 25 }, // Department
-      { width: 10 }, // Month 1
-      { width: 10 }, // Month 2
-      { width: 10 }, // Month 3
-      { width: 10 }, // Month 4
-      { width: 10 }, // Total
+      { width: 18 }, // Portfolio (/100)
+      { width: 22 }, // Teaching Philosophy (/100)
+      { width: 22 }, // Reflective Practice (/100)
+      { width: 15 }, // Total (/300)
     ];
     ws["!cols"] = colWidths;
 
     // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Intern Scores");
+    XLSX.utils.book_append_sheet(wb, ws, "Intern Grades");
 
     // Generate filename with cohort and date
     const cohortName = selectedCohortName.value.replace(/\s+/g, "_");
     const date = new Date().toISOString().split("T")[0];
-    const filename = `${cohortName}_Scores_${date}.xlsx`;
+    const filename = `${cohortName}_Grades_${date}.xlsx`;
 
     // Download file
     XLSX.writeFile(wb, filename);
-    toast.success("Scores exported successfully!");
+    toast.success("Grades exported successfully!");
   } catch (error) {
     console.error("Error exporting to Excel:", error);
-    toast.error("Failed to export scores");
+    toast.error("Failed to export grades");
   }
 };
 
@@ -275,7 +273,7 @@ onMounted(() => {
       <!-- Responsive Table -->
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+                    <thead class="bg-gray-50">
             <tr>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -285,80 +283,67 @@ onMounted(() => {
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 1 (10)
+                Portfolio (/100)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 2 (10)
+                Teaching Philosophy (/100)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 3 (10)
+                Reflective Practice (/100)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Month 4 (50)
+                Total (/300)
               </th>
               <th
                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Total (80)
+                Actions
               </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr
-              v-for="score in filteredScores"
-              :key="score.id"
-              class="hover:bg-gray-50"
+                        <tr
+              v-for="intern in scores"
+              :key="intern.id"
+              class="bg-white border-b hover:bg-gray-50"
             >
-              <!-- Intern Details -->
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div>
-                    <div class="text-sm font-medium text-gray-900">
-                      {{ score.intern.first_name }}
-                      {{ score.intern.last_name }}
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      ID: {{ score.intern.username }}
-                    </div>
-                    <div class="text-xs text-gray-400">
-                      {{ score.intern.department?.name }}
-                    </div>
-                  </div>
+                <div class="text-sm font-medium text-gray-900">
+                  {{ intern.intern?.first_name }} {{ intern.intern?.last_name }}
+                </div>
+                <div class="text-sm text-gray-500">
+                  {{ intern.intern?.username }}
                 </div>
               </td>
-
-              <!-- Month Scores -->
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <ScoreCell :score="score.month_1" month="1" />
+              <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                {{ intern.portfolio_total || "-" }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <ScoreCell :score="score.month_2" month="2" />
+              <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                {{ intern.teaching_philosophy_score || "-" }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <ScoreCell :score="score.month_3" month="3" />
+              <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                {{ intern.reflective_practice_score || "-" }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <ScoreCell :score="score.month_4" month="4" />
+              <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                {{ intern.overall_total || "0" }}
               </td>
-
-              <!-- Total Score -->
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <div
-                  class="text-sm font-semibold"
-                  :class="getTotalColor(calculateTotal(score))"
+              <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                <router-link
+                  :to="{ name: 'comprehensive-grading', params: { intern: intern.intern?.id } }"
+                  class="text-indigo-600 hover:text-indigo-900 bg-indigo-100 hover:bg-indigo-200 px-3 py-1 rounded-md text-xs font-medium transition-colors duration-200"
                 >
-                  {{ calculateTotal(score) }}
-                </div>
+                  Grade
+                </router-link>
               </td>
             </tr>
             <tr v-if="filteredScores.length === 0">
-              <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+              <td colspan="5" class="px-6 py-12 text-center text-gray-500">
                 No results match your search.
               </td>
             </tr>
